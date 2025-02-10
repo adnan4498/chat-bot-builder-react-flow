@@ -17,6 +17,7 @@ import { onDrop } from './NodeDrop';
 import { useDragContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
 import DefaultStartingNode from './DefaultStartingNode';
 import ResultMenu from './layout/ResultMenu';
+import CustomEdge from './DelayEdge';
 
 const App = () => {
   const { draggedItemData } = useDragContext();
@@ -37,7 +38,7 @@ const App = () => {
 
   const initialEdges = [
     { id: "conditionNode-resultNode", source: "user-conditional-input-1", target: "parent-1" }, 
-    { id: "e-child1", source: "child-1", target: "child-1-condition" }, 
+    { id: "e-child1", source: "child-1", target: "child-1-condition", data: {label: 'Add Delay'}, type : "customEdge" }, 
     { id: "e-child2", source: "child-2", target: "child-2-condition" },
   ];
 
@@ -68,6 +69,7 @@ const App = () => {
   let isResultNodeSelected = handleResultMenu()
 
   console.log(nodes, "nn")
+  console.log(edges, "edges")
   
 
   // getting and setting selected node data in contextHook
@@ -75,6 +77,10 @@ const App = () => {
     let getSelectedNode = nodes.filter(item => item.selected)
     setSelectedNode(getSelectedNode)
   }, [nodes])
+
+  const edgeTypes = {
+    customEdge: CustomEdge,
+  };
   
 
   return (
@@ -84,7 +90,8 @@ const App = () => {
         <div style={{ width: '100%', height: '100%' }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)}>
           <ReactFlow
             nodes={nodes}
-            edges={edges}
+            edges={edges}   
+            edgeTypes={edgeTypes}
             onNodesChange={onNodesChange}
             // onEdgesChange={onEdgesChange}
             onConnect={onConnect}

@@ -53,7 +53,9 @@ const ResultNodeFunctionality = ({ id, data }) => {
                 console.log(getConditionedChildNode, "getConditionedChild")
 
 
-                console.log(getConditionedChildNode.data.label, "condition printed")
+                alert(getConditionedChildNode.data.label)
+
+                
                 // updateNodeData(item.id,
                 //     { label: "hello" }
                 // )

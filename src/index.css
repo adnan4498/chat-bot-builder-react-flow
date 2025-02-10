@@ -33,3 +33,18 @@ body {
   margin-top: 10px;
   margin-left: 10px;
 }
+
+.edge-label-renderer__custom-edge {
+  position: absolute;
+  background-color: #ffcc00;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  z-index: 9999999;
+}
+ 
+.react-flow__edge-textbg {
+  fill: #f7f9fb;
+  z-index: 9999999;
+}
