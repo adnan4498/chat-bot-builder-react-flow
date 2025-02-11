@@ -1,12 +1,11 @@
 @import "tailwindcss";
 
-
-
 html,
 body {
   margin: 0;
   font-family: sans-serif;
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 #app {
@@ -14,24 +13,26 @@ body {
   height: 100vh;
 }
 
-.react-flow-class{
+.react-flow-class {
   width: 80%;
   height: 100vw;
 }
 
-.border-left-class{
-  border-left: 1px solid black;
+.border-left-class {
+  border-left: 1px solid transparent;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  z-index: 9999999;
+  position: relative;
 }
 
-.new-node{
-  border: 1px solid black;
+.new-node {
+  border: 1px solid #d9d8d7;
   border-radius: 3px;
-  width: 70px;
-  height: 65px;
+  width: 80px;
+  height: 95px;
   text-align: center;
   font-size: 12px;
-  margin-top: 10px;
-  margin-left: 10px;
+  /* margin-top: 10px; */
 }
 
 .edge-label-renderer__custom-edge {
@@ -43,8 +44,21 @@ body {
   font-weight: 700;
   z-index: 9999999;
 }
- 
+
 .react-flow__edge-textbg {
   fill: #f7f9fb;
   z-index: 9999999;
+}
+
+.full-horizontal-line {
+  width: 125%;
+  margin-left: -40px;
+  color: #c4c4c2;
+}
+
+.navbar-shadow {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); /* Optional for better visibility */
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15); /* Increase shadow size */
+  z-index: 9999;
+  position: relative; /* Ensure it affects the element properly */
 }
