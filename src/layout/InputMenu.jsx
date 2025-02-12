@@ -1,15 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 import TextNode from '../nodeComponents/TextNode'
 import ImageNode from '../nodeComponents/ImageNode'
 import ResultNode from '../nodeComponents/ResultNode'
 import AddConditionNode from '../nodeComponents/AddConditionNode'
-import { DoubleRightOutlined } from '@ant-design/icons'
+import { CheckOutlined, CloseOutlined, DoubleRightOutlined } from '@ant-design/icons'
+import { useReactFlow } from '@xyflow/react'
+import { useSelectedNodeContext } from '../ContextApi/DragDropContext'
+import TextArea from 'antd/es/input/TextArea'
+import { Space, Switch } from 'antd'
 
-const ResultMenu = () => {
+const InputMenu = () => {
+
+    const { selectedNode, setSelectedNode } = useSelectedNodeContext();
+
+    const [isInput, setIsInput] = useState(false)
+    const [inputVal, setInputVal] = useState(selectedNode[0]?.data.label)
+    const [maximumWords, setMaximumWords] = useState(0)
+
+    const { updateNodeData } = useReactFlow();
+
+    const handleChange = (e) => {
+        setInputVal(e.target.value);
+        updateNodeData(selectedNode[0]?.id, { label: e.target.value })
+        let inputWordsLen = e.target.value.length
+
+        console.log(e.target.value, "e.target.value")
+
+        setMaximumWords(inputWordsLen)
+    };
+
+    const handleSubmit = (e) => {
+        setIsInput(false)
+        setInputVal(inputVal)
+    };
+
+    console.log(selectedNode, "selectedNode")
+
 
     return (
         <>
-            <div className=' mt-6'>
+            <div className='mt-6'>
                 <div className=''>
                     <DoubleRightOutlined style={{ color: '#575755', fontSize: "18px" }} />
                 </div>
@@ -23,32 +53,78 @@ const ResultMenu = () => {
                         </div>
                     </div>
                     <div className='text-xl font-semibold'>
-                        <h2>User Response</h2>
+                        <h2>Send Text</h2>
                     </div>
                 </div>
-
             </div>
 
-            <div className='text-xs text-gray-500  mt-6'>
+            <div className='text-xs text-gray-500 mt-6'>
                 <p>
-                    Use when the chatbot needs to collect input or react to something a customer sends as a response. Chatbot will process user input in the following order - keywords, NLP, fallback.
+                    Chatbot sends a message to the user. You can insert a placeholder for an attribute by clicking on the attribute icon.
                 </p>
             </div>
 
-            <div className='nodes-section mt-6'>
+            <div className="relative font-medium text-xs text-black mt-8 flex justify-between">
+                <div className='pl-2'>
+                    1
+                </div>
+                <div className='text-[#2d7595]'>
+                    + ADD VARIATION
+                </div>
+                <span className="absolute left-[-5px] z-50 bottom-[-10px] w-[10%] h-[1px] bg-[#22997f]"></span>
+                <span className="absolute left-[-5px] z-10 bottom-[-10px] w-full h-[1px] bg-gray-600"></span>
+            </div>
 
-                <div>
-                    <h2>Chatbot Sends</h2>
+            <div className='nodes-section mt-6 '>
+                <div className='text-xs my-[3px] flex justify-between'>
+                    <div className=''>
+                        Message 1
+                    </div>
+                    <div>
+                        {maximumWords} / 4096
+                    </div>
+                </div>
+                <div className='w-full'>
+                    <div>
+                        {/* <input
+                            type="text"
+                            onChange={handleChange}
+                            value={inputVal}
+                            className='w-full h-32 border-[1px] border-black'
+                        /> */}
+
+                        <TextArea rows={6} onChange={handleChange} value={inputVal} />
+                    </div>
+
+                    {/* <div>
+                        <button className='text-white text-sm bg-green-800 border-2 border-black rounded-lg px-2 py-2' onClick={handleSubmit}>Submit</button>
+                    </div> */}
                 </div>
 
-                <div className='flex gap-2 mt-3'>
+                <div className='flex items-center gap-4 my-2'>
 
-                    <AddConditionNode />
-
+                    <div>
+                        <Space direction="vertical">
+                            <Switch
+                                checkedChildren={<CheckOutlined />}
+                                unCheckedChildren={<CloseOutlined />}
+                                defaultChecked
+                                size='small'
+                            />
+                        </Space>
+                    </div>
+                    <div className='flex items-center gap-2 text-xs pt-[2px]'>
+                        <div>
+                            Link preview
+                        </div>
+                        <div>
+                            <div class="bepo-2-tooltip__container _15b205j_2271_1 _15b205j_2271_2"><svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="bepo-icon-svg _1ixx0vi0" aria-disabled="false"><path d="M10.4615 11.2308C10.4615 10.8059 10.8059 10.4615 11.2308 10.4615H12C12.4248 10.4615 12.7692 10.8059 12.7692 11.2308V15.8462C13.1941 15.8462 13.5385 16.1906 13.5385 16.6154C13.5385 17.0402 13.1941 17.3846 12.7692 17.3846H12C11.5752 17.3846 11.2308 17.0402 11.2308 16.6154V12C10.8059 12 10.4615 11.6556 10.4615 11.2308Z" fill="var(--theme-color-icon, #545452)" data-darkreader-inline-fill="" ></path><path d="M12.9615 7.76923C12.9615 8.40648 12.4449 8.92308 11.8077 8.92308C11.1704 8.92308 10.6538 8.40648 10.6538 7.76923C10.6538 7.13198 11.1704 6.61539 11.8077 6.61539C12.4449 6.61539 12.9615 7.13198 12.9615 7.76923Z" fill="var(--theme-color-icon, #545452)" data-darkreader-inline-fill="" ></path><path fill-rule="evenodd" clip-rule="evenodd" d="M2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12ZM12 3.53846C7.32682 3.53846 3.53846 7.32682 3.53846 12C3.53846 16.6732 7.32682 20.4615 12 20.4615C16.6732 20.4615 20.4615 16.6732 20.4615 12C20.4615 7.32682 16.6732 3.53846 12 3.53846Z" fill="var(--theme-color-icon, #545452)" data-darkreader-inline-fill="" ></path></svg></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </>
     )
 }
 
-export default ResultMenu
+export default InputMenu

@@ -45,7 +45,8 @@ export const onDrop = (
         },
       ]);
     });
-  } else if (draggedItemLabel == "Add Condition") {
+  } 
+  else if (draggedItemLabel == "Add Condition") {
     const getSelectedNodeX = selectedNode[0].position.x;
     const getSelectedNodeY = selectedNode[0].position.y;
     const getSelectedNodeId = selectedNode[0].id;
@@ -131,13 +132,17 @@ export const onDrop = (
     let incrementingId = ++getHighestIdNum;
     let backToString = String(incrementingId);
 
+    console.log(event.screenX, "X")
+    console.log(event.screenY, "Y")
+
     setNodes((e) => [
       ...e,
       {
         id: backToString,
         position: { x: event.screenX - 100, y: event.screenY - 100 },
-        data: { label: "Send Text" },
+        data: { label: "" },
         type: draggedItemType,
+        // selected: true
       },
     ]);
   }

@@ -1,9 +1,10 @@
 import { EditOutlined, MoreOutlined, WhatsAppOutlined } from '@ant-design/icons'
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Navbar = () => {
   return (
-    <div className='w-full px-10 pt-5 pb-[10px] navbar-shadow'>
+    <div className='w-full px-10 pt-5 pb-[10px] navbar-shadow fixed bg-white'>
       <div className='flex items-center justify-between'>
         <div>
           <div className='flex items-center gap-3'>
@@ -19,7 +20,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          <div className='flex text-xs gap-2 mt-2'>
+          <div className='flex text-xs gap-2 mt-3'>
             <div className='text-[#787876]'>
               O
             </div>
@@ -48,12 +49,12 @@ const Navbar = () => {
         </div>
       </div>
 
-      <hr className='full-horizontal-line my-2'></hr>
+      <hr className='full-horizontal-line my-3'></hr>
 
       <div className='flex justify-between items-center'>
         <div className='flex items-center gap-4 text-xs text-[#545452]'>
           <div className="relative font-semibold text-black">
-            Dialogs
+          <Link to="/">Dialogs</Link>
             <span className="absolute left-[-5px] bottom-[-10px] w-[140%]  h-[2px] bg-red-500"></span>
           </div>
           <div>
@@ -69,7 +70,7 @@ const Navbar = () => {
             Settings
           </div>
           <div>
-            Test
+            <Link to="/test">Test</Link>
           </div>
         </div>
 

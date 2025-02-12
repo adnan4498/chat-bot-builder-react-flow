@@ -64,14 +64,14 @@ const CustomEdge = ({ id, sourceX, sourceY, source, target, targetX, targetY, so
 
 
     };
-    console.log(edges, "outside")
+    // console.log(edges, "outside")
 
     // console.log(source, 'source')
     // console.log(target, 'target')
     // console.log(data, 'data')
     // console.log(id, 'id')
 
-    console.log(edges, 'edges')
+    // console.log(edges, 'edges')
 
     return (
         <>

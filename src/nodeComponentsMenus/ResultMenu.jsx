@@ -1,17 +1,13 @@
-import React from 'react'
-import TextNode from '../nodeComponents/TextNode'
-import ImageNode from '../nodeComponents/ImageNode'
-import ResultNode from '../nodeComponents/ResultNode'
-import AddConditionNode from '../nodeComponents/AddConditionNode'
 import { DoubleRightOutlined } from '@ant-design/icons'
+import React from 'react'
+import AddConditionNode from '../nodeComponents/AddConditionNode'
 
 const ResultMenu = () => {
-
     return (
         <>
             <div className=' mt-6'>
                 <div className=''>
-                    <DoubleRightOutlined style={{ color: '#575755', fontSize: "18px" }} />
+                    <DoubleRightOutlined style={{ color: '#575755', fontSize: "1    8px" }} />
                 </div>
             </div>
 
