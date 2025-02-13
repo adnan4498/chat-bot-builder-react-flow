@@ -11,7 +11,7 @@ import {
 
 import '@xyflow/react/dist/style.css';
 
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import CustomNode from './CustomNode';
 import CustomStateNode from './CustomStateNode';
 import InputNode from './InputNode';
@@ -30,13 +30,7 @@ const Home = () => {
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
 
-  const nodeTypes = {
-    custom: CustomNode,
-    stateNode: CustomStateNode,
-    inputNode: InputNode,
-    result: ResultNode,
-    defaultStarting: DefaultStartingNode,
-  };
+  const [triggerNodes, setTriggerNodes] = useState()
 
   const initialNodes = [
     { id: '0', position: { x: 450, y: 200 }, data: { label: "Default" }, type: "defaultStarting" },
@@ -50,6 +44,47 @@ const Home = () => {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
+
+  useEffect(() => {
+    setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
+    setDeletingNodeId("")
+
+  }, [deletingNodeId])
+
+  // getting and setting selected node data in contextHook
+  // if node is about to delete. do not set selected, to prevent opening its menu
+  useEffect(() => {
+    let getSelectedNode = nodes.filter(item => item.selected)
+    if (getSelectedNode[0]?.id != deletingNodeId) {
+      setSelectedNode(getSelectedNode)
+    }
+
+  }, [nodes])
+
+  useEffect(() => {
+
+    setNodes((prevNodes) => {
+      return prevNodes.map((nds) => {
+        if (nds?.data?.label === "Default") return nds;
+
+        const newStyle = !nds?.data?.label || nds?.data?.label === "Text send to user..."
+          ? { backgroundColor: 'red' }
+          : { backgroundColor: 'blue' };
+
+        if (nds.style === newStyle) { 
+          return nds;
+        }
+
+        return { ...nds, style: newStyle };
+      });
+    });
+
+  }, [selectedNode]);
+
+
+
+  console.log(nodes, "nodes outside")
+
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -65,44 +100,15 @@ const Home = () => {
   //   []
   // );
 
-  let handleResultMenu = () => {
-    let getResultNode = nodes.filter(item => item.type == "result")
-    let isSelected = getResultNode[0]?.selected ? true : false
+  console.log(nodes, "nodes")
 
-    return isSelected
-  }
-
-  let isResultNodeSelected = handleResultMenu()
-
-  // getting and setting selected node data in contextHook
-  useEffect(() => {
-    let getSelectedNode = nodes.filter(item => item.selected)
-    setSelectedNode(getSelectedNode)
-  }, [nodes])
-
-  useEffect(() => {
-    setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
-  }, [deletingNodeId])
-
-  // useEffect(() => {
-  //   let bbb
-  //   if (selectedNode != undefined && selectedNode.length != 0) {
-  //     bbb = Object.hasOwn(selectedNode[0], "isDelete")
-
-  //     if (bbb == true) {
-  //       setNodes((nds) => nds.filter(item => item.id != selectedNode[0].id))
-  //     }
-  //   }
-
-  //   // let cc = Object.hasOwn(bbb, "isDelete")
-
-  //   console.log(bbb, "check for delete")
-  // }, [selectedNode])
-
-  console.log(nodes, "all nodes")
-  // console.log(deletingNodeId, "deleting node id")
-
-
+  const nodeTypes = {
+    custom: CustomNode,
+    stateNode: CustomStateNode,
+    inputNode: InputNode,
+    result: ResultNode,
+    defaultStarting: DefaultStartingNode,
+  };
 
   const edgeTypes = {
     customEdge: CustomEdge,
@@ -132,7 +138,7 @@ const Home = () => {
             >
               <Background />
               <Controls />
-              <MiniMap maskColor="#cfcfcf" />
+              {/* <MiniMap maskColor="#cfcfcf" /> */}
             </ ReactFlow>
           </div>
         </div>
@@ -146,3 +152,24 @@ const Home = () => {
 }
 
 export default Home
+
+
+// import React, { useEffect, useState } from 'react'
+
+// const Home = () => {
+
+//   const [numberState, setNumberState] = useState(1)
+
+//   useEffect(() => {
+//     setNumberState(5)
+//     console.log(numberState, " inside ")
+//   }, [numberState])
+
+//   console.log(numberState, " outside ")
+
+//   return (
+//     <div onClick={() => setNumberState((e) => ++e)} className='bg-red-500 w-full h-20'>Home</div>
+//   )
+// }
+
+// export default Home

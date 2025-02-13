@@ -8,7 +8,7 @@ import DelayNode from '../nodeComponents/DelayNode'
 const Dailogs = () => {
     return (
         // <div className="w-[21%] bg-[#fafafa] px-8 border-left-class  h-[100vh]">
-        <div className="w-[21%] bg-[#fafafa] px-8 border-left-class pt-[125px] flex flex-col justify-between">
+        <div className="w-[30%] bg-[#fafafa] px-8 border-left-class pt-[125px] flex flex-col justify-between">
             <div>
                 <div className='mt-6 flex justify-between items-center'>
                     <div className='text-xl font-semibold flex items-center gap-2'>
@@ -59,7 +59,7 @@ const Dailogs = () => {
 
 
                 {/* <div className='h-full flex flex-col justify-center '> */}
-                <div className='text-[#2d7595] text-[13px] text-center py-2 flex flex-col gap-4 font-semibold '>
+                <div className='text-[#2d7595] text-[11px] text-center py-2 flex flex-col gap-4 font-semibold '>
                     <hr className='full-horizontal-line'></hr>
                     <div className=''>
                         + ADD AUTHENTICATION DIALOG

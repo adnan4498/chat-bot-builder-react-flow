@@ -1,8 +1,4 @@
-import React, { useState } from 'react'
-import TextNode from '../nodeComponents/TextNode'
-import ImageNode from '../nodeComponents/ImageNode'
-import ResultNode from '../nodeComponents/ResultNode'
-import AddConditionNode from '../nodeComponents/AddConditionNode'
+import React, { useEffect, useState } from 'react'
 import { CheckOutlined, CloseOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { useReactFlow } from '@xyflow/react'
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext'
@@ -13,30 +9,34 @@ const InputMenu = () => {
 
     const { selectedNode, setSelectedNode } = useSelectedNodeContext();
 
-    const [isInput, setIsInput] = useState(false)
-    const [inputVal, setInputVal] = useState(selectedNode[0]?.data.label)
+    let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
+
+    console.log(startingInputText, 'startingInputText')
+    
+    const [inputVal, setInputVal] = useState(startingInputText)
     const [maximumWords, setMaximumWords] = useState(0)
 
+    console.log(inputVal, 'inputVal') 
+    
     const { updateNodeData } = useReactFlow();
 
+    // show node text/label in input
+    useEffect(() => {
+
+        let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
+
+        
+        setInputVal(startingInputText)
+    }, [selectedNode])
+    
     const handleChange = (e) => {
         setInputVal(e.target.value);
         updateNodeData(selectedNode[0]?.id, { label: e.target.value })
         let inputWordsLen = e.target.value.length
-
-        console.log(e.target.value, "e.target.value")
-
+        
         setMaximumWords(inputWordsLen)
     };
-
-    const handleSubmit = (e) => {
-        setIsInput(false)
-        setInputVal(inputVal)
-    };
-
-    console.log(selectedNode, "selectedNode")
-
-
+    
     return (
         <>
             <div className='mt-6'>

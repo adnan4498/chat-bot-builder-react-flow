@@ -132,9 +132,6 @@ export const onDrop = (
     let incrementingId = ++getHighestIdNum;
     let backToString = String(incrementingId);
 
-    console.log(event.screenX, "X")
-    console.log(event.screenY, "Y")
-
     setNodes((e) => [
       ...e,
       {

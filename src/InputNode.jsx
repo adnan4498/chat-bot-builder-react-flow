@@ -29,6 +29,7 @@ const InputNode = ({ id, data }) => {
 
                 <div className='cursor-pointer text-xs text-[#b9b3a9] mt-4 pl-2 pb-2'>
                     {data.label || "Text send to user..."}
+                    {/* {data.label} */}
                 </div>
 
                 <Handle type="target" position={Position.Top} />
