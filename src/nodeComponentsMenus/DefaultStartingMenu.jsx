@@ -4,6 +4,7 @@ import TextNode from '../nodeComponents/TextNode'
 import ResultNode from '../nodeComponents/ResultNode'
 import ImageNode from '../nodeComponents/ImageNode'
 import DelayNode from '../nodeComponents/DelayNode'
+import ListNode from '../nodeComponents/ListNode'
 
 const DefaultStartingMenu = () => {
     return (
@@ -32,6 +33,7 @@ const DefaultStartingMenu = () => {
                 <div className='flex gap-2 mt-3'>
 
                     <TextNode />
+                    <ListNode />
                     <ImageNode />
                 </div>
             </div>

@@ -139,7 +139,7 @@ export const onDrop = (
         position: { x: event.screenX - 100, y: event.screenY - 100 },
         data: { label: "" },
         type: draggedItemType,
-        // selected: true
+        selected: true
       },
     ]);
   }

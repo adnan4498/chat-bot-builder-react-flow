@@ -1,6 +1,5 @@
 import React from 'react'
 import { useDragContext } from '../ContextApi/DragDropContext';
-import InputNode from '../InputNode';
 
 const ResultNode = () => {
 

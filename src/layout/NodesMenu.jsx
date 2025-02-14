@@ -7,8 +7,9 @@ import DelayNode from '../nodeComponents/DelayNode'
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext'
 import AddConditionNode from '../nodeComponents/AddConditionNode'
 import DefaultStartingMenu from '../nodeComponentsMenus/DefaultStartingMenu'
-import ResultMenu from './ResultMenu'
-import InputMenu from './InputMenu'
+import ResultMenu from '../nodeComponentsMenus/ResultMenu'
+import InputMenu from '../nodeComponentsMenus/InputMenu'
+import ListMenu from '../nodeComponentsMenus/ListMenu'
 
 const NodesMenu = () => {
 
@@ -23,7 +24,7 @@ const NodesMenu = () => {
 
   return (
     <div className="w-[40%] bg-[#fafafa] pl-8 pr-2 border-left-class overflow-y-scroll h-full pt-[125px]">
-      {getType == "defaultStarting" || getType == undefined ? <DefaultStartingMenu /> : getType == "result" ? <ResultMenu /> : getType == "inputNode" ? <InputMenu /> : ""}
+      {getType == "defaultStarting" || getType == undefined ? <DefaultStartingMenu /> : getType == "result" ? <ResultMenu /> : getType == "inputNode" ? <InputMenu /> : getType == "listNode" ? <ListMenu /> : ""}
     </div>
   )
 }

@@ -14,24 +14,21 @@ import '@xyflow/react/dist/style.css';
 import React, { useCallback, useEffect, useState } from 'react'
 import CustomNode from './CustomNode';
 import CustomStateNode from './CustomStateNode';
-import InputNode from './InputNode';
 import ResultNode from './ResultNodeFunctionality';
-import NodesMenu from './layout/NodesMenu';
 import { onDrop } from './NodeDrop';
 import { useDeletingNodeIdContext, useDragContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
 import DefaultStartingNode from './DefaultStartingNode';
-import ResultMenu from './layout/ResultMenu';
 import CustomEdge from './DelayEdge';
-import Navbar from './Navbar';
 import Dailogs from './layout/Dailogs';
+import InputNode from './nodeComponents/InputNode';
+import NodesMenu from './layout/NodesMenu';
+import ListInput from './nodeComponents/ListInput';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
-
-  const [triggerNodes, setTriggerNodes] = useState()
-
+  
   const initialNodes = [
     { id: '0', position: { x: 450, y: 200 }, data: { label: "Default" }, type: "defaultStarting" },
   ];
@@ -61,30 +58,31 @@ const Home = () => {
 
   }, [nodes])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    setNodes((prevNodes) => {
-      return prevNodes.map((nds) => {
-        if (nds?.data?.label === "Default") return nds;
+  //   setNodes((prevNodes) => {
+  //     // prevents new references to be created, and stops infinite rendering
+  //     let hasChanged = false;
 
-        const newStyle = !nds?.data?.label || nds?.data?.label === "Text send to user..."
-          ? { backgroundColor: 'red' }
-          : { backgroundColor: 'blue' };
+  //     const updatedNodes = prevNodes.map((nds) => {
+  //       if (nds?.data?.label === "Default") return nds;
 
-        if (nds.style === newStyle) { 
-          return nds;
-        }
+  //       let newStyle = !nds?.data?.label && nds?.selected == false ? { border: '1px solid red' } : { border: '1px transparent' } 
 
-        return { ...nds, style: newStyle };
-      });
-    });
+  //       if (JSON.stringify(nds.style) !== JSON.stringify(newStyle)) {
+  //         hasChanged = true;
+  //         return { ...nds, style: newStyle };
+  //       }
 
-  }, [selectedNode]);
+  //       return nds;
+  //     });
 
+  //     return hasChanged ? updatedNodes : prevNodes;
+  //   });
 
+  // }, [selectedNode]);
 
-  console.log(nodes, "nodes outside")
-
+  console.log(nodes, "nodes")
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
@@ -100,13 +98,14 @@ const Home = () => {
   //   []
   // );
 
-  console.log(nodes, "nodes")
+  // console.log(nodes, "nodes")
 
   const nodeTypes = {
     custom: CustomNode,
     stateNode: CustomStateNode,
-    inputNode: InputNode,
+    inputNode: InputNode,    
     result: ResultNode,
+    listNode: ListInput,
     defaultStarting: DefaultStartingNode,
   };
 

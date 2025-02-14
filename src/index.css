@@ -67,3 +67,11 @@ body {
   z-index: 9999;
   /* position: relative; */
 }
+
+:where(.css-dev-only-do-not-override-xex5fb).ant-modal {
+  top: 40% !important;
+}
+
+:where(.css-dev-only-do-not-override-xex5fb).ant-modal .ant-modal-footer {
+  display: none;
+}
