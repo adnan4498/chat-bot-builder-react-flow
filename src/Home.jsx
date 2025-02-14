@@ -82,8 +82,6 @@ const Home = () => {
 
   // }, [selectedNode]);
 
-  console.log(nodes, "nodes")
-
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],

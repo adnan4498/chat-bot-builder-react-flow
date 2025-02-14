@@ -11,33 +11,99 @@ const ListMenu = () => {
 
     const { selectedNode, setSelectedNode } = useSelectedNodeContext();
 
-    let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
-
-    console.log(startingInputText, 'startingInputText')
-
+    let startingInputText = selectedNode[0]?.data?.label == "Text send to user..." ? "" : selectedNode[0]?.data?.label
     const [inputVal, setInputVal] = useState(startingInputText)
-    const [maximumWords, setMaximumWords] = useState(0)
 
-    console.log(inputVal, 'inputVal')
+    let startingHeaderText = selectedNode[0]?.data.label[0]?.headerTextLabel
+    let startingBodyText = selectedNode[0]?.data.label[0]?.bodyTextLabel
+    let startingFooterText = selectedNode[0]?.data.label[0]?.footerTextLabel
+    let startingListBtnText = selectedNode[0]?.data.label[0]?.listBtnTextLabel
+    let startingSectionTitleText = selectedNode[0]?.data.label[0]?.listSectiontitle
+    let startingSectionItemText = selectedNode[0]?.data.label[0]?.itemTitle
+    let startingSectionItemDescText = selectedNode[0]?.data.label[0]?.itemDesc
+
+    const [headerInputVal, setHeaderInputVal] = useState(startingHeaderText)
+    const [bodyInputVal, setBodyInputVal] = useState(startingBodyText)
+    const [footerInputVal, setFooterInputVal] = useState(startingFooterText)
+    const [listBtnInputVal, setListBtnInputVal] = useState(startingListBtnText)
+    const [sectionTitleInputVal, setSectionTitleInputVal] = useState(startingSectionTitleText)
+    const [sectionItemInputVal, setSectionItemInputVal] = useState(startingSectionItemText)
+    const [sectionItemDescInputVal, setSectionItemDescInputVal] = useState(startingSectionItemDescText)
+
+
+    const [maximumWords, setMaximumWords] = useState(0)
 
     const { updateNodeData } = useReactFlow();
 
     // show node text/label in input
     useEffect(() => {
 
-        let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
-
+        let startingInputText = selectedNode[0]?.data?.label == "Text send to user..." ? "" : selectedNode[0]?.data?.label
 
         setInputVal(startingInputText)
     }, [selectedNode])
 
-    const handleChange = (e) => {
-        setInputVal(e.target.value);
-        updateNodeData(selectedNode[0]?.id, { label: e.target.value })
-        let inputWordsLen = e.target.value.length
+    let label = selectedNode[0]?.data?.label
+    let listSection = selectedNode[0]?.data?.label[0].listSection
+    let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
 
-        setMaximumWords(inputWordsLen)
-    };
+    const handleHeaderChange = (e) => {
+        setHeaderInputVal(e.target.value)
+        label[0] = { ...label[0], headerTextLabel: e.target.value };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleBodyChange = (e) => {
+        setBodyInputVal(e.target.value)
+        label[0] = { ...label[0], bodyTextLabel: e.target.value };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleFooterChange = (e) => {
+        setFooterInputVal(e.target.value)
+        label[0] = { ...label[0], footerTextLabel: e.target.value };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleListBtnChange = (e) => {
+        setListBtnInputVal(e.target.value)
+        label[0] = { ...label[0], listBtnTextLabel: e.target.value };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleSectionTitleChange = (e) => {
+        setSectionTitleInputVal(e.target.value)
+        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleSectionItemChange = (e) => {
+        setSectionItemInputVal(e.target.value)
+        // label[0] = { ...label[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] };
+        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] }] };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    const handleSectionItemDescChange = (e) => {
+        setSectionItemDescInputVal(e.target.value)
+        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemDesc: e.target.value }] }] };
+
+        updateNodeData(selectedNode[0]?.id, { label });
+    }
+
+    // const handleChange = (e) => {
+    //     setInputVal(e.target.value);
+    //     updateNodeData(selectedNode[0]?.id, { label: e.target.value })
+    //     let inputWordsLen = e.target.value.length
+
+    //     setMaximumWords(inputWordsLen)
+    // };
 
     const showModal = () => {
         setIsModalOpen(true);
@@ -48,6 +114,8 @@ const ListMenu = () => {
     const handleCancel = () => {
         setIsModalOpen(false);
     };
+
+    console.log(selectedNode, "selected")
 
     return (
         <>
@@ -79,7 +147,7 @@ const ListMenu = () => {
                         Header text (Optional)
                     </div>
                     <div>
-                        <Input onChange={handleChange} value={inputVal} placeholder='Enter text' />
+                        <Input onChange={handleHeaderChange} value={headerInputVal} placeholder='Enter text' />
                     </div>
                 </div>
 
@@ -88,16 +156,17 @@ const ListMenu = () => {
                         Body text
                     </div>
                     <div>
-                        <TextArea rows={6} value={inputVal} placeholder='Enter body text' />
+                        <TextArea onChange={handleBodyChange} rows={6} value={bodyInputVal} placeholder='Enter body text' />
                     </div>
                 </div>
+
 
                 <div className=''>
                     <div className='text-[#b4ada3] text-sm pb-1'>
                         Footer text (Optional)
                     </div>
                     <div>
-                        <Input value={inputVal} placeholder='Enter footer text' />
+                        <Input onChange={handleFooterChange} value={footerInputVal} placeholder='Enter footer text' />
                     </div>
                 </div>
 
@@ -106,7 +175,7 @@ const ListMenu = () => {
                         List button text
                     </div>
                     <div>
-                        <Input value={inputVal} placeholder='Information List' />
+                        <Input onChange={handleListBtnChange} value={listBtnInputVal} placeholder='Information List' />
                     </div>
                 </div>
 
@@ -123,7 +192,7 @@ const ListMenu = () => {
                                 Section title
                             </div>
                             <div>
-                                <Input value={inputVal} placeholder='Section title' />
+                                <Input onChange={handleSectionTitleChange} value={sectionTitleInputVal} placeholder='Section title' />
                             </div>
                         </div>
 
@@ -165,7 +234,7 @@ const ListMenu = () => {
                                                 Item title
                                             </div>
                                             <div>
-                                                <Input value={inputVal} placeholder='Enter item title' />
+                                                <Input onChange={handleSectionItemChange} value={sectionItemInputVal} placeholder='Enter item title' />
                                             </div>
                                         </div>
 
@@ -174,7 +243,7 @@ const ListMenu = () => {
                                                 Item description (optional)
                                             </div>
                                             <div>
-                                                <Input value={inputVal} placeholder='Enter item description' />
+                                                <Input onChange={handleSectionItemDescChange} value={sectionItemDescInputVal} placeholder='Enter item description' />
                                             </div>
                                         </div>
 

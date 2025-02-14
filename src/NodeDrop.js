@@ -45,8 +45,7 @@ export const onDrop = (
         },
       ]);
     });
-  } 
-  else if (draggedItemLabel == "Add Condition") {
+  } else if (draggedItemLabel == "Add Condition") {
     const getSelectedNodeX = selectedNode[0].position.x;
     const getSelectedNodeY = selectedNode[0].position.y;
     const getSelectedNodeId = selectedNode[0].id;
@@ -63,13 +62,16 @@ export const onDrop = (
       droppingItemY <= getSelectedNodeY + getSelectedNodeHeight;
 
     if (isInsideParent) {
+      let getChildCNodes = getNodesData
+        .filter((item) => item.parentId)
+        .filter((items) => !items.id.includes("-condition"));
+      let getHighestChildNodeId;
 
-      let getChildCNodes = getNodesData.filter(item => item.parentId).filter(items => !items.id.includes("-condition"))
-      let getHighestChildNodeId 
+      getChildCNodes.forEach(
+        (item) => (getHighestChildNodeId = item.id.slice(-1))
+      );
 
-      getChildCNodes.forEach(item => getHighestChildNodeId = item.id.slice(-1))
-
-      let incrementedId = ++getHighestChildNodeId
+      let incrementedId = ++getHighestChildNodeId;
 
       let createNewConditionedNode = [
         {
@@ -101,20 +103,27 @@ export const onDrop = (
             //   y: droppingItemY - getSelectedNodeY, // Relative to parent
             // },
 
-             position: {
+            position: {
               x: droppingItemX - getSelectedNodeX,
-              y: item.id.includes("-condition") ? droppingItemY - getSelectedNodeY + 100 : droppingItemY - getSelectedNodeY, 
+              y: item.id.includes("-condition")
+                ? droppingItemY - getSelectedNodeY + 100
+                : droppingItemY - getSelectedNodeY,
             },
             data: { label: item.data.label },
             parentId: item.parentId,
-            extent : item.extent
+            extent: item.extent,
           },
         ]);
-      })
+      });
 
-      setEdges((oldEdges) => [...oldEdges, {id: `e-child${incrementedId}`, source : `child-${incrementedId}`, target : `child-${incrementedId}-condition`}])
-      
-
+      setEdges((oldEdges) => [
+        ...oldEdges,
+        {
+          id: `e-child${incrementedId}`,
+          source: `child-${incrementedId}`,
+          target: `child-${incrementedId}-condition`,
+        },
+      ]);
     } else {
       alert("Drop outside parent is not allowed.");
     }
@@ -132,15 +141,49 @@ export const onDrop = (
     let incrementingId = ++getHighestIdNum;
     let backToString = String(incrementingId);
 
-    setNodes((e) => [
-      ...e,
-      {
-        id: backToString,
-        position: { x: event.screenX - 100, y: event.screenY - 100 },
-        data: { label: "" },
-        type: draggedItemType,
-        selected: true
-      },
-    ]);
+    if (draggedItemLabel == "List Node") {
+      setNodes((e) => [
+        ...e,
+        {
+          id: backToString,
+          position: { x: event.screenX - 100, y: event.screenY - 100 },
+          data: {
+            label: [
+              {
+                headerTextLabel: "",
+                bodyTextLabel: "",
+                footerTextLabel: "",
+                listBtnTextLabel: "",
+                listSection: [
+                  {
+                    listSectiontitle: "",
+                    listSectionItems: [
+                      {
+                        itemTitle: "",
+                        itemDesc: "",
+                        listItemPostBack: "",
+                      },
+                    ],
+                  },
+                ],
+              },
+            ],
+          },
+          type: draggedItemType,
+          selected: true,
+        },
+      ]);
+    } else {
+      setNodes((e) => [
+        ...e,
+        {
+          id: backToString,
+          position: { x: event.screenX - 100, y: event.screenY - 100 },
+          data: { label: "" },
+          type: draggedItemType,
+          selected: true,
+        },
+      ]);
+    }
   }
 };

@@ -15,8 +15,6 @@ const InputMenu = () => {
     
     const [inputVal, setInputVal] = useState(startingInputText)
     const [maximumWords, setMaximumWords] = useState(0)
-
-    console.log(inputVal, 'inputVal') 
     
     const { updateNodeData } = useReactFlow();
 

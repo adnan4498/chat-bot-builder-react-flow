@@ -25,8 +25,49 @@ const ListInput = ({ id, data, selected }) => {
 
                 </div>
 
-                <div className='cursor-pointer text-xs text-[#b9b3a9] mt-4 pl-2 pb-2'>
-                    {/* {data.label || "Text send to user..."} */}asd
+                <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
+                    {data.label[0]?.headerTextLabel || "Header Title"}
+                </div>
+
+                <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
+                    {data.label[0]?.bodyTextLabel || "Body Text"}
+                </div>
+
+                <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
+                    {data.label[0]?.footerTextLabel || "Footer Text"}
+                </div>
+
+                <div className='cursor-pointer text-xs border-2 border-blue-800 text-blue-300 rounded-2xl mt-2 pl-3 py-2'>
+                    {data.label[0]?.listBtnTextLabel || ""}
+                </div>
+
+                <div className='flex flex-col gap-1 justify-center rounded-lg bg-[#fafafa] mt-3'>
+                    <div className='cursor-pointer text-sm font-semibold text-[#b9b3a9] px-2 py-4 '>
+                        <div>
+                            {data.label[0]?.listSection[0].listSectiontitle || "Section title"}
+                        </div>
+                    </div>
+
+                    <div className='cursor-pointer text-xs text-[#b9b3a9] px-2 pb-4'>
+                        <div>
+                            {data.label[0]?.listSection[0].listSectionItems[0].itemTitle || "Add item"}
+                        </div>
+                        <div className='text-[8px]'>
+                            {data.label[0]?.listSection[0].listSectionItems[0].itemDesc || "a"}
+                        </div>
+                        <div>
+                            <hr className=''></hr>
+                        </div>
+                    </div>
+
+                    {/* <div className='cursor-pointer text-xs text-[#b9b3a9] px-2 pb-4'>
+                        <div>
+                            {data.label[0]?.listSection[0].itemDesc || "Add description"}
+                        </div>
+                        <div>
+                            <hr className=''></hr>
+                        </div>
+                    </div> */}
                 </div>
             </div>
 

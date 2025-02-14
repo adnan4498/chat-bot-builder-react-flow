@@ -11,7 +11,7 @@ const ListNode = () => {
             {
                 draggedItemName: "listNode",
                 draggedItemType: "listNode",
-                draggedItemLabel: "Send Text"
+                draggedItemLabel: "List Node"
             }
         )
     }
