@@ -8,6 +8,7 @@ import { Input, Space, Switch, Modal } from 'antd'
 const ListMenu = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen2, setIsModalOpen2] = useState(false);
 
     const { selectedNode, setSelectedNode } = useSelectedNodeContext();
 
@@ -28,12 +29,19 @@ const ListMenu = () => {
     const [footerInputVal, setFooterInputVal] = useState(startingFooterText)
     const [listBtnInputVal, setListBtnInputVal] = useState(startingListBtnText)
     const [sectionTitleInputVal, setSectionTitleInputVal] = useState(startingSectionTitleText)
+
     const [sectionItemInputVal, setSectionItemInputVal] = useState(startingSectionItemText)
     const [sectionItemDescInputVal, setSectionItemDescInputVal] = useState(startingSectionItemDescText)
     const [sectionItemPostback, setSectionItemPostback] = useState(startingSectionItemPostBack)
 
 
-    const [maximumWords, setMaximumWords] = useState(0)
+    const [newItemsObj, setNewItemsObj] = useState(
+        {
+            itemTitle: "",
+            itemDesc: "",
+            listItemPostBack: "",
+        }
+    )
 
     const { updateNodeData } = useReactFlow();
 
@@ -45,7 +53,9 @@ const ListMenu = () => {
         setInputVal(startingInputText)
     }, [selectedNode])
 
-
+    let label = selectedNode[0]?.data?.label
+    let listSection = selectedNode[0]?.data?.label[0].listSection
+    let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
 
     const handleListInputsChange = (e, inputTitle) => {
 
@@ -116,10 +126,7 @@ const ListMenu = () => {
         // handleNodeUpdation()
 
 
-        let label = selectedNode[0]?.data?.label
-        let listSection = selectedNode[0]?.data?.label[0].listSection
-        let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
-
+        // MUCH REFACTORED
         let enteredValue = e.target.value
 
         const inputConditions = {
@@ -127,80 +134,71 @@ const ListMenu = () => {
             "body": ["bodyTextLabel", setBodyInputVal],
             "footer": ["footerTextLabel", setFooterInputVal],
             "list-btn": ["listBtnTextLabel", setListBtnInputVal],
-            "section-title": ["listSectiontitle", setListBtnInputVal],
+            "section-title": ["listSectiontitle", setSectionTitleInputVal],
+
+            // Editing modal items
             "section-item-title": ["itemTitle", setSectionItemInputVal],
             "section-item-desc": ["itemDesc", setSectionItemDescInputVal],
-            "section-item-postback": ["listItemPostBack", setSectionItemPostback]
+            "section-item-postback": ["listItemPostBack", setSectionItemPostback],
+
+            // Adding modal items
+            // "section-item-title-new": ["itemTitle", setSectionItemInputValNew],
+            // "section-item-desc-new": ["itemDesc", setSectionItemDescInputValNew],
+            // "section-item-postback-new": ["listItemPostBack", setSectionItemPostbackNew],
         };
 
+        // setInputSetter : gets setter of the selected input field
         let [setObjKey, setInputSetter] = inputConditions[inputTitle]
         setInputSetter(enteredValue)
 
         if (["section-item-title", "section-item-desc", "section-item-postback"].includes(inputTitle)) label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], [setObjKey]: e.target.value }] }] }
+        // else if (["section-item-title-new", "section-item-desc-new", "section-item-postback-new"].includes(inputTitle)) label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], [setObjKey]: e.target.value }] }] }
+        // else if (["section-item-title-new", "section-item-desc-new", "section-item-postback-new"].includes(inputTitle)) {
+
+        //     label[0] = {
+        //         ...label[0], listSection: [{
+        //             ...listSection[0], listSectionItems: [...listSection[0].listSectionItems, {
+        //                 itemTitle: inputTitle === "section-item-title-new" ? enteredValue : "",
+        //                 itemDesc: inputTitle === "section-item-desc-new" ? enteredValue : "",
+        //                 listItemPostBack: inputTitle === "section-item-postback-new" ? enteredValue : "",
+        //             }
+        //             ]
+        //         }]
+        //     };
+
+        // }
         else if (inputTitle == "section-title") label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] }
         else label[0] = { ...label[0], [setObjKey]: e.target.value };
 
         updateNodeData(selectedNode[0]?.id, { label });
     }
 
+    const handleNewItems = (e) => {
+        setNewItemsObj(obj => ({ ...obj, itemTitle: e.target.value }))
+    }
 
-    // const handleHeaderChange = (e) => {
-    //     setHeaderInputVal(e.target.value)
-    //     label[0] = { ...label[0], headerTextLabel: e.target.value };
+    const handleAddingNewItem = () => {
+        setNewItemsObj({
+            itemTitle: "",
+            itemDesc: "",
+            listItemPostBack: "",
+        })
 
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
+        label[0] = {
+            ...label[0], listSection: [{
+                ...listSection[0], listSectionItems: [...listSection[0].listSectionItems, {
+                    itemTitle: newItemsObj.itemTitle,
+                    itemDesc: newItemsObj.itemDesc,
+                    listItemPostBack: newItemsObj.listItemPostBack,
+                }
+                ]
+            }]
+        };
+    }
 
-    // const handleBodyChange = (e) => {
-    //     setBodyInputVal(e.target.value)
-    //     label[0] = { ...label[0], bodyTextLabel: e.target.value };
+    console.log(selectedNode, "seee")
 
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleFooterChange = (e) => {
-    //     setFooterInputVal(e.target.value)
-    //     label[0] = { ...label[0], footerTextLabel: e.target.value };
-
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleListBtnChange = (e) => {
-    //     setListBtnInputVal(e.target.value)
-    //     label[0] = { ...label[0], listBtnTextLabel: e.target.value };
-
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleSectionTitleChange = (e) => {
-    //     setSectionTitleInputVal(e.target.value)
-    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] };
-
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleSectionItemChange = (e) => {
-    //     setSectionItemInputVal(e.target.value)
-    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] }] };
-
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleSectionItemDescChange = (e) => {
-    //     setSectionItemDescInputVal(e.target.value)
-    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemDesc: e.target.value }] }] };
-
-    //     updateNodeData(selectedNode[0]?.id, { label });
-    // }
-
-    // const handleChange = (e) => {
-    //     setInputVal(e.target.value);
-    //     updateNodeData(selectedNode[0]?.id, { label: e.target.value })
-    //     let inputWordsLen = e.target.value.length
-
-    //     setMaximumWords(inputWordsLen)
-    // };
-
+    // Edit Modal
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -211,7 +209,16 @@ const ListMenu = () => {
         setIsModalOpen(false);
     };
 
-    // console.log(selectedNode, "selected")
+    // Add item Modal
+    const showModal2 = () => {
+        setIsModalOpen2(true);
+    };
+    const handleOk2 = () => {
+        setIsModalOpen2(false);
+    };
+    const handleCancel2 = () => {
+        setIsModalOpen2(false);
+    };
 
     return (
         <>
@@ -297,7 +304,7 @@ const ListMenu = () => {
                                 List items
                             </div>
 
-                            <div onClick={showModal} className='bg-white shadow-md border-[1px] border-gray-200 py-3 px-3 flex items-center justify-between'>
+                            <div onClick={showModal} className='bg-white cursor-pointer shadow-md border-[1px] border-gray-200 py-3 px-3 flex items-center justify-between'>
                                 <div>
                                     <div tabindex="0" role="button" aria-describedby="rbd-hidden-text-29-hidden-text-116" data-rbd-drag-handle-draggable-id="782328-item" data-rbd-drag-handle-context-id="29" draggable="false"><svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="bepo-icon-svg _1ixx0vi0 items-list__row--icon"><path d="M8.40001 6.4C9.06275 6.4 9.60001 5.86274 9.60001 5.2C9.60001 4.53726 9.06275 4 8.40001 4C7.73727 4 7.20001 4.53726 7.20001 5.2C7.20001 5.86274 7.73727 6.4 8.40001 6.4Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 6.4C16.2628 6.4 16.8 5.86274 16.8 5.2C16.8 4.53726 16.2628 4 15.6 4C14.9373 4 14.4 4.53726 14.4 5.2C14.4 5.86274 14.9373 6.4 15.6 6.4Z" fill="var(--theme-color-icon, #545452)"></path><path d="M8.40001 13.2C9.06275 13.2 9.60001 12.6627 9.60001 12C9.60001 11.3373 9.06275 10.8 8.40001 10.8C7.73727 10.8 7.20001 11.3373 7.20001 12C7.20001 12.6627 7.73727 13.2 8.40001 13.2Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 13.2C16.2628 13.2 16.8 12.6627 16.8 12C16.8 11.3373 16.2628 10.8 15.6 10.8C14.9373 10.8 14.4 11.3373 14.4 12C14.4 12.6627 14.9373 13.2 15.6 13.2Z" fill="var(--theme-color-icon, #545452)"></path><path d="M8.40001 20C9.06275 20 9.60001 19.4627 9.60001 18.8C9.60001 18.1373 9.06275 17.6 8.40001 17.6C7.73727 17.6 7.20001 18.1373 7.20001 18.8C7.20001 19.4627 7.73727 20 8.40001 20Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 20C16.2628 20 16.8 19.4627 16.8 18.8C16.8 18.1373 16.2628 17.6 15.6 17.6C14.9373 17.6 14.4 18.1373 14.4 18.8C14.4 19.4627 14.9373 20 15.6 20Z" fill="var(--theme-color-icon, #545452)"></path></svg></div>
                                 </div>
@@ -307,13 +314,21 @@ const ListMenu = () => {
                             </div>
                         </div>
 
-                        <div className='flex items-center gap-4 my-2 mb-6'>
+                        <div className='flex items-center gap-4 my-6'>
                             <div className='flex flex-col justify-center gap-6 text-xs pt-[2px] text-[#2d7595]'>
-                                <div>
+                                <div onClick={() => [showModal2(),
+
+                                    // setNewItemsObj({
+                                    //     itemTitle: "",
+                                    //     itemDesc: "",
+                                    //     listItemPostBack: "",
+                                    // })
+
+                                ]} className='cursor-pointer'>
                                     + ADD ITEM
                                 </div>
 
-                                <div>
+                                <div className='cursor-pointer'>
                                     + ADD FROM LIST ATTRIBUTE
                                 </div>
 
@@ -322,7 +337,7 @@ const ListMenu = () => {
                                 </div>
                             </div>
 
-                            <Modal title="Add item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                            <Modal title="Edit item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
                                 <div>
                                     <div className='flex flex-col gap-4 my-10'>
                                         <div>
@@ -354,11 +369,55 @@ const ListMenu = () => {
                                     </div>
 
                                     <div className='flex justify-end gap-2 cursor-pointer'>
-                                        <div className='text-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
+                                        <div onClick={handleCancel} className='text-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
                                             CANCEL
                                         </div>
                                         <div className='bg-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
                                             <div>
+                                                ADD
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </Modal>
+
+                            <Modal title="Add item" open={isModalOpen2} onOk={handleOk2} onCancel={handleCancel2}>
+                                <div>
+                                    <div className='flex flex-col gap-4 my-10'>
+                                        <div>
+                                            <div className='text-[#b4ada3] text-sm pb-1'>
+                                                Item title
+                                            </div>
+                                            <div>
+                                                <Input onChange={(e) => [handleNewItems(e)]} value={newItemsObj.itemTitle} placeholder='Enter item title' />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className='text-[#b4ada3] text-sm pb-1'>
+                                                Item description (optional)
+                                            </div>
+                                            <div>
+                                                <Input onChange={(e) => handleListInputsChange(e, "section-item-desc-new")} value={newItemsObj.itemDesc} placeholder='Enter item description' />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div className='text-[#b4ada3] text-sm pb-1'>
+                                                Postback
+                                            </div>
+                                            <div>
+                                                <Input onChange={(e) => handleListInputsChange(e, "section-item-postback-new")} value={newItemsObj.listItemPostBack} placeholder='Enter item postback' />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className='flex justify-end gap-2 cursor-pointer'>
+                                        <div onClick={handleCancel2} className='text-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
+                                            CANCEL
+                                        </div>
+                                        <div onClick={() => [handleAddingNewItem(), handleCancel2()]} className='bg-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
+                                            <div >
                                                 ADD
                                             </div>
                                         </div>

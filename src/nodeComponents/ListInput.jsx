@@ -46,20 +46,31 @@ const ListInput = ({ id, data, selected }) => {
                         <div>
                             {data.label[0]?.listSection[0].listSectiontitle || "Section title"}
                         </div>
-                        <div className='py-1'>
-                            <hr className=''></hr>
-                        </div>
                     </div>
 
                     <div className='cursor-pointer text-xs text-[#b9b3a9] px-2 pb-4'>
-                        <div>
+                        <div className='py-1'>
+                            <hr className=''></hr>
+                        </div>
+
+                        {data.label[0]?.listSection[0].listSectionItems.map((item, index) => (
+                            <>
+                                <div>
+                                    {item.itemTitle || "Add item"}
+                                </div>
+                                <div className='text-[10px]'>
+                                    {item.itemDesc || "Add desc"}
+                                </div>
+                            </>
+                        ))}
+
+                        {/* <div>
                             {data.label[0]?.listSection[0].listSectionItems[0].itemTitle || "Add item"}
                         </div>
                         <div className='text-[10px]'>
                             {data.label[0]?.listSection[0].listSectionItems[0].itemDesc || "Add desc"}
-                        </div>
+                        </div> */}
                         <div className='py-2'>
-                            <hr className=''></hr>
                         </div>
                     </div>
 
