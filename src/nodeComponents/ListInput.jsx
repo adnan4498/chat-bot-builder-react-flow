@@ -41,10 +41,13 @@ const ListInput = ({ id, data, selected }) => {
                     {data.label[0]?.listBtnTextLabel || ""}
                 </div>
 
-                <div className='flex flex-col gap-1 justify-center rounded-lg bg-[#fafafa] mt-3'>
-                    <div className='cursor-pointer text-sm font-semibold text-[#b9b3a9] px-2 py-4 '>
+                <div className='flex flex-col justify-center rounded-lg bg-[#fafafa] mt-3'>
+                    <div className='cursor-pointer text-sm font-semibold text-[#b9b3a9] px-2 py-2 '>
                         <div>
                             {data.label[0]?.listSection[0].listSectiontitle || "Section title"}
+                        </div>
+                        <div className='py-1'>
+                            <hr className=''></hr>
                         </div>
                     </div>
 
@@ -52,10 +55,10 @@ const ListInput = ({ id, data, selected }) => {
                         <div>
                             {data.label[0]?.listSection[0].listSectionItems[0].itemTitle || "Add item"}
                         </div>
-                        <div className='text-[8px]'>
-                            {data.label[0]?.listSection[0].listSectionItems[0].itemDesc || "a"}
+                        <div className='text-[10px]'>
+                            {data.label[0]?.listSection[0].listSectionItems[0].itemDesc || "Add desc"}
                         </div>
-                        <div>
+                        <div className='py-2'>
                             <hr className=''></hr>
                         </div>
                     </div>

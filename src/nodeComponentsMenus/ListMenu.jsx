@@ -21,6 +21,7 @@ const ListMenu = () => {
     let startingSectionTitleText = selectedNode[0]?.data.label[0]?.listSectiontitle
     let startingSectionItemText = selectedNode[0]?.data.label[0]?.itemTitle
     let startingSectionItemDescText = selectedNode[0]?.data.label[0]?.itemDesc
+    let startingSectionItemPostBack = selectedNode[0]?.data.label[0]?.listItemPostBack
 
     const [headerInputVal, setHeaderInputVal] = useState(startingHeaderText)
     const [bodyInputVal, setBodyInputVal] = useState(startingBodyText)
@@ -29,6 +30,7 @@ const ListMenu = () => {
     const [sectionTitleInputVal, setSectionTitleInputVal] = useState(startingSectionTitleText)
     const [sectionItemInputVal, setSectionItemInputVal] = useState(startingSectionItemText)
     const [sectionItemDescInputVal, setSectionItemDescInputVal] = useState(startingSectionItemDescText)
+    const [sectionItemPostback, setSectionItemPostback] = useState(startingSectionItemPostBack)
 
 
     const [maximumWords, setMaximumWords] = useState(0)
@@ -43,59 +45,153 @@ const ListMenu = () => {
         setInputVal(startingInputText)
     }, [selectedNode])
 
-    let label = selectedNode[0]?.data?.label
-    let listSection = selectedNode[0]?.data?.label[0].listSection
-    let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
 
-    const handleHeaderChange = (e) => {
-        setHeaderInputVal(e.target.value)
-        label[0] = { ...label[0], headerTextLabel: e.target.value };
+
+    const handleListInputsChange = (e, inputTitle) => {
+
+        // let label = selectedNode[0]?.data?.label
+        // let listSection = selectedNode[0]?.data?.label[0].listSection
+        // let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
+
+        // let enteredValue = e.target.value
+        // let setObjKey
+
+        // const handleObjKeyAndInput = () => {
+        //     switch (inputTitle) {
+        //         case "header":
+        //             setObjKey = "headerTextLabel";
+        //             setHeaderInputVal(enteredValue);
+        //             break;
+        //         case "body":
+        //             setObjKey = "bodyTextLabel";
+        //             setBodyInputVal(enteredValue);
+        //             break;
+        //         case "footer":
+        //             setObjKey = "footerTextLabel";
+        //             setFooterInputVal(enteredValue);
+        //             break;
+        //         case "list-btn":
+        //             setObjKey = "listBtnTextLabel";
+        //             setListBtnInputVal(enteredValue);
+        //             break;
+        //         case "section-title":
+        //             setObjKey = "listSectiontitle";
+        //             setListBtnInputVal(enteredValue);
+        //             break;
+        //         case "section-item-title":
+        //             setObjKey = "itemTitle";
+        //             setSectionItemInputVal(enteredValue);
+        //             break;
+        //         case "section-item-desc":
+        //             setObjKey = "itemDesc";
+        //             setSectionItemDescInputVal(enteredValue);
+        //             break;
+        //         case "section-item-postback":
+        //             setObjKey = "listItemPostBack";
+        //             setSectionItemPostback(enteredValue);
+        //             break;
+        //         default:
+        //     }
+        // };
+
+        // const handleNodeUpdation = () => {
+        //     // updating complex nested objectes
+        //     if (inputTitle == "section-item-title" || inputTitle == "section-item-desc" || inputTitle == "section-item-postback") {
+        //         label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], [setObjKey]: e.target.value }] }] }
+        //     }
+
+        //     else if (inputTitle == "section-title") {
+        //         (label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] })
+        //     }
+
+        //     // updating simple objectes
+        //     else {
+        //         label[0] = { ...label[0], [setObjKey]: e.target.value };
+        //     }
+
+        //     updateNodeData(selectedNode[0]?.id, { label });
+        // }
+
+        // handleObjKeyAndInput()
+        // handleNodeUpdation()
+
+
+        let label = selectedNode[0]?.data?.label
+        let listSection = selectedNode[0]?.data?.label[0].listSection
+        let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
+
+        let enteredValue = e.target.value
+
+        const inputConditions = {
+            "header": ["headerTextLabel", setHeaderInputVal],
+            "body": ["bodyTextLabel", setBodyInputVal],
+            "footer": ["footerTextLabel", setFooterInputVal],
+            "list-btn": ["listBtnTextLabel", setListBtnInputVal],
+            "section-title": ["listSectiontitle", setListBtnInputVal],
+            "section-item-title": ["itemTitle", setSectionItemInputVal],
+            "section-item-desc": ["itemDesc", setSectionItemDescInputVal],
+            "section-item-postback": ["listItemPostBack", setSectionItemPostback]
+        };
+
+        let [setObjKey, setInputSetter] = inputConditions[inputTitle]
+        setInputSetter(enteredValue)
+
+        if (["section-item-title", "section-item-desc", "section-item-postback"].includes(inputTitle)) label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], [setObjKey]: e.target.value }] }] }
+        else if (inputTitle == "section-title") label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] }
+        else label[0] = { ...label[0], [setObjKey]: e.target.value };
 
         updateNodeData(selectedNode[0]?.id, { label });
     }
 
-    const handleBodyChange = (e) => {
-        setBodyInputVal(e.target.value)
-        label[0] = { ...label[0], bodyTextLabel: e.target.value };
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleHeaderChange = (e) => {
+    //     setHeaderInputVal(e.target.value)
+    //     label[0] = { ...label[0], headerTextLabel: e.target.value };
 
-    const handleFooterChange = (e) => {
-        setFooterInputVal(e.target.value)
-        label[0] = { ...label[0], footerTextLabel: e.target.value };
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleBodyChange = (e) => {
+    //     setBodyInputVal(e.target.value)
+    //     label[0] = { ...label[0], bodyTextLabel: e.target.value };
 
-    const handleListBtnChange = (e) => {
-        setListBtnInputVal(e.target.value)
-        label[0] = { ...label[0], listBtnTextLabel: e.target.value };
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleFooterChange = (e) => {
+    //     setFooterInputVal(e.target.value)
+    //     label[0] = { ...label[0], footerTextLabel: e.target.value };
 
-    const handleSectionTitleChange = (e) => {
-        setSectionTitleInputVal(e.target.value)
-        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] };
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleListBtnChange = (e) => {
+    //     setListBtnInputVal(e.target.value)
+    //     label[0] = { ...label[0], listBtnTextLabel: e.target.value };
 
-    const handleSectionItemChange = (e) => {
-        setSectionItemInputVal(e.target.value)
-        // label[0] = { ...label[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] };
-        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] }] };
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleSectionTitleChange = (e) => {
+    //     setSectionTitleInputVal(e.target.value)
+    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectiontitle: e.target.value }] };
 
-    const handleSectionItemDescChange = (e) => {
-        setSectionItemDescInputVal(e.target.value)
-        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemDesc: e.target.value }] }] };
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
-        updateNodeData(selectedNode[0]?.id, { label });
-    }
+    // const handleSectionItemChange = (e) => {
+    //     setSectionItemInputVal(e.target.value)
+    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemTitle: e.target.value }] }] };
+
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
+
+    // const handleSectionItemDescChange = (e) => {
+    //     setSectionItemDescInputVal(e.target.value)
+    //     label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0], itemDesc: e.target.value }] }] };
+
+    //     updateNodeData(selectedNode[0]?.id, { label });
+    // }
 
     // const handleChange = (e) => {
     //     setInputVal(e.target.value);
@@ -115,7 +211,7 @@ const ListMenu = () => {
         setIsModalOpen(false);
     };
 
-    console.log(selectedNode, "selected")
+    // console.log(selectedNode, "selected")
 
     return (
         <>
@@ -147,7 +243,7 @@ const ListMenu = () => {
                         Header text (Optional)
                     </div>
                     <div>
-                        <Input onChange={handleHeaderChange} value={headerInputVal} placeholder='Enter text' />
+                        <Input onChange={(e) => handleListInputsChange(e, "header")} value={headerInputVal} placeholder='Enter text' />
                     </div>
                 </div>
 
@@ -156,7 +252,7 @@ const ListMenu = () => {
                         Body text
                     </div>
                     <div>
-                        <TextArea onChange={handleBodyChange} rows={6} value={bodyInputVal} placeholder='Enter body text' />
+                        <TextArea onChange={(e) => handleListInputsChange(e, "body")} rows={6} value={bodyInputVal} placeholder='Enter body text' />
                     </div>
                 </div>
 
@@ -166,7 +262,7 @@ const ListMenu = () => {
                         Footer text (Optional)
                     </div>
                     <div>
-                        <Input onChange={handleFooterChange} value={footerInputVal} placeholder='Enter footer text' />
+                        <Input onChange={(e) => handleListInputsChange(e, "footer")} value={footerInputVal} placeholder='Enter footer text' />
                     </div>
                 </div>
 
@@ -175,7 +271,7 @@ const ListMenu = () => {
                         List button text
                     </div>
                     <div>
-                        <Input onChange={handleListBtnChange} value={listBtnInputVal} placeholder='Information List' />
+                        <Input onChange={(e) => handleListInputsChange(e, "list-btn")} value={listBtnInputVal} placeholder='Information List' />
                     </div>
                 </div>
 
@@ -192,7 +288,7 @@ const ListMenu = () => {
                                 Section title
                             </div>
                             <div>
-                                <Input onChange={handleSectionTitleChange} value={sectionTitleInputVal} placeholder='Section title' />
+                                <Input onChange={(e) => handleListInputsChange(e, "section-title")} value={sectionTitleInputVal} placeholder='Section title' />
                             </div>
                         </div>
 
@@ -234,7 +330,7 @@ const ListMenu = () => {
                                                 Item title
                                             </div>
                                             <div>
-                                                <Input onChange={handleSectionItemChange} value={sectionItemInputVal} placeholder='Enter item title' />
+                                                <Input onChange={(e) => handleListInputsChange(e, "section-item-title")} value={sectionItemInputVal} placeholder='Enter item title' />
                                             </div>
                                         </div>
 
@@ -243,7 +339,7 @@ const ListMenu = () => {
                                                 Item description (optional)
                                             </div>
                                             <div>
-                                                <Input onChange={handleSectionItemDescChange} value={sectionItemDescInputVal} placeholder='Enter item description' />
+                                                <Input onChange={(e) => handleListInputsChange(e, "section-item-desc")} value={sectionItemDescInputVal} placeholder='Enter item description' />
                                             </div>
                                         </div>
 
@@ -252,7 +348,7 @@ const ListMenu = () => {
                                                 Postback
                                             </div>
                                             <div>
-                                                <Input value={inputVal} placeholder='Enter item postback' />
+                                                <Input onChange={(e) => handleListInputsChange(e, "section-item-postback")} value={sectionItemPostback} placeholder='Enter item postback' />
                                             </div>
                                         </div>
                                     </div>
