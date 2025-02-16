@@ -55,12 +55,13 @@ const ListInput = ({ id, data, selected }) => {
 
                         {data.label[0]?.listSection[0].listSectionItems.map((item, index) => (
                             <>
-                                <div>
+                                <div className='mt-2'>
                                     {item.itemTitle || "Add item"}
                                 </div>
                                 <div className='text-[10px]'>
                                     {item.itemDesc || "Add desc"}
                                 </div>
+                                <hr className='my-2'></hr>
                             </>
                         ))}
 
