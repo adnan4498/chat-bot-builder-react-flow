@@ -89,7 +89,6 @@ const ListMenu = () => {
         let enteredValue = e.target.value
         let setObjKey = inputTitle == "section-item-title-new" ? "itemTitle" : inputTitle == "section-item-desc-new" ? "itemDesc" : inputTitle == "section-item-postback-new" ? "listItemPostBack" : ""
 
-        let changeItem = storeArr.map(item => item.id == storeId ? {...item, [setObjKey] : enteredValue } : item)
 
         // label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [{ ...listSectionItems[0],
         //             changeItem
@@ -98,10 +97,52 @@ const ListMenu = () => {
         //     }]
         // };
 
-        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: [ changeItem ] }] };
+        // console.log(changeItem, "changeItem")
 
-        updateNodeData(selectedNode[0]?.id, { label });
+        
+        let changeItem = storeArr.map(item => item.id == storeId ? { ...item, [setObjKey]: enteredValue } : item)
+        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems:  changeItem  }] };
+
+        updateNodeData(selectedNode[0].id, {label})
+
+        // changeItem.forEach((cItems) => {
+        //     label[0] = {
+        //         ...label[0], listSection: [
+        //             {
+        //                 ...listSection[0], listSectionItems:
+        //                     [...listSectionItems,
+        //                         {
+        //                             id: cItems.id,
+        //                             itemTitle: cItems.itemTitle,
+        //                             itemDesc: cItems.itemDesc,
+        //                             listItemPostBack: cItems.listItemPostBack,
+        //                         }
+        //                     ]
+        //             }]
+        //     };
+        // })
+
+
+
+
+
+
+
+
+
+        // let labelCopy = [...selectedNode[0].data.label];
+        // let listSectionCopy = [...labelCopy[0].listSection];
+        // let listSectionItemsCopy = []
+
+        // let updatedListSectionItems = [ ...listSectionItemsCopy, ...storeArr.map(item => item.id == storeId ? { ...item, [setObjKey]: enteredValue } : item )];
+        // listSectionCopy[0] = { ...listSectionCopy[0], listSectionItems: updatedListSectionItems };
+
+        // labelCopy[0] = { ...labelCopy[0], listSection: listSectionCopy };
+        // updateNodeData(selectedNode[0].id, { label: labelCopy });
+
     }
+
+    console.log(selectedNode, "sss")
 
     const handleSettingNewItems = (e, inputTitle) => {
         let setObjKey = inputTitle == "section-item-title-new" ? "itemTitle" : inputTitle == "section-item-desc-new" ? "itemDesc" : inputTitle == "section-item-postback-new" ? "listItemPostBack" : ""
@@ -123,7 +164,9 @@ const ListMenu = () => {
             listItemPostBack: "",
         })
 
-        label[0] = { ...label[0], listSection: [{...listSection[0], listSectionItems: [...listSection[0].listSectionItems, {
+        label[0] = {
+            ...label[0], listSection: [{
+                ...listSection[0], listSectionItems: [...listSection[0].listSectionItems, {
                     id: newItemsObj.id,
                     itemTitle: newItemsObj.itemTitle,
                     itemDesc: newItemsObj.itemDesc,
@@ -133,11 +176,13 @@ const ListMenu = () => {
             }]
         };
 
+        console.log(label[0].listSection, "label in add")
+
         updateNodeData(selectedNode[0]?.id, { label });
 
     }
 
-    console.log(selectedNode, "selectedNode")
+    // console.log(selectedNode, "selectedNode")
 
     // Edit Modal
     const showModal = () => {
