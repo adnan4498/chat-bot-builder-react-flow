@@ -158,12 +158,12 @@ export const onDrop = (
                   {
                     listSectiontitle: "",
                     listSectionItems: [
-                      {
-                        id : "",
-                        title: "",
-                        desc: "",
-                        postBack: "",
-                      },
+                      // {
+                      //   id : "",
+                      //   title: "",
+                      //   desc: "",
+                      //   postBack: "",
+                      // },
                     ],
                   },
                 ],

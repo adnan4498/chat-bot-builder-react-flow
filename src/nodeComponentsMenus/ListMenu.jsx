@@ -3,7 +3,7 @@ import { CheckOutlined, CloseOutlined, DoubleRightOutlined, MoreOutlined } from 
 import { useReactFlow } from '@xyflow/react'
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext'
 import TextArea from 'antd/es/input/TextArea'
-import { Input, Space, Switch, Modal } from 'antd'
+import { Input, Modal, Select } from 'antd'
 
 const ListMenu = () => {
 
@@ -28,8 +28,9 @@ const ListMenu = () => {
     const [sectionItemDescInputVal, setSectionItemDescInputVal] = useState()
     const [sectionItemPostback, setSectionItemPostback] = useState()
 
-    const [storeId, setStoreId] = useState()
-    const [borderClr, setBorderClr] = useState("border-[#3b4042]")
+    const [editingItemId, setEditingItemId] = useState()
+    const [changedItems, setChangedItems] = useState()
+    const [borderClr, setBorderClr] = useState({ titleBorderClr: "border-[#3b4042]", postbackBorderClr: "border-[#3b4042]" })
     const [newItemsObj, setNewItemsObj] = useState(
         {
             id: "",
@@ -41,20 +42,22 @@ const ListMenu = () => {
 
     // get and set existing values of list item before editing
     useEffect(() => {
-        let getEditNodeTitle = listSectionItems.filter(item => item.id == storeId)[0]?.title
-        let getEditNodeDesc = listSectionItems.filter(item => item.id == storeId)[0]?.desc
-        let getEditNodePostback = listSectionItems.filter(item => item.id == storeId)[0]?.postBack
+        let getEditNodeTitle = listSectionItems.filter(item => item.id == editingItemId)[0]?.title
+        let getEditNodeDesc = listSectionItems.filter(item => item.id == editingItemId)[0]?.desc
+        let getEditNodePostback = listSectionItems.filter(item => item.id == editingItemId)[0]?.postBack
 
         setSectionItemTitleInputVal(getEditNodeTitle)
         setSectionItemDescInputVal(getEditNodeDesc)
         setSectionItemPostback(getEditNodePostback)
-    }, [storeId])
+    }, [editingItemId])
 
     const { updateNodeData } = useReactFlow();
 
     let label = selectedNode[0]?.data?.label
     let listSection = selectedNode[0]?.data?.label[0].listSection
     let listSectionItems = selectedNode[0]?.data?.label[0].listSection[0].listSectionItems
+
+    console.log(listSectionItems, "listSectionItems")
 
     const handleListInputsChange = (e, inputTitle) => {
 
@@ -78,44 +81,37 @@ const ListMenu = () => {
         updateNodeData(selectedNode[0]?.id, { label });
     }
 
-    const [changeItem, setChangeItem] = useState()
-
     const handleEditingItem = (e, inputTitle) => {
-        let enteredValue = e.target.value
-        let setObjKey = inputTitle == "section-item-title-edit" ? "title" : inputTitle == "section-item-desc-edit" ? "desc" : inputTitle == "section-item-postback-edit" ? "postBack" : ""
+        const enteredValue = e.target.value;
+        const keyMap = {
+            "section-item-title-edit": "title",
+            "section-item-desc-edit": "desc",
+            "section-item-postback-edit": "postBack"
+        };
 
-        // let changeItem = listSectionItems.map(item => item.id == storeId ? { ...item, [setObjKey]: enteredValue } : item)
-        // updateNodeData(selectedNode[0].id, { label })
-        
-        let editItem = listSectionItems.map(item => item.id == storeId ? { ...item, [setObjKey]: enteredValue } : item)
-        label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: editItem }] };
-        setChangeItem(label[0])
+        // to edit item, either get it from listSectionItems or changedItems
+        let editedItems = (changedItems?.length == listSectionItems.length ? changedItems : listSectionItems)
+            .map(item => item.id === editingItemId ? { ...item, [keyMap[inputTitle]]: enteredValue } : item)
 
-    }
-
-    const editItemBtn = () => {
-
-        let gggg = [changeItem]
-        let excatIdItem = gggg.filter(item => item.id == storeId)[0]?.title
-
-        // if (excatIdItem.length != 0 && changeItem.postBack.length != 0) {
-            if (excatIdItem?.length != 0) {
-            console.log("hello")
-            // Empties only when the function exits; the very last values are used before reset.
-            // setNewItemsObj({
-            //     id: "",
-            //     title: "",
-            //     desc: "",
-            //     postBack: "",
-            // })
+        setChangedItems(editedItems);
+    };
 
 
-            updateNodeData(selectedNode[0].id, { changeItem })
-            setBorderClr("border-[#3b4042]")
+    const triggerEditItem = () => {
+
+        let itemTitle = changedItems.filter(item => item.id == editingItemId)[0]?.title
+        let itemPostback = changedItems.filter(item => item.id == editingItemId)[0]?.postBack
+
+        setBorderClr({
+            titleBorderClr: itemTitle ? "border-[#3b4042]" : "border-red-500",
+            postbackBorderClr: itemPostback ? "border-[#3b4042]" : "border-red-500",
+        })
+
+        if (itemTitle && itemPostback) {
+            label[0] = { ...label[0], listSection: [{ ...listSection[0], listSectionItems: changedItems }] }
+            updateNodeData(selectedNode[0].id, { changedItems })
+            setBorderClr((old) => ({ ...old, titleBorderClr: "#3b4042", postbackBorderClr: "#3b4042" }))
             handleCancel()
-        }
-        else {
-            setBorderClr("border-red-500")
         }
 
     }
@@ -131,37 +127,36 @@ const ListMenu = () => {
     }
 
     const handleAddingNewItem = () => {
+        let itemTitle = newItemsObj?.title;
+        let itemPostback = newItemsObj?.postBack;
 
-        if (newItemsObj.title.length != 0 && newItemsObj.postBack.length != 0) {
-            // Empties only when the function exits; the very last values are used before reset.
+        setBorderClr({
+            titleBorderClr: itemTitle ? "border-[#3b4042]" : "border-red-500",
+            postbackBorderClr: itemPostback ? "border-[#3b4042]" : "border-red-500",
+        });
+
+        if (itemTitle && itemPostback) {
+            label[0] = {
+                ...label[0],
+                listSection: [{
+                    ...listSection[0],
+                    listSectionItems: [...listSection[0].listSectionItems, { ...newItemsObj }]
+                }]
+            };
+
+            updateNodeData(selectedNode[0]?.id, { label });
+            setBorderClr((old) => ({ ...old, titleBorderClr: "border-[#3b4042]", postbackBorderClr: "border-[#3b4042]" }));
+
             setNewItemsObj({
                 id: "",
                 title: "",
                 desc: "",
                 postBack: "",
-            })
-
-            label[0] = {
-                ...label[0], listSection: [{
-                    ...listSection[0], listSectionItems: [...listSection[0].listSectionItems, {
-                        id: newItemsObj.id,
-                        title: newItemsObj.title,
-                        desc: newItemsObj.desc,
-                        postBack: newItemsObj.postBack,
-                    }
-                    ]
-                }]
-            };
-            updateNodeData(selectedNode[0]?.id, { label });
-            setBorderClr("border-[#3b4042]")
-            handleCancel2()
+            });
+            handleCancel2();
         }
-        else {
-            setBorderClr("border-red-500")
-        }
+    };
 
-
-    }
 
     // Edit Modal
     const showModal = () => {
@@ -184,6 +179,18 @@ const ListMenu = () => {
     const handleCancel2 = () => {
         setIsModalOpen2(false);
     };
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleIconClick = () => {
+        setIsOpen((prev) => !prev); // Toggle dropdown
+    };
+
+    const handleChange = (value) => {
+        console.log("Selected:", value);
+        setIsOpen(false); // Close dropdown after selection
+    };
+
 
     return (
         <>
@@ -269,10 +276,12 @@ const ListMenu = () => {
                                 List items
                             </div>
 
+
+
                             <div className='flex flex-col gap-3'>
                                 {label[0]?.listSection[0].listSectionItems.map((item) => (
-                                    <div onClick={() => [showModal(), setStoreId(item.id)]} className='bg-white cursor-pointer shadow-md border-[1px] border-gray-200 py-3 px-3 flex items-center justify-between'>
-                                        <div className='flex gap-2'>
+                                    <div className='bg-white cursor-pointer shadow-md border-[1px] border-gray-200 py-3 px-3 flex items-center justify-between'>
+                                        <div onClick={() => [showModal(), setEditingItemId(item.id)]} className='flex gap-2'>
                                             <div>
                                                 <div tabindex="0" role="button" aria-describedby="rbd-hidden-text-29-hidden-text-116" data-rbd-drag-handle-draggable-id="782328-item" data-rbd-drag-handle-context-id="29" draggable="false"><svg width="32px" height="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="bepo-icon-svg 1ixx0vi0 items-list_row--icon"><path d="M8.40001 6.4C9.06275 6.4 9.60001 5.86274 9.60001 5.2C9.60001 4.53726 9.06275 4 8.40001 4C7.73727 4 7.20001 4.53726 7.20001 5.2C7.20001 5.86274 7.73727 6.4 8.40001 6.4Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 6.4C16.2628 6.4 16.8 5.86274 16.8 5.2C16.8 4.53726 16.2628 4 15.6 4C14.9373 4 14.4 4.53726 14.4 5.2C14.4 5.86274 14.9373 6.4 15.6 6.4Z" fill="var(--theme-color-icon, #545452)"></path><path d="M8.40001 13.2C9.06275 13.2 9.60001 12.6627 9.60001 12C9.60001 11.3373 9.06275 10.8 8.40001 10.8C7.73727 10.8 7.20001 11.3373 7.20001 12C7.20001 12.6627 7.73727 13.2 8.40001 13.2Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 13.2C16.2628 13.2 16.8 12.6627 16.8 12C16.8 11.3373 16.2628 10.8 15.6 10.8C14.9373 10.8 14.4 11.3373 14.4 12C14.4 12.6627 14.9373 13.2 15.6 13.2Z" fill="var(--theme-color-icon, #545452)"></path><path d="M8.40001 20C9.06275 20 9.60001 19.4627 9.60001 18.8C9.60001 18.1373 9.06275 17.6 8.40001 17.6C7.73727 17.6 7.20001 18.1373 7.20001 18.8C7.20001 19.4627 7.73727 20 8.40001 20Z" fill="var(--theme-color-icon, #545452)"></path><path d="M15.6 20C16.2628 20 16.8 19.4627 16.8 18.8C16.8 18.1373 16.2628 17.6 15.6 17.6C14.9373 17.6 14.4 18.1373 14.4 18.8C14.4 19.4627 14.9373 20 15.6 20Z" fill="var(--theme-color-icon, #545452)"></path></svg></div>
                                             </div>
@@ -281,8 +290,25 @@ const ListMenu = () => {
                                                 <div className='text-xs text-gray-400'>{item.desc}</div>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div
+                                            className="relative hover:bg-[#525252] transition duration-200 ease-in-out cursor-pointer p-2"
+                                            onClick={handleIconClick}
+                                        >
                                             <MoreOutlined style={{ fontSize: "25px" }} />
+
+                                            <Select
+                                                open={isOpen}
+                                                onClick={(e) => e.stopPropagation()} // Prevents immediate re-closing
+                                                onChange={handleChange}
+                                                options={[
+                                                    { value: "jack", label: "Jack" },
+                                                    { value: "lucy", label: "Lucy" },
+                                                    { value: "Yiminghe", label: "Yiminghe" },
+                                                    { value: "disabled", label: "Disabled", disabled: true },
+                                                ]}
+                                                dropdownRender={(menu) => <div className="bg-[#333] p-2 rounded-md">{menu}</div>}
+                                                style={{ display: "none" }} // Hides the default input box
+                                            />
                                         </div>
                                     </div>
                                 ))}
@@ -307,9 +333,11 @@ const ListMenu = () => {
                                     + ADD FROM LIST ATTRIBUTE
                                 </div>
 
-                                <div className='text-red-500'>
-                                    At least 1 item should be defined
-                                </div>
+                                {listSectionItems.length == 0 &&
+                                    <div className='text-red-500'>
+                                        At least 1 item should be defined
+                                    </div>
+                                }
                             </div>
 
                             <Modal title="Edit item" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
@@ -319,7 +347,7 @@ const ListMenu = () => {
                                             <div className='text-[#b4ada3] text-sm pb-1'>
                                                 Item title
                                             </div>
-                                            <div>
+                                            <div className={`border-1 ${borderClr.titleBorderClr} rounded-sm`}>
                                                 {/* <Input onChange={(e) => handleListInputsChange(e, "section-item-title")} value={sectionItemInputVal} placeholder='Enter item title' /> */}
                                                 <Input onChange={(e) => [handleEditingItem(e, "section-item-title-edit"), setSectionItemTitleInputVal(e.target.value)]} value={sectionItemTitleInputVal} placeholder='Enter item title' />
                                             </div>
@@ -339,7 +367,7 @@ const ListMenu = () => {
                                             <div className='text-[#b4ada3] text-sm pb-1'>
                                                 Postback
                                             </div>
-                                            <div>
+                                            <div className={`border-1 ${borderClr.postbackBorderClr} rounded-sm`}>
                                                 {/* <Input onChange={(e) => handleListInputsChange(e, "section-item-postback")} value={sectionItemPostback} placeholder='Enter item postback' /> */}
                                                 <Input onChange={(e) => [handleEditingItem(e, "section-item-postback-edit"), setSectionItemPostback(e.target.value)]} value={sectionItemPostback} placeholder='Enter item postback' />
                                             </div>
@@ -350,7 +378,7 @@ const ListMenu = () => {
                                         <div onClick={handleCancel} className='text-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
                                             CANCEL
                                         </div>
-                                        <div onClick={() => editItemBtn()} className='bg-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
+                                        <div onClick={() => triggerEditItem()} className='bg-[#2d7595] w-40 py-3 flex justify-center items-center rounded-xs font-semibold text-xs'>
                                             <div>
                                                 EDIT
                                             </div>
@@ -366,7 +394,7 @@ const ListMenu = () => {
                                             <div className='text-[#b4ada3] text-sm pb-1 '>
                                                 Item title
                                             </div>
-                                            <div className={`border-1 ${borderClr} rounded-sm`}>
+                                            <div className={`border-1 ${borderClr.titleBorderClr} rounded-sm`}>
                                                 <Input onChange={(e) => handleSettingNewItems(e, "section-item-title-new")} value={newItemsObj.title} placeholder='Enter item title' />
                                             </div>
                                         </div>
@@ -384,7 +412,7 @@ const ListMenu = () => {
                                             <div className='text-[#b4ada3] text-sm pb-1'>
                                                 Postback
                                             </div>
-                                            <div className={`border-1 ${borderClr} rounded-sm`}>
+                                            <div className={`border-1 ${borderClr.postbackBorderClr} rounded-sm`}>
                                                 <Input onChange={(e) => handleSettingNewItems(e, "section-item-postback-new")} value={newItemsObj.postBack} placeholder='Enter item postback' />
                                             </div>
                                         </div>
