@@ -38,6 +38,8 @@ export const onDrop = (
                 : item?.position?.y || event.screenY - 100,
           },
           data: item.data,
+          hidden : item.hidden,
+          draggable : item.draggable,
           type: item.type,
           style: item.style,
           extent: item.extent,

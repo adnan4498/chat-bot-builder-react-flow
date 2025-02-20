@@ -1,15 +1,17 @@
 import React from 'react'
-import { Handle, Position } from '@xyflow/react';
+import { Handle, Position, useReactFlow } from '@xyflow/react';
 import EditDeleteMove from '../shared/EditDeleteMove';
 
 const InputNode = ({ id, data, selected }) => {
+    const { getNodes, updateNodeData, getEdges } = useReactFlow()
 
-    let isHidden = data.isHidden
+
+    let getAllNodes = getNodes().filter(item => item.id == "user-conditional-input-1")
 
     return (
         <div>
             <div className='flex gap-[2px]'>
-                <div className={`p-3 !border-[1px] bg-white w-full rounded-sm min-w-[150px] ${isHidden && ""}`}
+                <div className={`p-3 !border-[1px] bg-white w-full rounded-sm min-w-[284px] `}
                     style={{ border: !data?.label && selected == false ? "1px solid red" : "1px solid #333" }}
                 >
                     <div class="bot-action-preview__header flex items-center w-60 gap-2 h-14">
