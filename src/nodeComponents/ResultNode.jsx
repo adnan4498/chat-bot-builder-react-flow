@@ -26,7 +26,7 @@ const ResultNode = () => {
                     {
                         id: 'user-conditional-input-1',
                         type: 'inputNode',
-                        data: { label: "Type your condition" },
+                        data: { label: "Type your condition", hidden : true },
                         // position: { x: 100, y: 20 },
                     },
                     {

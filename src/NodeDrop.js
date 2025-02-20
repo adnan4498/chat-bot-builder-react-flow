@@ -37,7 +37,7 @@ export const onDrop = (
                 ? event.screenY - 200
                 : item?.position?.y || event.screenY - 100,
           },
-          data: { label: item.data.label },
+          data: item.data,
           type: item.type,
           style: item.style,
           extent: item.extent,

@@ -1,16 +1,7 @@
 import React from 'react'
-import { Handle, Position } from '@xyflow/react';
-import { CopyOutlined, DeleteOutlined, DragOutlined } from '@ant-design/icons';
-import { useDeletingNodeIdContext } from '../ContextApi/DragDropContext';
+import EditDeleteMove from '../shared/EditDeleteMove';
 
 const ListInput = ({ id, data, selected }) => {
-    const { setDeletingNodeId } = useDeletingNodeIdContext();
-
-    let handleDragging = () => {
-    }
-
-    let handleCopy = () => {
-    }
 
     let headerText = data.label[0]?.headerTextLabel
     let bodyText = data.label[0]?.bodyTextLabel 
@@ -93,19 +84,7 @@ const ListInput = ({ id, data, selected }) => {
             </div>
 
             {selected &&
-                <div className='flex flex-col gap-[2px] mt-[1px] cursor-pointer'>
-                    <div onClick={handleDragging} className='bg-white py-[5px] px-[5px] flex items-center justify-center border-[1px] border-gray-300 rounded-sm'>
-                        <DragOutlined style={{ fontSize: "16px" }} />
-                    </div>
-                    <div onClick={() => setDeletingNodeId(id)} className='bg-white py-[5px] px-[5px] flex items-center justify-center border-[1px] border-gray-300 rounded-sm'>
-                        <div>
-                            <DeleteOutlined style={{ fontSize: "16px" }} />
-                        </div>
-                    </div>
-                    <div onClick={handleCopy} className='bg-white py-[5px] px-[5px] flex items-center justify-center border-[1px] border-gray-300 rounded-sm'>
-                        <CopyOutlined style={{ fontSize: "16px" }} />
-                    </div>
-                </div>
+                <EditDeleteMove id={id} />
             }
 
         </div>

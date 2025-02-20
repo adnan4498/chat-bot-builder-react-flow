@@ -75,3 +75,10 @@ body {
 :where(.css-dev-only-do-not-override-xex5fb).ant-modal .ant-modal-footer {
   display: none;
 }
+
+
+/* hides edges */
+
+/* g.react-flow__edge.react-flow__edge-default.nopan.selectable{
+  display: none !important;
+} */

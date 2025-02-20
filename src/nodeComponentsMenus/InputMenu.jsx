@@ -10,8 +10,6 @@ const InputMenu = () => {
     const { selectedNode, setSelectedNode } = useSelectedNodeContext();
 
     let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
-
-    console.log(startingInputText, 'startingInputText')
     
     const [inputVal, setInputVal] = useState(startingInputText)
     const [maximumWords, setMaximumWords] = useState(0)

@@ -38,24 +38,13 @@ const ResultNodeFunctionality = ({ id, data }) => {
             item?.parentId == getParentId
         ))
 
-
-
         getAllChildNodes.forEach((item) => {
             if (resultData == item.data.label) {
-                console.log(item, "getAllChildNodes")
-                console.log(getAllEdges, "eeee")
-
                 let getConditionedChildEdge = getAllEdges.filter(edgNode => edgNode.source == item.id)
-
                 const getConditionedChildNode = getNodes().find((node) => node.id === getConditionedChildEdge[0].target);
-
-
-                console.log(getConditionedChildNode, "getConditionedChild")
-
 
                 alert(getConditionedChildNode.data.label)
 
-                
                 // updateNodeData(item.id,
                 //     { label: "hello" }
                 // )
@@ -94,7 +83,6 @@ const ResultNodeFunctionality = ({ id, data }) => {
 
         // updateNodeData(id, { label: e.target.value })
     }, [resultData])
-
 
     return (
         <>

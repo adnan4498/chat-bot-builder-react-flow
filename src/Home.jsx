@@ -31,12 +31,11 @@ const Home = () => {
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
   
   const initialNodes = [
-    { id: '0', position: { x: 450, y: 200 }, data: { label: "Default" }, type: "defaultStarting" },
+    { id: '0', position: { x: 450, y: 200 } , data: { label: "Default" }, type: "defaultStarting" },
   ];
 
   const initialEdges = [
-    { id: "conditionNode-resultNode", source: "user-conditional-input-1", target: "parent-1" },
-    { id: "e-child1", source: "child-1", target: "child-1-condition", data: { label: 'Add Delay' }, type: "customEdge" },
+    { id: "conditionNode-resultNode", source: "user-conditional-input-1", target: "parent-1", },
     { id: "e-child2", source: "child-2", target: "child-2-condition" },
   ];
 
@@ -58,30 +57,6 @@ const Home = () => {
     }
 
   }, [nodes])
-
-  // useEffect(() => {
-
-  //   setNodes((prevNodes) => {
-  //     // prevents new references to be created, and stops infinite rendering
-  //     let hasChanged = false;
-
-  //     const updatedNodes = prevNodes.map((nds) => {
-  //       if (nds?.data?.label === "Default") return nds;
-
-  //       let newStyle = !nds?.data?.label && nds?.selected == false ? { border: '1px solid red' } : { border: '1px transparent' } 
-
-  //       if (JSON.stringify(nds.style) !== JSON.stringify(newStyle)) {
-  //         hasChanged = true;
-  //         return { ...nds, style: newStyle };
-  //       }
-
-  //       return nds;
-  //     });
-
-  //     return hasChanged ? updatedNodes : prevNodes;
-  //   });
-
-  // }, [selectedNode]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge(params, eds)),
