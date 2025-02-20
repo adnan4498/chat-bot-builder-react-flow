@@ -12,10 +12,16 @@ const ListInput = ({ id, data, selected }) => {
     let handleCopy = () => {
     }
 
+    let headerText = data.label[0]?.headerTextLabel
+    let bodyText = data.label[0]?.bodyTextLabel 
+    let footerText = data.label[0]?.footerTextLabel
+    let listBtnText = data.label[0]?.listBtnTextLabel
+    let listSectionTitle = data.label[0]?.listSection[0].listSectiontitle 
+
     return (
-        <div className='flex gap-[2px]'>
+        <div className='flex gap-[2px] '>
             <div className='p-3 !border-[1px] bg-white w-full rounded-sm min-w-[150px]'
-                style={{ border: !data?.label && selected == false ? "1px solid red" : "1px solid #333" }}
+                style={{ border: (!bodyText || !listBtnText || !listSectionTitle) && selected == false ? "1px solid red" : "1px solid #333" }}
             >
                 <div class="bot-action-preview__header flex items-center w-60 gap-2 h-14">
                     <div>
@@ -26,25 +32,25 @@ const ListInput = ({ id, data, selected }) => {
                 </div>
 
                 <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
-                    {data.label[0]?.headerTextLabel || "Header Title"}
+                    {headerText || "Header Title"}
                 </div>
 
                 <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
-                    {data.label[0]?.bodyTextLabel || "Body Text"}
+                    {bodyText || "Body Text"}
                 </div>
 
                 <div className='cursor-pointer text-xs text-[#b9b3a9] mt-2 pl-2 pb-2'>
-                    {data.label[0]?.footerTextLabel || "Footer Text"}
+                    {footerText || "Footer Text"}
                 </div>
 
                 <div className='cursor-pointer text-xs border-2 border-blue-800 text-blue-300 rounded-2xl mt-2 pl-3 py-2'>
-                    {data.label[0]?.listBtnTextLabel || ""}
+                    {listBtnText || ""}
                 </div>
 
                 <div className='flex flex-col justify-center rounded-lg bg-[#fafafa] mt-3'>
                     <div className='cursor-pointer text-sm font-semibold text-[#b9b3a9] px-2 py-2 '>
                         <div>
-                            {data.label[0]?.listSection[0].listSectiontitle || "Section title"}
+                            {listSectionTitle || "Section title"}
                         </div>
                     </div>
 

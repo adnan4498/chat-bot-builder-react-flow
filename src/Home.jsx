@@ -7,6 +7,7 @@ import {
   Controls,
   MiniMap,
   BackgroundVariant,
+  useReactFlow,
 } from '@xyflow/react';
 
 import '@xyflow/react/dist/style.css';
@@ -111,6 +112,12 @@ const Home = () => {
     customEdge: CustomEdge,
   };
 
+  const { setViewport } = useReactFlow();
+
+  useEffect(() => {
+      setViewport({ x: 0, y: 0, zoom: 1 }); // Set default zoom to 150%
+  }, []);
+
   return (
     <>
       <div className='flex w-full h-[100vh]'>
@@ -134,7 +141,7 @@ const Home = () => {
             // preventScrolling={false}
             >
               <Background />
-              <Controls />
+              <Controls/>
               {/* <MiniMap maskColor="#cfcfcf" /> */}
             </ ReactFlow>
           </div>

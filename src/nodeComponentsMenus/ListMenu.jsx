@@ -41,7 +41,7 @@ const ListMenu = () => {
     )
 
     const [openState, setOpenState] = useState(false)
-    const [classState, setClassState] = useState("opacity-0 left-[-55px] top-[30px] z-0 hidden")
+    const [classState, setClassState] = useState("opacity-0 left-[-55px] top-[30px] z-0")
 
     const getRef = useRef(null)
 
@@ -192,11 +192,6 @@ const ListMenu = () => {
     const [dummyState, setDummyState] = useState(false)
     const [selectedItemId, setSelectedItemId] = useState()
 
-    let openFunc = (id) => {
-        setSelectedItemId(id)
-        setOpenState(!openState)
-    }
-
     let targetFunc = (e) => {
         let outside = getRef.current == e
         openState == true && setOpenState(outside)
@@ -211,9 +206,6 @@ const ListMenu = () => {
 
         setOpenState(false)
     }
-
-    console.log(listSectionItems, "listSectionItems")
-    console.log(editingItemId, "editingItemId")
 
     return (
         <>
@@ -323,11 +315,11 @@ const ListMenu = () => {
                                                 </div>
                                             </div>
                                             <div className="relative transition duration-200 ease-in-out cursor-pointer">
-                                                <div onClick={() => openFunc(item.id)} className='hover:bg-[#525252]'>
+                                                <div onClick={() => [setSelectedItemId(item.id), setOpenState(!openState)]} className='hover:bg-[#525252]'>
                                                     <MoreOutlined className='' style={{ fontSize: "25px" }}/>
                                                 </div>
 
-                                                <div ref={getRef} className={`bg-[#181a1b] py-4 pl-3 gap-4 text-xs w-32 flex flex-col justify-center-center absolute transition-all ease-in duration-100 ${selectedItemId == index && openState ? "opacity-100 left-[-55px] top-[50px] z-[999]" : classState}`}>
+                                                <div ref={getRef} className={`bg-[#181a1b] py-4 pl-3 gap-4 text-xs w-32 flex flex-col justify-center-center absolute transition-all ease-in duration-100 ${selectedItemId == item.id && openState ? "opacity-100 left-[-55px] top-[50px] z-[999]" : classState}`}>
                                                     <div onClick={() => [showModal(), setEditingItemId(item.id)]} className='hover:bg-[#3e4142] py-2 pl-1 rounded-sm'>
                                                         Edit
                                                     </div>

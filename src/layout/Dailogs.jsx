@@ -8,7 +8,7 @@ import DelayNode from '../nodeComponents/DelayNode'
 const Dailogs = () => {
     return (
         // <div className="w-[21%] bg-[#fafafa] px-8 border-left-class  h-[100vh]">
-        <div className="w-[30%] bg-[#fafafa] px-8 border-left-class pt-[125px] flex flex-col justify-between">
+        <div className="w-[35%] bg-[#fafafa] px-8 border-left-class pt-[125px] flex flex-col justify-between">
             <div>
                 <div className='mt-6 flex justify-between items-center'>
                     <div className='text-xl font-semibold flex items-center gap-2'>
