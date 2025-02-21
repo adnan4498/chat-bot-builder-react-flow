@@ -6,7 +6,7 @@ const InputNode2 = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()
 
 
-    let getAllNodes = getNodes().filter(item => item.id == "user-conditional-input-1")
+    let getAllNodes = getNodes().filter(item => item.id == "ur-input-1")
 
 
     return (

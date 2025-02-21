@@ -13,8 +13,8 @@ const ResultNode = () => {
                 draggedItemLabel: "Result",
                 initialResultNodes: [
                     {
-                        id: 'parent-1',
-                        type: 'dummyNode2',
+                        id: 'ur-parent-1',
+                        type: 'resultParent',
                         data: { label: null },
                         style: {
                             width: 650,
@@ -25,28 +25,28 @@ const ResultNode = () => {
                         },
                     },
                     {
-                        id: 'user-conditional-input-1',
+                        id: 'ur-input-1',
                         type: 'inputNode',
                         hidden : false,
                         data: { label: "Type your condition"},
                         // position: { x: 100, y: 20 },
                     },
                     {
-                        id: 'child-1',
+                        id: 'ur-child-1',
                         type: 'inputNode2',
                         data: { label: '1' },
                         position: { x: 30, y: 100 },
                         draggable : false,
-                        parentId: 'parent-1',
+                        parentId: 'ur-parent-1',
                         extent: 'parent',
                     },
                     {
-                        id: 'child-2',
+                        id: 'ur-child-2',
                         type: 'inputNode2',
                         data: { label: '2' },
                         position: { x: 340, y: 100 },
                         draggable : false,
-                        parentId: 'parent-1',
+                        parentId: 'ur-parent-1',
                         extent: 'parent',
                     },
                     // {

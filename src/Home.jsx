@@ -25,8 +25,9 @@ import InputNode from './nodeComponents/InputNode';
 import NodesMenu from './layout/NodesMenu';
 import ListInput from './nodeComponents/ListInput';
 import InputNode2 from './nodeComponents/InputNode2';
-import DummyNode2 from './DummyNode2';
 import { WarningOutlined } from '@ant-design/icons';
+import ResultParent from './ResultParent';
+import AddElement from './AddElement';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -38,7 +39,7 @@ const Home = () => {
   ];
 
   const initialEdges = [
-    { id: "conditionNode-resultNode", hidden: false, source: "user-conditional-input-1", target: "parent-1", },
+    { id: "conditionNode-resultNode", hidden: false, source: "ur-input-1", target: "ur-parent-1", },
     // { id: "e-child1", source: "child-1", target: "child-1-condition", data: { label: 'Add Delay' }, type: "customEdge" },
     // { id: "e-child1", source: "child-1", target: "child-1-condition" },
     // { id: "e-child2", source: "child-2", target: "child-2-condition" },
@@ -87,7 +88,8 @@ const Home = () => {
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
-    dummyNode2: DummyNode2
+    resultParent: ResultParent,
+    addElement: AddElement
   };
 
   const edgeTypes = {
@@ -98,44 +100,96 @@ const Home = () => {
 
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
 
-  useEffect(() => {
-    
+  const handleDragOver = (e) => {
+    // console.log(draggedItemData, "e")
+  }
+
+  useEffect((e) => {
+    setViewport({ x: 0, y: 0, zoom: 1 });
   }, [])
-  
+
 
   useEffect(() => {
-    setViewport({ x: 0, y: 0, zoom: 1 }); 
 
-    if (selectedNode && selectedNode.length > 0) {
-      const getTopBot = {
-        x: selectedNode[0]?.position?.x + 30 || 0,
-        y: selectedNode[0]?.position?.y + 190 || 0,
-      };
-      seTtopBot(getTopBot);
-    }
+    // if (selectedNode && selectedNode.length > 0) {
+    //   const getTopBot = {
+    //     x: selectedNode[0]?.position?.x + 30 || 0,
+    //     y: selectedNode[0]?.position?.y + 190 || 0,
+    //   };
+    //   seTtopBot(getTopBot);
+    // }
 
-    if(selectedNode != undefined && selectedNode[0]?.type == "dummyNode2"){
+    let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
 
-      let getId = nodes.filter(item => item.id == "10")[0]?.id      
+    const getTopBot = {
+      x: getResultNodeType?.position?.x,
+      y: getResultNodeType?.position?.y
+    };
 
-      if(getId != "10"){
-        setNodes((e) => [
-          ...e,
-          {
-            id: "10",
-            // position: { x: event.screenX - 100, y: event.screenY - 100 },
-            position: { left: `${topBot.x}px`, top: `${topBot.y}px`},
-            data: { label: "" },
-            type: "defaultStarting",
-            selected: true,
-          },
-        ]);
+    seTtopBot(getTopBot)
+
+    let getX = getResultNodeType?.position?.x + 20
+    let getY = getResultNodeType?.position?.y + 180
+
+    let checkY = topBot.y == getResultNodeType?.position?.y
+    let checkX = topBot.x == getResultNodeType?.position?.x
+
+    if (selectedNode != undefined && selectedNode[0]?.type == "resultParent") {
+
+      let getChilds = nodes.filter(item => item.parentId == selectedNode[0].id)
+      // console.log(getChilds, "ggg")
+
+      if (!checkY || !checkX) {
+        getChilds.forEach((item, index) => {
+          if (!nodes.some(nds => nds.id.match(new RegExp(`${item.id}-condition`, "i")))) {
+            setNodes((e) => [
+              ...e,
+              {
+                id: `${item.id}-condition`,
+                position: { x: index == 0 ? getX : getX + 350, y: getY },
+                data: { label: "" },
+                type: "addElement",
+                selected: false,
+                draggable: false,
+              },
+            ]
+            )
+          }
+          else {
+            // retrieves conditional nodes
+            // update there positions
+            // sets them back
+
+            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => ({ ...item, position: { x: index == 0 ? getX : getX + 350, y: getY } }))
+
+            let setConditionalNodes = (nodeItem) => {
+              // returns single obj
+              return update_conditional_nodes_positions.filter(item => item.id == nodeItem.id)[0]
+            }
+            
+            setNodes((e) => e.map((item) => item.id.includes("-condition") ? setConditionalNodes(item) : item ))
+          }
+        })
       }
-
-      console.log(nodes, "nn")
     }
 
-  }, [selectedNode]);
+  }, [selectedNode, nodes]);
+
+  // let aa = ["hi", "hello", "hi"];
+  // let lo = "lo"; 
+
+  // // aa.some(item => item.match(new RegExp(lo, "i")))
+
+  // aa.forEach((item) => {
+  //   if (item.match(new RegExp(lo, "i"))) {
+  //     console.log("its falsed");
+  //   } else {
+  //     console.log("its true");
+  //   }
+  // })
+
+
+
 
   return (
     <>

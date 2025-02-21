@@ -1,7 +1,7 @@
 import { Handle, Position } from '@xyflow/react'
 import React from 'react'
 
-const DummyNode2 = () => {
+const ResultParent = () => {
     return (
         <>
         <div className='p-3 flex gap-2 h-[155px]'>
@@ -15,4 +15,4 @@ const DummyNode2 = () => {
     )
 }
 
-export default DummyNode2
+export default ResultParent

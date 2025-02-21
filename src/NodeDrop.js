@@ -29,11 +29,11 @@ export const onDrop = (
           id: item.id,
           position: {
             x:
-              item.id == "user-conditional-input-1"
+              item.id == "ur-input-1"
                 ? event.screenX + 220
                 : item?.position?.x || event.screenX - 100,
             y:
-              item.id == "user-conditional-input-1"
+              item.id == "ur-input-1"
                 ? event.screenY - 200
                 : item?.position?.y || event.screenY - 100,
           },
@@ -81,16 +81,16 @@ export const onDrop = (
           type: "inputNode",
           data: { label: "Condition" },
           position: { x: 100, y: 65 },
-          parentId: "parent-1",
-          extent: "parent",
+          parentId: "ur-parent-1",
+          extent: "ur-parent",
         },
         {
           id: `child-${incrementedId}-condition`,
           type: "inputNode",
           data: { label: "Your Message" },
           position: { x: 100, y: 165 },
-          parentId: "parent-1",
-          extent: "parent",
+          parentId: "ur-parent-1",
+          extent: "ur-parent",
         },
       ];
 
