@@ -18,7 +18,7 @@ export const onDrop = (
     initialResultNodes,
   } = draggedItemData;
 
-  let getNodesData = nodes;
+  let getAllNodes = nodes;
   let getHighestIdNum;
 
   if (initialResultNodes != undefined) {
@@ -30,12 +30,12 @@ export const onDrop = (
           position: {
             x:
               item.id == "ur-input-1"
-                ? event.screenX + 220
-                : item?.position?.x || event.screenX - 100,
+                ? event.pageX + 220
+                : item?.position?.x || event.pageX - 100,
             y:
               item.id == "ur-input-1"
-                ? event.screenY - 200
-                : item?.position?.y || event.screenY - 100,
+                ? event.pageY - 200
+                : item?.position?.y || event.pageY - 100,
           },
           data: item.data,
           hidden : item.hidden,
@@ -63,57 +63,68 @@ export const onDrop = (
       droppingItemY >= getSelectedNodeY &&
       droppingItemY <= getSelectedNodeY + getSelectedNodeHeight;
 
+      console.log(isInsideParent, "isInsideParent")
+
     if (isInsideParent) {
-      let getChildCNodes = getNodesData
-        .filter((item) => item.parentId)
-        .filter((items) => !items.id.includes("-condition"));
-      let getHighestChildNodeId;
+      let getChildCNodes = getAllNodes.filter((item) => item.parentId).filter((items) => !items.id.includes("-condition"));
+      
+      console.log(getChildCNodes, "getChildCNodes")
+      console.log(getAllNodes, "getAllNodes")
+      
+      let getLastChildNodeId;
+      getChildCNodes.forEach((item) => getLastChildNodeId = item.id.slice(-1));
 
-      getChildCNodes.forEach(
-        (item) => (getHighestChildNodeId = item.id.slice(-1))
-      );
+      let getParentId = getChildCNodes.map(item => item.parentId)[0]
 
-      let incrementedId = ++getHighestChildNodeId;
+      let getLastChildNodeX = getChildCNodes.map(item => item.position.x).pop()
+      let getLastChildNodeY = getChildCNodes.map(item => item.position.y).pop()
+
+      console.log(getLastChildNodeX, "glX")
+      console.log(getLastChildNodeY, "glY")
+
+      let incrementedId = ++getLastChildNodeId;
 
       let createNewConditionedNode = [
         {
-          id: `child-${incrementedId}`,
-          type: "inputNode",
+          id: `ur-child-${incrementedId}`,
+          position: { x: getLastChildNodeX + 350, y: getLastChildNodeY },
           data: { label: "Condition" },
-          position: { x: 100, y: 65 },
-          parentId: "ur-parent-1",
-          extent: "ur-parent",
+          type: "inputNode2",
+          parentId: `${getParentId}`,
+          selected: false,
+          draggable: false,
         },
-        {
-          id: `child-${incrementedId}-condition`,
-          type: "inputNode",
-          data: { label: "Your Message" },
-          position: { x: 100, y: 165 },
-          parentId: "ur-parent-1",
-          extent: "ur-parent",
-        },
+        // {
+        //   id: `ur-child-${incrementedId}-condition`,
+        //   position: { x: getLastChildNodeX + 50, y: getLastChildNodeY + 165 },
+        //   data: { label: "Your Message" },
+        //   type: "addElement",
+        //   selected: false,
+        //   draggable: false,
+        //   // parentId: `${getParentId}`,
+        // },
       ];
 
       createNewConditionedNode.forEach((item) => {
+        console.log(item, "item")
         setNodes((e) => [
           ...e,
           {
             id: item.id,
             type: item.type,
-            // position: {
-            //   x: droppingItemX - getSelectedNodeX,
-            //   y: droppingItemY - getSelectedNodeY, // Relative to parent
-            // },
-
             position: {
-              x: droppingItemX - getSelectedNodeX,
-              y: item.id.includes("-condition")
-                ? droppingItemY - getSelectedNodeY + 100
-                : droppingItemY - getSelectedNodeY,
+              // x: droppingItemX - getSelectedNodeX,
+              // y: item.id.includes("-condition")
+              //   ? droppingItemY - getSelectedNodeY + 100
+              //   : droppingItemY - getSelectedNodeY,
+              x : item.position.x,
+              y : item.position.y,
             },
             data: { label: item.data.label },
+            selected : item.selected,
+            draggable : item.draggable,
             parentId: item.parentId,
-            extent: item.extent,
+            // extent: item.extent,
           },
         ]);
       });
@@ -130,7 +141,7 @@ export const onDrop = (
       alert("Drop outside parent is not allowed.");
     }
   } else {
-    getNodesData.forEach((item) => {
+    getAllNodes.forEach((item) => {
       if (getHighestIdNum == undefined) {
         getHighestIdNum = Number(item.id);
       } else {
@@ -148,7 +159,7 @@ export const onDrop = (
         ...e,
         {
           id: backToString,
-          position: { x: event.screenX - 100, y: event.screenY - 100 },
+          position: { x: event.pageX, y: event.pageY },
           data: {
             label: [
               {
@@ -181,7 +192,7 @@ export const onDrop = (
         ...e,
         {
           id: backToString,
-          position: { x: event.screenX - 100, y: event.screenY - 100 },
+          position: { x: event.pageX, y: event.pageY },
           data: { label: "" },
           type: draggedItemType,
           selected: true,

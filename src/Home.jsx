@@ -100,10 +100,6 @@ const Home = () => {
 
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
 
-  const handleDragOver = (e) => {
-    // console.log(draggedItemData, "e")
-  }
-
   useEffect((e) => {
     setViewport({ x: 0, y: 0, zoom: 1 });
   }, [])
@@ -111,33 +107,20 @@ const Home = () => {
 
   useEffect(() => {
 
-    // if (selectedNode && selectedNode.length > 0) {
-    //   const getTopBot = {
-    //     x: selectedNode[0]?.position?.x + 30 || 0,
-    //     y: selectedNode[0]?.position?.y + 190 || 0,
-    //   };
-    //   seTtopBot(getTopBot);
-    // }
-
     let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
 
-    const getTopBot = {
-      x: getResultNodeType?.position?.x,
-      y: getResultNodeType?.position?.y
-    };
+    seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
-    seTtopBot(getTopBot)
+    let getX = getResultNodeType?.position?.x
+    let getY = getResultNodeType?.position?.y
 
-    let getX = getResultNodeType?.position?.x + 20
-    let getY = getResultNodeType?.position?.y + 180
-
+    // current div positions vs useState positions
+    // useState positions are 1 render behind
     let checkY = topBot.y == getResultNodeType?.position?.y
     let checkX = topBot.x == getResultNodeType?.position?.x
 
     if (selectedNode != undefined && selectedNode[0]?.type == "resultParent") {
-
       let getChilds = nodes.filter(item => item.parentId == selectedNode[0].id)
-      // console.log(getChilds, "ggg")
 
       if (!checkY || !checkX) {
         getChilds.forEach((item, index) => {
@@ -146,7 +129,7 @@ const Home = () => {
               ...e,
               {
                 id: `${item.id}-condition`,
-                position: { x: index == 0 ? getX : getX + 350, y: getY },
+                position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 350, y: getY + 180 },
                 data: { label: "" },
                 type: "addElement",
                 selected: false,
@@ -160,14 +143,14 @@ const Home = () => {
             // update there positions
             // sets them back
 
-            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => ({ ...item, position: { x: index == 0 ? getX : getX + 350, y: getY } }))
+            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => ({ ...item, position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 370, y: getY + 180 } }))
 
             let setConditionalNodes = (nodeItem) => {
               // returns single obj
               return update_conditional_nodes_positions.filter(item => item.id == nodeItem.id)[0]
             }
-            
-            setNodes((e) => e.map((item) => item.id.includes("-condition") ? setConditionalNodes(item) : item ))
+
+            setNodes((e) => e.map((item) => item.id.includes("-condition") ? setConditionalNodes(item) : item))
           }
         })
       }
@@ -175,28 +158,41 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-  // let aa = ["hi", "hello", "hi"];
-  // let lo = "lo"; 
+  // let aa = [
+  //   {
+  //     name: "a"
+  //   },
+  //   {
+  //     name: "b"
+  //   },
+  //   {
+  //     name: "c"
+  //   },
+  // ]
 
-  // // aa.some(item => item.match(new RegExp(lo, "i")))
+  // let xPos = 300
 
-  // aa.forEach((item) => {
-  //   if (item.match(new RegExp(lo, "i"))) {
-  //     console.log("its falsed");
-  //   } else {
-  //     console.log("its true");
+  // let bb = aa.map((item, index) => {
+  //   let incre = xPos
+  //   if (index == 0) {
+  //     return {...item, pos : xPos}
+  //   }
+  //   else {
+  //     for(let i = 0; i < index; i++){
+  //       incre += 300
+  //     }
+  //     console.log(incre, "incre")
+  //     return {...item, pos : incre}
   //   }
   // })
-
-
-
+  // console.log(bb)
 
   return (
     <>
       <div className='flex w-full h-[100vh]'>
-        <Dailogs />
-        <div className='react-flow-class !h-[0vw] mt-[100px]'>
-          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)}>
+        {/* <Dailogs /> */}
+        <div className='react-flow-class'>
+          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [e.preventDefault()]} onDrop={(e) => onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -231,24 +227,3 @@ const Home = () => {
 }
 
 export default Home
-
-
-// import React, { useEffect, useState } from 'react'
-
-// const Home = () => {
-
-//   const [numberState, setNumberState] = useState(1)
-
-//   useEffect(() => {
-//     setNumberState(5)
-//     console.log(numberState, " inside ")
-//   }, [numberState])
-
-//   console.log(numberState, " outside ")
-
-//   return (
-//     <div onClick={() => setNumberState((e) => ++e)} className='bg-red-500 w-full h-20'>Home</div>
-//   )
-// }
-
-// export default Home

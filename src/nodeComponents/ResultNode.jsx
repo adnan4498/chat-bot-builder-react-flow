@@ -17,20 +17,22 @@ const ResultNode = () => {
                         type: 'resultParent',
                         data: { label: null },
                         style: {
-                            width: 650,
+                            // width: 650,
                             // height: "100%",
+                            width: 1200,
+                            height: 600,
                             border: "1px solid black",
                             borderRadius: 5,
                             // background : "white"
                         },
                     },
-                    {
-                        id: 'ur-input-1',
-                        type: 'inputNode',
-                        hidden : false,
-                        data: { label: "Type your condition"},
-                        // position: { x: 100, y: 20 },
-                    },
+                    // {
+                    //     id: 'ur-input-1',
+                    //     type: 'inputNode',
+                    //     hidden : false,
+                    //     data: { label: "Type your condition"},
+                    //     // position: { x: 100, y: 20 },
+                    // },
                     {
                         id: 'ur-child-1',
                         type: 'inputNode2',
