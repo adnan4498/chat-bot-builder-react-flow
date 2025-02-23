@@ -17,10 +17,10 @@ const ResultNode = () => {
                         type: 'resultParent',
                         data: { label: null },
                         style: {
-                            // width: 650,
-                            // height: "100%",
-                            width: 1200,
-                            height: 600,
+                            // minWidth: 1000, // ✅ Correct (Number, not string)
+                            // minHeight: 600, // ✅ Correct (Number, not string)
+                            width: 1000, // ✅ Correct (Number, not "1200px")
+                            height: 600, // ✅ Correct
                             border: "1px solid black",
                             borderRadius: 5,
                             // background : "white"

@@ -78,8 +78,6 @@ const Home = () => {
   //   []
   // );
 
-  // console.log(nodes, "nodes")
-
   const nodeTypes = {
     custom: CustomNode,
     stateNode: CustomStateNode,
@@ -104,9 +102,7 @@ const Home = () => {
     setViewport({ x: 0, y: 0, zoom: 1 });
   }, [])
 
-
   useEffect(() => {
-
     let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
 
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
@@ -119,31 +115,67 @@ const Home = () => {
     let checkY = topBot.y == getResultNodeType?.position?.y
     let checkX = topBot.x == getResultNodeType?.position?.x
 
+    let getChilds
+    if (selectedNode != undefined) {
+      getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id)
+    }
     if (selectedNode != undefined && selectedNode[0]?.type == "resultParent") {
-      let getChilds = nodes.filter(item => item.parentId == selectedNode[0].id)
 
       if (!checkY || !checkX) {
         getChilds.forEach((item, index) => {
           if (!nodes.some(nds => nds.id.match(new RegExp(`${item.id}-condition`, "i")))) {
-            setNodes((e) => [
-              ...e,
-              {
-                id: `${item.id}-condition`,
-                position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 350, y: getY + 180 },
-                data: { label: "" },
-                type: "addElement",
-                selected: false,
-                draggable: false,
-              },
-            ]
-            )
+            let incre = getX
+
+            if (index == 0) {
+              setNodes((e) => [
+                ...e,
+                {
+                  id: `${item.id}-condition`,
+                  position: { x: getX + 20, y: getY + 180 },
+                  data: { label: "" },
+                  type: "addElement",
+                  selected: false,
+                  draggable: false,
+                },
+              ]
+              )
+            }
+            else {
+              for (let i = 0; i < index; i++) {
+                incre += 350
+              }
+
+              setNodes((e) => [
+                ...e,
+                {
+                  id: `${item.id}-condition`,
+                  position: { x: incre + 20, y: getY + 180 },
+                  data: { label: "" },
+                  type: "addElement",
+                  selected: false,
+                  draggable: false,
+                },
+              ]
+              )
+            }
           }
           else {
-            // retrieves conditional nodes
-            // update there positions
-            // sets them back
+            // retrieve; update positions; set back
+            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition"))
+              .map((item, index) => {
+                let incre = getX
+                if (index == 0) {
+                  return { ...item, position: { x: getX + 20, y: getY + 180 } }
+                }
+                else {
+                  for (let i = 0; i < index; i++) {
+                    incre += 350
+                  }
 
-            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => ({ ...item, position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 370, y: getY + 180 } }))
+                  return { ...item, position: { x: incre, y: getY + 180 } }
+                }
+                // return { ...item, position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 370, y: getY + 180 } }
+              })
 
             let setConditionalNodes = (nodeItem) => {
               // returns single obj
@@ -156,36 +188,72 @@ const Home = () => {
       }
     }
 
+    let getLast = getChilds?.pop()
+
+    if (getLast?.id == "ur-child-3") {
+
+      setNodes((e) => {
+
+        let hasChanged = false;
+
+        const updatedNodes = e.map((item, index, arr) => {
+          if (item.id === "ur-parent-1") {
+            console.log(item.style.width, "ssss")
+            hasChanged = true;
+            return {
+              ...item,
+              style: { ...item.style, width: item.style.width + 400, height: 600 },
+            };
+          }
+          return item;
+        });
+
+        // if change ? new arr ref : old arr ref
+        return hasChanged ? updatedNodes : e;
+      });
+
+
+    }
+
   }, [selectedNode, nodes]);
 
-  // let aa = [
-  //   {
-  //     name: "a"
-  //   },
-  //   {
-  //     name: "b"
-  //   },
-  //   {
-  //     name: "c"
-  //   },
-  // ]
 
-  // let xPos = 300
+  // useEffect(() => {
 
-  // let bb = aa.map((item, index) => {
-  //   let incre = xPos
-  //   if (index == 0) {
-  //     return {...item, pos : xPos}
+  //   let getChilds
+  //   if(selectedNode != undefined){
+  //     getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id)
   //   }
-  //   else {
-  //     for(let i = 0; i < index; i++){
-  //       incre += 300
-  //     }
-  //     console.log(incre, "incre")
-  //     return {...item, pos : incre}
+
+  //   let getLast = getChilds?.pop()
+
+
+  //   if(getLast?.id == "ur-child-3"){
+
+
+  //     setNodes((e) => {
+  //       let hasChanged = false;
+
+  //       const updatedNodes = e.map((item) => {
+  //         if (item.id === "ur-parent-1" && item.style.width !== 300) {
+  //           hasChanged = true; 
+  //           return {
+  //             ...item,
+  //             style: { ...item.style, width: 300, height: 300 },
+  //           };
+  //         }
+  //         return item;
+  //       });
+
+  //       return hasChanged ? updatedNodes : e; 
+  //     });
+
+
   //   }
-  // })
-  // console.log(bb)
+  // }, [topBot])
+
+
+  // console.log(nodes, "nodes")
 
   return (
     <>
