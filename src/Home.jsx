@@ -132,13 +132,15 @@ const Home = () => {
 
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
 
-
   const [getLen, setGetLen] = useState(2)
-
-
   let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
+
   useEffect(() => {
     setViewport({ x: 0, y: 0, zoom: 1 });
+  }, [])
+  
+
+  useEffect(() => {
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
     let getX = getResultNodeType?.position?.x
@@ -222,16 +224,19 @@ const Home = () => {
       }
     }
 
+    // adds width for new conditioned node
     if (selectedNode?.length > 0) {
 
-      let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == selectedNode[0]?.id )
+      let getParent = nodes.filter(item => item.id.includes("parent"))
+
+      let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == getParent[0]?.id )
       getC?.length != getLen && setGetLen(getC?.length)
 
       setNodes((e) => {
         let hasChanged = false;
 
         const updatedNodes = e.map((item, index) => {
-          if (item.id === "ur-parent-1" && getLen !== getC?.length) {
+          if (item.id.includes("parent") && getLen !== getC?.length) {
             hasChanged = true;
             return {
               ...item,
