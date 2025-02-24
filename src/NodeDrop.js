@@ -44,6 +44,7 @@ export const onDrop = (
           style: item.style,
           extent: item.extent,
           parentId: item.parentId,
+          selected : true,
         },
       ]);
     });
@@ -63,13 +64,11 @@ export const onDrop = (
       droppingItemY >= getSelectedNodeY &&
       droppingItemY <= getSelectedNodeY + getSelectedNodeHeight;
 
-      console.log(isInsideParent, "isInsideParent")
 
     if (isInsideParent) {
       let getChildCNodes = getAllNodes.filter((item) => item.parentId).filter((items) => !items.id.includes("-condition"));
       
-      console.log(getChildCNodes, "getChildCNodes")
-      console.log(getAllNodes, "getAllNodes")
+
       
       let getLastChildNodeId;
       getChildCNodes.forEach((item) => getLastChildNodeId = item.id.slice(-1));
@@ -79,8 +78,6 @@ export const onDrop = (
       let getLastChildNodeX = getChildCNodes.map(item => item.position.x).pop()
       let getLastChildNodeY = getChildCNodes.map(item => item.position.y).pop()
 
-      console.log(getLastChildNodeX, "glX")
-      console.log(getLastChildNodeY, "glY")
 
       let incrementedId = ++getLastChildNodeId;
 
@@ -91,8 +88,8 @@ export const onDrop = (
           data: { label: "Condition" },
           type: "inputNode2",
           parentId: `${getParentId}`,
-          selected: false,
-          draggable: false,
+          selected: true,
+          // draggable: false,
         },
         // {
         //   id: `ur-child-${incrementedId}-condition`,
@@ -106,7 +103,6 @@ export const onDrop = (
       ];
 
       createNewConditionedNode.forEach((item) => {
-        console.log(item, "item")
         setNodes((e) => [
           ...e,
           {

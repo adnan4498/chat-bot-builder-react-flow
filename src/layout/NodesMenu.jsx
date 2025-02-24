@@ -22,7 +22,7 @@ const NodesMenu = () => {
 
   return (
     <div className="w-[40%] bg-[#fafafa] pl-8 pr-2 border-left-class overflow-y-scroll h-full pt-[125px]">
-      {getType == "defaultStarting" || getType == undefined ? <DefaultStartingMenu /> : getType == "resultParent" ? <ResultMenu /> : getType == "inputNode" ? <InputMenu /> : getType == "listNode" ? <ListMenu /> : ""}
+      {getType == "defaultStarting" || getType == undefined ? <DefaultStartingMenu /> : getType == "resultParent" ? <ResultMenu /> : getType == "inputNode" || getType == "inputNode2" ? <InputMenu /> : getType == "listNode" ? <ListMenu /> : ""}
     </div>
   )
 }

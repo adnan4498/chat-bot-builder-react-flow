@@ -102,8 +102,8 @@ const Home = () => {
     setViewport({ x: 0, y: 0, zoom: 1 });
   }, [])
 
+  let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
   useEffect(() => {
-    let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
 
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
@@ -188,69 +188,134 @@ const Home = () => {
       }
     }
 
-    let getLast = getChilds?.pop()
-
-    if (getLast?.id == "ur-child-3") {
-
-      setNodes((e) => {
-
-        let hasChanged = false;
-
-        const updatedNodes = e.map((item, index, arr) => {
-          if (item.id === "ur-parent-1") {
-            console.log(item.style.width, "ssss")
-            hasChanged = true;
-            return {
-              ...item,
-              style: { ...item.style, width: item.style.width + 400, height: 600 },
-            };
-          }
-          return item;
-        });
-
-        // if change ? new arr ref : old arr ref
-        return hasChanged ? updatedNodes : e;
-      });
-
-
-    }
-
   }, [selectedNode, nodes]);
 
+  const [getLen, setGetLen] = useState()
+
+  // useEffect(() => {
+
+  //   let getC = []
+
+  //   if (selectedNode != undefined) {
+  //     nodes.forEach((item) => {
+  //       if(item.parentId){
+  //         item.parentId == selectedNode[0]?.id && getC.push(item)
+  //       }
+  //     })
+  //   }
+  //   // console.log(getChilds?.length, "get child length")
+
+  //   console.log(getC, "get childs")
+  //   console.log(getC?.length, " gc length ", getLen, " len state ")
+  //   getC?.length != getLen && setGetLen(getC?.length)
+
+  //   setNodes((e) => {
+  //     let hasChanged = false;
+
+  //     const updatedNodes = e.map((item, index) => {
+  //       if (item.id === "ur-parent-1" && getLen !== getC?.length) {
+  //         hasChanged = true;
+  //         return {
+  //           ...item,
+  //           style: { ...item.style, width: item.style.width += 340, height: 600 },
+  //         };
+  //       }
+  //       return item;
+  //     });
+
+  //     return hasChanged ? updatedNodes : e;
+  //   });
+
+  // }, [nodes])
+  // }, [getResultNodeType])
+
+  let addWidth = () => {
+
+
+    let getC = []
+
+    if (selectedNode != undefined) {
+      nodes.forEach((item) => {
+        if (item.parentId) {
+          item.parentId == selectedNode[0]?.id && getC.push(item)
+        }
+      })
+    }
+    // console.log(getChilds?.length, "get child length")
+
+    console.log(getC, "get childs")
+    console.log(getC?.length, " gc length ", getLen, " len state ")
+    getC?.length != getLen && setGetLen(getC?.length)
+
+    setNodes((e) => {
+      let hasChanged = false;
+
+      const updatedNodes = e.map((item, index) => {
+        if (item.id === "ur-parent-1" && getLen !== getC?.length) {
+          hasChanged = true;
+          return {
+            ...item,
+            style: { ...item.style, width: item.style.width += 340, height: 600 },
+          };
+        }
+        return item;
+      });
+
+      return hasChanged ? updatedNodes : e;
+    });
+  }
+
+  
+
+  console.log(selectedNode, "outside")
+
+  // let aaa = [
+  //   {
+  //     name : "a",
+  //   },
+  //   {
+  //     name : "b",
+  //   },
+  //   {
+  //     name : "c",
+  //   },
+  // ]
+
+  // let aLen = aaa.length
+
+  // aaa = aaa.map((item, index) => {
+  //   let wid = 300
+
+  //   for(let i = 0; i < index; i++){
+  //     wid += 300
+  //   }
+
+  //   return {...item, width : wid}
+
+  // })
+
+  // console.log(aaa, "aaaa")
 
   // useEffect(() => {
 
   //   let getChilds
-  //   if(selectedNode != undefined){
-  //     getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id)
-  //   }
+  //   if (selectedNode != undefined) { getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id) }
 
-  //   let getLast = getChilds?.pop()
+  //   console.log(getChilds, "gl")
 
+  //   getChilds = getChilds?.slice(-1)[0]
 
-  //   if(getLast?.id == "ur-child-3"){
+  //   if(getChilds?.id == "ur-child-3"){
 
-
-  //     setNodes((e) => {
-  //       let hasChanged = false;
-
-  //       const updatedNodes = e.map((item) => {
-  //         if (item.id === "ur-parent-1" && item.style.width !== 300) {
-  //           hasChanged = true; 
-  //           return {
-  //             ...item,
-  //             style: { ...item.style, width: 300, height: 300 },
-  //           };
-  //         }
-  //         return item;
-  //       });
-
-  //       return hasChanged ? updatedNodes : e; 
-  //     });
-
+  //     setNodes((e) =>  e.map((item, index, arr) => {
+  //       if(item.id == "ur-child-3" && item.selected == true ){
+  //         return arr.map((item) => item.id == "ur-parent-1" ? {...item, selected : false} : item)
+  //       }
+  //     }))
 
   //   }
-  // }, [topBot])
+
+  // }, [nodes, selectedNode])
 
 
   // console.log(nodes, "nodes")

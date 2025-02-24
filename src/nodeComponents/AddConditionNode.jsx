@@ -9,7 +9,7 @@ const AddConditionNode = () => {
         setDraggedItemData(
             {
                 draggedItemName: "textNode",
-                draggedItemType: "inputNode",
+                draggedItemType: "inputNode2",
                 draggedItemLabel: "Add Condition"
             }
         )
