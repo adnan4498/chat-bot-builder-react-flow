@@ -54,13 +54,46 @@ const Home = () => {
 
   }, [deletingNodeId])
 
-  // getting and setting selected node data in contextHook
-  // if node is about to delete. do not set selected, to prevent opening its menu
+  // get/set selected node in setSelected contextHook
   useEffect(() => {
-    let getSelectedNode = nodes.filter(item => item.selected)
-    if (getSelectedNode[0]?.id != deletingNodeId) {
-      setSelectedNode(getSelectedNode)
+
+    let getSelectedNode = nodes.filter(items => items.selected)
+
+    let checkAddConditionNode = getSelectedNode.filter(item => item.data.label == draggedItemData?.draggedItemLabel)
+
+    if (checkAddConditionNode[0]?.id == "ur-child-3") {
+
+      setNodes((e) => {
+        let isChanged = false
+
+        let changedArr = e.map((item) => {
+          if (item?.id == "ur-parent-1" && item.selected == true) {
+            isChanged = true
+            return { ...item, selected: false }
+          }
+          return item
+        })
+
+        return isChanged ? changedArr : e
+      })
+
+      if (checkAddConditionNode[0]?.id != deletingNodeId) {
+        setSelectedNode(checkAddConditionNode)
+      }
+
     }
+    else {
+      // deleting node is not selected, to prevent opening its menu
+      if (getSelectedNode[0]?.id != deletingNodeId) {
+        setSelectedNode(getSelectedNode)
+      }
+
+    }
+
+    // if (getSelectedNode[0]?.id != deletingNodeId) {
+    //   setSelectedNode(getSelectedNode)
+    // }
+
 
   }, [nodes])
 
@@ -68,6 +101,7 @@ const Home = () => {
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
+
 
 
   // to remove edges by clicking on it
@@ -98,13 +132,13 @@ const Home = () => {
 
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
 
-  useEffect((e) => {
-    setViewport({ x: 0, y: 0, zoom: 1 });
-  }, [])
+
+  const [getLen, setGetLen] = useState(2)
+
 
   let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
   useEffect(() => {
-
+    setViewport({ x: 0, y: 0, zoom: 1 });
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
     let getX = getResultNodeType?.position?.x
@@ -188,17 +222,53 @@ const Home = () => {
       }
     }
 
+    if (selectedNode?.length > 0) {
+
+      let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == selectedNode[0]?.id )
+      getC?.length != getLen && setGetLen(getC?.length)
+
+      setNodes((e) => {
+        let hasChanged = false;
+
+        const updatedNodes = e.map((item, index) => {
+          if (item.id === "ur-parent-1" && getLen !== getC?.length) {
+            hasChanged = true;
+            return {
+              ...item,
+              style: { ...item.style, width: item.style.width += 340, height: 600 },
+            };
+          }
+          return item;
+        });
+
+        return hasChanged ? updatedNodes : e;
+      });
+
+    }
+
   }, [selectedNode, nodes]);
 
-  const [getLen, setGetLen] = useState()
 
   // useEffect(() => {
+
+    
+
+  //   console.log("hello")
+  // }, [nodes, selectedNode])
+
+  // console.log(nodes, "nodes")
+
+
+  // }, [getResultNodeType])
+
+  // let addWidth = () => {
+
 
   //   let getC = []
 
   //   if (selectedNode != undefined) {
   //     nodes.forEach((item) => {
-  //       if(item.parentId){
+  //       if (item.parentId) {
   //         item.parentId == selectedNode[0]?.id && getC.push(item)
   //       }
   //     })
@@ -225,107 +295,20 @@ const Home = () => {
 
   //     return hasChanged ? updatedNodes : e;
   //   });
-
-  // }, [nodes])
-  // }, [getResultNodeType])
-
-  let addWidth = () => {
+  // }
 
 
-    let getC = []
 
-    if (selectedNode != undefined) {
-      nodes.forEach((item) => {
-        if (item.parentId) {
-          item.parentId == selectedNode[0]?.id && getC.push(item)
-        }
-      })
-    }
-    // console.log(getChilds?.length, "get child length")
-
-    console.log(getC, "get childs")
-    console.log(getC?.length, " gc length ", getLen, " len state ")
-    getC?.length != getLen && setGetLen(getC?.length)
-
-    setNodes((e) => {
-      let hasChanged = false;
-
-      const updatedNodes = e.map((item, index) => {
-        if (item.id === "ur-parent-1" && getLen !== getC?.length) {
-          hasChanged = true;
-          return {
-            ...item,
-            style: { ...item.style, width: item.style.width += 340, height: 600 },
-          };
-        }
-        return item;
-      });
-
-      return hasChanged ? updatedNodes : e;
-    });
+  const handleDrop = (e) => {
+    onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
   }
-
-  
-
-  console.log(selectedNode, "outside")
-
-  // let aaa = [
-  //   {
-  //     name : "a",
-  //   },
-  //   {
-  //     name : "b",
-  //   },
-  //   {
-  //     name : "c",
-  //   },
-  // ]
-
-  // let aLen = aaa.length
-
-  // aaa = aaa.map((item, index) => {
-  //   let wid = 300
-
-  //   for(let i = 0; i < index; i++){
-  //     wid += 300
-  //   }
-
-  //   return {...item, width : wid}
-
-  // })
-
-  // console.log(aaa, "aaaa")
-
-  // useEffect(() => {
-
-  //   let getChilds
-  //   if (selectedNode != undefined) { getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id) }
-
-  //   console.log(getChilds, "gl")
-
-  //   getChilds = getChilds?.slice(-1)[0]
-
-  //   if(getChilds?.id == "ur-child-3"){
-
-  //     setNodes((e) =>  e.map((item, index, arr) => {
-  //       if(item.id == "ur-child-3" && item.selected == true ){
-  //         return arr.map((item) => item.id == "ur-parent-1" ? {...item, selected : false} : item)
-  //       }
-  //     }))
-
-  //   }
-
-  // }, [nodes, selectedNode])
-
-
-  // console.log(nodes, "nodes")
 
   return (
     <>
       <div className='flex w-full h-[100vh]'>
         {/* <Dailogs /> */}
         <div className='react-flow-class'>
-          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [e.preventDefault()]} onDrop={(e) => onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)}>
+          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [e.preventDefault()]} onDrop={(e) => handleDrop(e)}>
             <ReactFlow
               nodes={nodes}
               edges={edges}

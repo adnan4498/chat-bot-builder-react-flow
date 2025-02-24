@@ -7,7 +7,7 @@ export const onDrop = (
   edges,
   setEdges,
   draggedItemData,
-  selectedNode
+  selectedNode,
 ) => {
   event.preventDefault();
 
@@ -44,7 +44,7 @@ export const onDrop = (
           style: item.style,
           extent: item.extent,
           parentId: item.parentId,
-          selected : true,
+          selected : item.selected,
         },
       ]);
     });
@@ -64,12 +64,9 @@ export const onDrop = (
       droppingItemY >= getSelectedNodeY &&
       droppingItemY <= getSelectedNodeY + getSelectedNodeHeight;
 
-
     if (isInsideParent) {
       let getChildCNodes = getAllNodes.filter((item) => item.parentId).filter((items) => !items.id.includes("-condition"));
-      
-
-      
+    
       let getLastChildNodeId;
       getChildCNodes.forEach((item) => getLastChildNodeId = item.id.slice(-1));
 
@@ -80,50 +77,18 @@ export const onDrop = (
 
 
       let incrementedId = ++getLastChildNodeId;
-
-      let createNewConditionedNode = [
-        {
-          id: `ur-child-${incrementedId}`,
-          position: { x: getLastChildNodeX + 350, y: getLastChildNodeY },
-          data: { label: "Condition" },
-          type: "inputNode2",
-          parentId: `${getParentId}`,
-          selected: true,
-          // draggable: false,
-        },
-        // {
-        //   id: `ur-child-${incrementedId}-condition`,
-        //   position: { x: getLastChildNodeX + 50, y: getLastChildNodeY + 165 },
-        //   data: { label: "Your Message" },
-        //   type: "addElement",
-        //   selected: false,
-        //   draggable: false,
-        //   // parentId: `${getParentId}`,
-        // },
-      ];
-
-      createNewConditionedNode.forEach((item) => {
         setNodes((e) => [
           ...e,
           {
-            id: item.id,
-            type: item.type,
-            position: {
-              // x: droppingItemX - getSelectedNodeX,
-              // y: item.id.includes("-condition")
-              //   ? droppingItemY - getSelectedNodeY + 100
-              //   : droppingItemY - getSelectedNodeY,
-              x : item.position.x,
-              y : item.position.y,
-            },
-            data: { label: item.data.label },
-            selected : item.selected,
-            draggable : item.draggable,
-            parentId: item.parentId,
-            // extent: item.extent,
+            id: `ur-child-${incrementedId}`,
+            position: { x: getLastChildNodeX + 350, y: getLastChildNodeY },
+            data: { label: "Add Condition" },
+            type: "inputNode2",
+            parentId: `${getParentId}`,
+            selected: true,
+            draggable : false,
           },
         ]);
-      });
 
       setEdges((oldEdges) => [
         ...oldEdges,

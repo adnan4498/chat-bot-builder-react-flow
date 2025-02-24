@@ -10,12 +10,12 @@ const ResultNode = () => {
             {
                 draggedItemName: "resultNode",
                 draggedItemType: "result",
-                draggedItemLabel: "Result",
+                draggedItemLabel: "ResultNode",
                 initialResultNodes: [
                     {
                         id: 'ur-parent-1',
                         type: 'resultParent',
-                        data: { label: null },
+                        data: { label: "ResultNode" },
                         style: {
                             // minWidth: 1000, // 
                             // minHeight: 600, // 
@@ -25,6 +25,7 @@ const ResultNode = () => {
                             borderRadius: 5,
                             // background : "white"
                         },
+                        selected : true
                     },
                     // {
                     //     id: 'ur-input-1',
@@ -41,6 +42,7 @@ const ResultNode = () => {
                         draggable : false,
                         parentId: 'ur-parent-1',
                         extent: 'parent',
+                        selected : false
                     },
                     {
                         id: 'ur-child-2',
@@ -50,6 +52,7 @@ const ResultNode = () => {
                         draggable : false,
                         parentId: 'ur-parent-1',
                         extent: 'parent',
+                        selected : false
                     },
                     // {
                     //     id: 'child-1-condition',
