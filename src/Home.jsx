@@ -21,13 +21,15 @@ import { useDeletingNodeIdContext, useDragContext, useSelectedNodeContext } from
 import DefaultStartingNode from './DefaultStartingNode';
 import CustomEdge from './DelayEdge';
 import Dailogs from './layout/Dailogs';
-import InputNode from './nodeComponents/InputNode';
 import NodesMenu from './layout/NodesMenu';
 import ListInput from './nodeComponents/ListInput';
 import InputNode2 from './nodeComponents/InputNode2';
 import { WarningOutlined } from '@ant-design/icons';
 import ResultParent from './ResultParent';
 import AddElement from './AddElement';
+import ImageNode from './nodeComponents/ImageNode';
+import ImageInputNode from './nodeComponents/ImageInputNode';
+import TextInputNode from './nodeComponents/TextInputNode';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -40,7 +42,7 @@ const Home = () => {
 
   const initialEdges = [
     { id: "conditionNode-resultNode", hidden: false, source: "ur-input-1", target: "ur-parent-1", },
-    // { id: "e-child1", source: "child-1", target: "child-1-condition", data: { label: 'Add Delay' }, type: "customEdge" },
+    { id: "e-child1", source: "child-1", target: "child-1-condition", data: { label: 'Add Delay' }, type: "customEdge" },
     // { id: "e-child1", source: "child-1", target: "child-1-condition" },
     // { id: "e-child2", source: "child-2", target: "child-2-condition" },
   ];
@@ -61,13 +63,13 @@ const Home = () => {
 
     let checkAddConditionNode = getSelectedNode.filter(item => item.data.label == draggedItemData?.draggedItemLabel)
 
-    if (checkAddConditionNode[0]?.id == "ur-child-3") {
+    if (checkAddConditionNode[0]?.data.label == "Add Condition") {
 
       setNodes((e) => {
         let isChanged = false
 
         let changedArr = e.map((item) => {
-          if (item?.id == "ur-parent-1" && item.selected == true) {
+          if (item?.id?.includes("parent") && item.selected == true) {
             isChanged = true
             return { ...item, selected: false }
           }
@@ -77,23 +79,18 @@ const Home = () => {
         return isChanged ? changedArr : e
       })
 
+      // deleting node is not selected, to prevent opening its menu
       if (checkAddConditionNode[0]?.id != deletingNodeId) {
         setSelectedNode(checkAddConditionNode)
       }
 
     }
     else {
-      // deleting node is not selected, to prevent opening its menu
       if (getSelectedNode[0]?.id != deletingNodeId) {
         setSelectedNode(getSelectedNode)
       }
 
     }
-
-    // if (getSelectedNode[0]?.id != deletingNodeId) {
-    //   setSelectedNode(getSelectedNode)
-    // }
-
 
   }, [nodes])
 
@@ -101,8 +98,6 @@ const Home = () => {
     (params) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
-
-
 
   // to remove edges by clicking on it
   // const onEdgesChange = useCallback(
@@ -115,8 +110,9 @@ const Home = () => {
   const nodeTypes = {
     custom: CustomNode,
     stateNode: CustomStateNode,
-    inputNode: InputNode,
+    textInputNode: TextInputNode,
     inputNode2: InputNode2,
+    imageInputNode : ImageInputNode,
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
@@ -130,15 +126,22 @@ const Home = () => {
 
   const { setViewport } = useReactFlow();
 
-  const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
-
-  const [getLen, setGetLen] = useState(2)
-  let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
-
   useEffect(() => {
     setViewport({ x: 0, y: 0, zoom: 1 });
   }, [])
-  
+
+  const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
+
+  const [getLen, setGetLen] = useState(2)
+
+  let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
+
+  let getChildCNodes = nodes.filter((items) => items.id.includes("-condition"));
+  let getChildXPos = getChildCNodes.map(item => item.position.x)
+
+  let getLastChildPos = getChildXPos.slice(-1)[0]
+
+  console.log(nodes, "nodes")
 
   useEffect(() => {
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
@@ -146,7 +149,7 @@ const Home = () => {
     let getX = getResultNodeType?.position?.x
     let getY = getResultNodeType?.position?.y
 
-    // current div positions vs useState positions
+    // current div positions against useState positions
     // useState positions are 1 render behind
     let checkY = topBot.y == getResultNodeType?.position?.y
     let checkX = topBot.x == getResultNodeType?.position?.x
@@ -157,61 +160,78 @@ const Home = () => {
     }
     if (selectedNode != undefined && selectedNode[0]?.type == "resultParent") {
 
-      if (!checkY || !checkX) {
-        getChilds.forEach((item, index) => {
-          if (!nodes.some(nds => nds.id.match(new RegExp(`${item.id}-condition`, "i")))) {
-            let incre = getX
+      console.log(getLastChildPos, "getLastChildPos")
+      console.log(getChildCNodes, "getChildCNodes")
 
-            if (index == 0) {
-              setNodes((e) => [
-                ...e,
-                {
-                  id: `${item.id}-condition`,
-                  position: { x: getX + 20, y: getY + 180 },
-                  data: { label: "" },
-                  type: "addElement",
-                  selected: false,
-                  draggable: false,
-                },
-              ]
-              )
-            }
-            else {
-              for (let i = 0; i < index; i++) {
-                incre += 350
-              }
+      getChilds.forEach((item, index) => {
+        if (!nodes.some(nds => nds.id.match(new RegExp(`${item.id}-condition`, "i")))) {
 
-              setNodes((e) => [
-                ...e,
-                {
-                  id: `${item.id}-condition`,
-                  position: { x: incre + 20, y: getY + 180 },
-                  data: { label: "" },
-                  type: "addElement",
-                  selected: false,
-                  draggable: false,
-                },
-              ]
-              )
-            }
+          if (index == 0) {
+            setNodes((e) => [
+              ...e,
+              {
+                id: `${item.id}-condition`,
+                position: { x: getX + 30, y: getY + 180 },
+                data: { label: "" },
+                type: "addElement",
+                selected: false,
+                draggable: false,
+              },
+            ]
+            )
+          }
+          else if (index == 1) {
+            // for (let i = 0; i < index; i++) {
+            //   incre += 340
+            // }
+
+            setNodes((e) => [
+              ...e,
+              {
+                id: `${item.id}-condition`,
+                position: { x: getX + 340, y: getY + 180 },
+                data: { label: "" },
+                type: "addElement",
+                selected: false,
+                draggable: false,
+              },
+            ]
+            )
           }
           else {
+            setNodes((e) => [
+              ...e,
+              {
+                id: `${item.id}-condition`,
+                position: { x: getLastChildPos + 310, y: getY + 180 },
+                data: { label: "" },
+                type: "addElement",
+                selected: false,
+                draggable: false,
+              },
+            ]
+            )
+          }
+        }
+        else {
+          if (!checkY || !checkX) {
             // retrieve; update positions; set back
-            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition"))
-              .map((item, index) => {
-                let incre = getX
-                if (index == 0) {
-                  return { ...item, position: { x: getX + 20, y: getY + 180 } }
-                }
-                else {
-                  for (let i = 0; i < index; i++) {
-                    incre += 350
-                  }
-
-                  return { ...item, position: { x: incre, y: getY + 180 } }
-                }
-                // return { ...item, position: { x: index == 0 ? getX + 20 : index == 2 ? getX + 450 : getX + 370, y: getY + 180 } }
-              })
+            let lastXPos = getX + 30;
+            let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => {
+              let newXPos;
+          
+              if (index === 0) {
+                newXPos = getX + 30;
+              } else if (index === 1) {
+                newXPos = getX + 340;
+              } else {
+                newXPos = lastXPos + 310;  // Use the dynamically updated last position
+              }
+          
+              lastXPos = newXPos;  // Update lastXPos for the next iteration
+          
+              return { ...item, position: { x: newXPos, y: getY + 180 } };
+            });
 
             let setConditionalNodes = (nodeItem) => {
               // returns single obj
@@ -220,16 +240,16 @@ const Home = () => {
 
             setNodes((e) => e.map((item) => item.id.includes("-condition") ? setConditionalNodes(item) : item))
           }
-        })
-      }
+        }
+      })
     }
 
-    // adds width for new conditioned node
+    // adds width on ur-parent for new conditioned node
     if (selectedNode?.length > 0) {
 
       let getParent = nodes.filter(item => item.id.includes("parent"))
 
-      let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == getParent[0]?.id )
+      let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == getParent[0]?.id)
       getC?.length != getLen && setGetLen(getC?.length)
 
       setNodes((e) => {
@@ -240,7 +260,7 @@ const Home = () => {
             hasChanged = true;
             return {
               ...item,
-              style: { ...item.style, width: item.style.width += 340, height: 600 },
+              style: { ...item.style, width: item.style.width += 310, height: 155 },
             };
           }
           return item;
@@ -253,60 +273,11 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-
-  // useEffect(() => {
-
-    
-
-  //   console.log("hello")
-  // }, [nodes, selectedNode])
-
-  // console.log(nodes, "nodes")
-
-
-  // }, [getResultNodeType])
-
-  // let addWidth = () => {
-
-
-  //   let getC = []
-
-  //   if (selectedNode != undefined) {
-  //     nodes.forEach((item) => {
-  //       if (item.parentId) {
-  //         item.parentId == selectedNode[0]?.id && getC.push(item)
-  //       }
-  //     })
-  //   }
-  //   // console.log(getChilds?.length, "get child length")
-
-  //   console.log(getC, "get childs")
-  //   console.log(getC?.length, " gc length ", getLen, " len state ")
-  //   getC?.length != getLen && setGetLen(getC?.length)
-
-  //   setNodes((e) => {
-  //     let hasChanged = false;
-
-  //     const updatedNodes = e.map((item, index) => {
-  //       if (item.id === "ur-parent-1" && getLen !== getC?.length) {
-  //         hasChanged = true;
-  //         return {
-  //           ...item,
-  //           style: { ...item.style, width: item.style.width += 340, height: 600 },
-  //         };
-  //       }
-  //       return item;
-  //     });
-
-  //     return hasChanged ? updatedNodes : e;
-  //   });
-  // }
-
-
-
   const handleDrop = (e) => {
     onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
   }
+
+  console.log(nodes, "nodes")
 
   return (
     <>
@@ -327,7 +298,7 @@ const Home = () => {
               <Background />
               <Controls />
               {/* <MiniMap maskColor="#cfcfcf" /> */}
-              {/* <div className={`border-dotted border-red-500 border-2 w-[250px] h-[30px] absolute gap-2 px-2 justify-center ${topBot.x == 0 ? "hidden" : "flex"}`} style={{ left: `${topBot.x}px`, top: `${topBot.y}px`}}>
+              {/* <div className={border-dotted border-red-500 border-2 w-[250px] h-[30px] absolute gap-2 px-2 justify-center ${topBot.x == 0 ? "hidden" : "flex"}} style={{ left: ${topBot.x}px, top: ${topBot.y}px}}>
                 <div>
                   Add an element here
                 </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Handle, Position, useReactFlow } from '@xyflow/react';
 import EditDeleteMove from '../shared/EditDeleteMove';
 
-const InputNode = ({ id, data, selected }) => {
+const TextInputNode = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()
 
 
@@ -41,4 +41,4 @@ const InputNode = ({ id, data, selected }) => {
     )
 }
 
-export default InputNode
+export default TextInputNode

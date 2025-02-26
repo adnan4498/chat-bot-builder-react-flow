@@ -74,14 +74,13 @@ export const onDrop = (
 
       let getLastChildNodeX = getChildCNodes.map(item => item.position.x).pop()
       let getLastChildNodeY = getChildCNodes.map(item => item.position.y).pop()
-
-
+      
       let incrementedId = ++getLastChildNodeId;
         setNodes((e) => [
           ...e,
           {
             id: `ur-child-${incrementedId}`,
-            position: { x: getLastChildNodeX + 350, y: getLastChildNodeY },
+            position: { x: getLastChildNodeX + 310, y: getLastChildNodeY },
             data: { label: "Add Condition" },
             type: "inputNode2",
             parentId: `${getParentId}`,

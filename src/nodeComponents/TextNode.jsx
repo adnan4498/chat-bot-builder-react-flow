@@ -10,7 +10,7 @@ const TextNode = () => {
         setDraggedItemData(
             {
                 draggedItemName: "textNode",
-                draggedItemType: "inputNode",
+                draggedItemType: "textInputNode",
                 draggedItemLabel: "Send Text"
             }
         )

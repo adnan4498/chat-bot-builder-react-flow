@@ -19,21 +19,21 @@ const ResultNode = () => {
                         style: {
                             // minWidth: 1000, // 
                             // minHeight: 600, // 
-                            width: 670, // 
-                            height: 600, //
+                            width: 660, // 
+                            height: 155, //
                             border: "1px solid black",
                             borderRadius: 5,
                             // background : "white"
                         },
                         selected : true
                     },
-                    // {
-                    //     id: 'ur-input-1',
-                    //     type: 'inputNode',
-                    //     hidden : false,
-                    //     data: { label: "Type your condition"},
-                    //     // position: { x: 100, y: 20 },
-                    // },
+                    {
+                        id: 'ur-input-1',
+                        type: 'inputNode',
+                        hidden : false,
+                        data: { label: "Type your condition"},
+                        // position: { x: 100, y: 20 },
+                    },
                     {
                         id: 'ur-child-1',
                         type: 'inputNode2',
