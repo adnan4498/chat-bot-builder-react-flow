@@ -1,6 +1,6 @@
 import React from 'react'
 import { Handle, Position, useReactFlow } from '@xyflow/react';
-import EditDeleteMove from '../shared/EditDeleteMove';
+import EditDeleteMove from '../../shared/EditDeleteMove';
 
 const ImageInputNode = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()

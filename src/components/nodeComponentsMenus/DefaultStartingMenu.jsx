@@ -6,6 +6,9 @@ import ImageNode from '../nodeComponents/ImageNode'
 import DelayNode from '../nodeComponents/DelayNode'
 import ListNode from '../nodeComponents/ListNode'
 import AudioNode from '../nodeComponents/AudioNode'
+import FileNode from '../nodeComponents/FileNode'
+import VideoNode from '../nodeComponents/VideoNode'
+import ReplyNodeButton from '../nodeComponents/ReplyButtonNode'
 
 const DefaultStartingMenu = () => {
     return (
@@ -31,12 +34,16 @@ const DefaultStartingMenu = () => {
                     <h2>Chatbot Sends</h2>
                 </div>
 
-                <div className='flex gap-2 mt-3'>
+                <div className='grid grid-cols-4 gap-2 mt-3'>
+                {/* <div className='flex gap-2 mt-3'> */}
 
                     <TextNode />
                     <ListNode />
                     <ImageNode />
                     <AudioNode />
+                    <FileNode />
+                    <VideoNode />
+                    <ReplyNodeButton />
                 </div>
             </div>
 

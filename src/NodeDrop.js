@@ -114,7 +114,7 @@ export const onDrop = (
     let incrementingId = ++getHighestIdNum;
     let backToString = String(incrementingId);
 
-    if (draggedItemLabel == "List Node") {
+    if (draggedItemLabel == "List Node" || draggedItemLabel == "Reply Button") {
       setNodes((e) => [
         ...e,
         {
@@ -147,7 +147,46 @@ export const onDrop = (
           selected: true,
         },
       ]);
-    } else {
+    }
+    // else if(draggedItemLabel == "Reply Button"){
+    //   setNodes((e) => [
+    //     ...e,
+    //     {
+    //       id: backToString,
+    //       position: { x: event.pageX, y: event.pageY },
+    //       data: {
+    //         label: [
+    //           {
+    //             headerTextLabel: "",
+    //             bodyTextLabel: "",
+    //             footerTextLabel: "",
+    //             buttonSection: [
+    //               {
+    //                 addNewButton: [
+    //                   {
+    //                     buttonTitle : "",
+    //                     buttonPostback: "",
+    //                   },
+    //                 ],
+    //                 addButtonFromListAtr : [
+    //                   {
+    //                     atr : "",
+    //                     iterationLabel : "",
+    //                     buttonTitle: "",
+    //                     postback : "",
+    //                   },
+    //                 ]
+    //               },
+    //             ],
+    //           },
+    //         ],
+    //       },
+    //       type: draggedItemType,
+    //       selected: true,
+    //     },
+    //   ]);
+    // }
+    else {
       setNodes((e) => [
         ...e,
         {

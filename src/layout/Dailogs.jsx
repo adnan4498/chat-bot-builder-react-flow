@@ -1,9 +1,9 @@
 import React from 'react'
-import TextNode from '../nodeComponents/TextNode'
-import ImageNode from '../nodeComponents/ImageNode'
-import ResultNode from '../nodeComponents/ResultNode'
+import TextNode from '../components/nodeComponents/TextNode'
+import ImageNode from '../components/nodeComponents/ImageNode'
+import ResultNode from '../components/nodeComponents/ResultNode'
 import { DoubleRightOutlined, InfoCircleOutlined, MoreOutlined } from '@ant-design/icons'
-import DelayNode from '../nodeComponents/DelayNode'
+import DelayNode from '../components/nodeComponents/DelayNode'
 
 const Dailogs = () => {
     return (

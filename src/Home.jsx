@@ -22,15 +22,18 @@ import DefaultStartingNode from './DefaultStartingNode';
 import CustomEdge from './DelayEdge';
 import Dailogs from './layout/Dailogs';
 import NodesMenu from './layout/NodesMenu';
-import ListInput from './nodeComponents/ListInput';
-import InputNode2 from './nodeComponents/InputNode2';
+import ListInput from './components/nodeComponents/ListInput';
+import InputNode2 from './components/nodeComponents/InputNode2';
 import { WarningOutlined } from '@ant-design/icons';
 import ResultParent from './ResultParent';
 import AddElement from './AddElement';
-import ImageNode from './nodeComponents/ImageNode';
-import ImageInputNode from './nodeComponents/ImageInputNode';
-import TextInputNode from './nodeComponents/TextInputNode';
-import AudioInputNode from './nodeComponents/AudioInputNode';
+import ImageNode from './components/nodeComponents/ImageNode';
+import ImageInputNode from './components/nodeComponents/ImageInputNode';
+import TextInputNode from './components/nodeComponents/TextInputNode';
+import AudioInputNode from './components/nodeComponents/AudioInputNode';
+import FileInputNode from './components/nodeComponents/FileInputNode';
+import VideoInputNode from './components/nodeComponents/VideoInputNode';
+import ReplyButtonInputNode from './components/nodeComponents/ReplyButtonInputNode';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -113,13 +116,16 @@ const Home = () => {
     stateNode: CustomStateNode,
     textInputNode: TextInputNode,
     inputNode2: InputNode2,
-    imageInputNode : ImageInputNode,
-    audioInputNode : AudioInputNode,
+    imageInputNode: ImageInputNode,
+    audioInputNode: AudioInputNode,
+    fileInputNode: FileInputNode,
+    videoInputNode: VideoInputNode,
+    replyButtonInputNode: ReplyButtonInputNode,
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
     resultParent: ResultParent,
-    addElement: AddElement
+    addElement: AddElement,
   };
 
   const edgeTypes = {

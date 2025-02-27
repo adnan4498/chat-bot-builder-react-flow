@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { CheckOutlined, CloseOutlined, DoubleRightOutlined } from '@ant-design/icons'
 import { useReactFlow } from '@xyflow/react'
-import { useSelectedNodeContext } from '../ContextApi/DragDropContext'
+import { useSelectedNodeContext } from '../../ContextApi/DragDropContext'
 import TextArea from 'antd/es/input/TextArea'
 import { Space, Switch } from 'antd'
 
