@@ -8,7 +8,7 @@ import { Space, Switch } from 'antd'
 import { InboxOutlined } from '@ant-design/icons';
 import { message, Upload } from 'antd';
 
-const ImageMenu = () => {
+const AudioMenu = () => {
 
     const [uploadOrLink, setUploadOrLink] = useState()
     const [multiImgData, setMultiImgData] = useState()
@@ -169,4 +169,4 @@ const ImageMenu = () => {
     )
 }
 
-export default ImageMenu
+export default AudioMenu

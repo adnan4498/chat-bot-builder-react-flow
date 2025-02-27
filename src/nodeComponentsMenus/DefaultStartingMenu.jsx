@@ -5,6 +5,7 @@ import ResultNode from '../nodeComponents/ResultNode'
 import ImageNode from '../nodeComponents/ImageNode'
 import DelayNode from '../nodeComponents/DelayNode'
 import ListNode from '../nodeComponents/ListNode'
+import AudioNode from '../nodeComponents/AudioNode'
 
 const DefaultStartingMenu = () => {
     return (
@@ -35,6 +36,7 @@ const DefaultStartingMenu = () => {
                     <TextNode />
                     <ListNode />
                     <ImageNode />
+                    <AudioNode />
                 </div>
             </div>
 

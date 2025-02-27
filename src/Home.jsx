@@ -30,6 +30,7 @@ import AddElement from './AddElement';
 import ImageNode from './nodeComponents/ImageNode';
 import ImageInputNode from './nodeComponents/ImageInputNode';
 import TextInputNode from './nodeComponents/TextInputNode';
+import AudioInputNode from './nodeComponents/AudioInputNode';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -113,6 +114,7 @@ const Home = () => {
     textInputNode: TextInputNode,
     inputNode2: InputNode2,
     imageInputNode : ImageInputNode,
+    audioInputNode : AudioInputNode,
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
@@ -141,8 +143,6 @@ const Home = () => {
 
   let getLastChildPos = getChildXPos.slice(-1)[0]
 
-  console.log(nodes, "nodes")
-
   useEffect(() => {
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
@@ -159,9 +159,6 @@ const Home = () => {
       getChilds = nodes.filter(item => item.parentId == selectedNode[0]?.id)
     }
     if (selectedNode != undefined && selectedNode[0]?.type == "resultParent") {
-
-      console.log(getLastChildPos, "getLastChildPos")
-      console.log(getChildCNodes, "getChildCNodes")
 
       getChilds.forEach((item, index) => {
         if (!nodes.some(nds => nds.id.match(new RegExp(`${item.id}-condition`, "i")))) {
