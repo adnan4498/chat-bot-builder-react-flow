@@ -9,6 +9,8 @@ import AudioNode from '../nodeComponents/AudioNode'
 import FileNode from '../nodeComponents/FileNode'
 import VideoNode from '../nodeComponents/VideoNode'
 import ReplyNodeButton from '../nodeComponents/ReplyButtonNode'
+import UrlButtonNode from '../nodeComponents/UrlButtonNode'
+import StickerNode from '../nodeComponents/StickerNode'
 
 const DefaultStartingMenu = () => {
     return (
@@ -44,6 +46,8 @@ const DefaultStartingMenu = () => {
                     <FileNode />
                     <VideoNode />
                     <ReplyNodeButton />
+                    <UrlButtonNode />
+                    <StickerNode />
                 </div>
             </div>
 

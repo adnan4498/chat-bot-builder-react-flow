@@ -32,7 +32,7 @@ const HandleMediaFileUploader = ({ suppportedFileTypes }) => {
         console.log(file, "file")
 
         const checkFileType = (fileType) => {
-            let validFileTypes = ["image/", "audio/", "video/", "mp4/" ,"/pdf", "/msword"]
+            let validFileTypes = ["image/", "audio/", "video/", "mp4/" ,"/pdf", "/msword", ".webp/"]
             return validFileTypes.some(types => fileType.includes(types))
         }
         

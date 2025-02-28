@@ -34,6 +34,8 @@ import AudioInputNode from './components/nodeComponents/AudioInputNode';
 import FileInputNode from './components/nodeComponents/FileInputNode';
 import VideoInputNode from './components/nodeComponents/VideoInputNode';
 import ReplyButtonInputNode from './components/nodeComponents/ReplyButtonInputNode';
+import UrlButtonInputNode from './components/nodeComponents/UrlButtonInputNode';
+import StickerInputNode from './components/nodeComponents/StickerInputNode';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -121,6 +123,8 @@ const Home = () => {
     fileInputNode: FileInputNode,
     videoInputNode: VideoInputNode,
     replyButtonInputNode: ReplyButtonInputNode,
+    urlButtonInputNode : UrlButtonInputNode,
+    stickerInputNode : StickerInputNode,
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
@@ -279,8 +283,6 @@ const Home = () => {
   const handleDrop = (e) => {
     onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
   }
-
-  console.log(nodes, "nodes")
 
   return (
     <>

@@ -7,7 +7,7 @@ export const onDrop = (
   edges,
   setEdges,
   draggedItemData,
-  selectedNode,
+  selectedNode
 ) => {
   event.preventDefault();
 
@@ -38,13 +38,13 @@ export const onDrop = (
                 : item?.position?.y || event.pageY - 100,
           },
           data: item.data,
-          hidden : item.hidden,
-          draggable : item.draggable,
+          hidden: item.hidden,
+          draggable: item.draggable,
           type: item.type,
           style: item.style,
           extent: item.extent,
           parentId: item.parentId,
-          selected : item.selected,
+          selected: item.selected,
         },
       ]);
     });
@@ -65,29 +65,37 @@ export const onDrop = (
       droppingItemY <= getSelectedNodeY + getSelectedNodeHeight;
 
     if (isInsideParent) {
-      let getChildCNodes = getAllNodes.filter((item) => item.parentId).filter((items) => !items.id.includes("-condition"));
-    
+      let getChildCNodes = getAllNodes
+        .filter((item) => item.parentId)
+        .filter((items) => !items.id.includes("-condition"));
+
       let getLastChildNodeId;
-      getChildCNodes.forEach((item) => getLastChildNodeId = item.id.slice(-1));
+      getChildCNodes.forEach(
+        (item) => (getLastChildNodeId = item.id.slice(-1))
+      );
 
-      let getParentId = getChildCNodes.map(item => item.parentId)[0]
+      let getParentId = getChildCNodes.map((item) => item.parentId)[0];
 
-      let getLastChildNodeX = getChildCNodes.map(item => item.position.x).pop()
-      let getLastChildNodeY = getChildCNodes.map(item => item.position.y).pop()
-      
+      let getLastChildNodeX = getChildCNodes
+        .map((item) => item.position.x)
+        .pop();
+      let getLastChildNodeY = getChildCNodes
+        .map((item) => item.position.y)
+        .pop();
+
       let incrementedId = ++getLastChildNodeId;
-        setNodes((e) => [
-          ...e,
-          {
-            id: `ur-child-${incrementedId}`,
-            position: { x: getLastChildNodeX + 310, y: getLastChildNodeY },
-            data: { label: "Add Condition" },
-            type: "inputNode2",
-            parentId: `${getParentId}`,
-            selected: true,
-            draggable : false,
-          },
-        ]);
+      setNodes((e) => [
+        ...e,
+        {
+          id: `ur-child-${incrementedId}`,
+          position: { x: getLastChildNodeX + 310, y: getLastChildNodeY },
+          data: { label: "Add Condition" },
+          type: "inputNode2",
+          parentId: `${getParentId}`,
+          selected: true,
+          draggable: false,
+        },
+      ]);
 
       setEdges((oldEdges) => [
         ...oldEdges,
@@ -138,6 +146,32 @@ export const onDrop = (
                       //   postBack: "",
                       // },
                     ],
+                  },
+                ],
+              },
+            ],
+          },
+          type: draggedItemType,
+          selected: true,
+        },
+      ]);
+    } else if (draggedItemLabel == "Url Button") {
+      setNodes((e) => [
+        ...e,
+        {
+          id: backToString,
+          position: { x: event.pageX, y: event.pageY },
+          data: {
+            label: [
+              {
+                headerTextLabel: "",
+                bodyTextLabel: "",
+                footerTextLabel: "",
+                listBtnTextLabel: "",
+                btnSection: [
+                  {
+                    btnText: "",
+                    url: "",
                   },
                 ],
               },
