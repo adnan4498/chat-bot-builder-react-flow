@@ -20,7 +20,7 @@ const NodesMenu = () => {
   selectedNode != null && (getType = selectedNode[0]?.type)
 
   return (
-    <div className="w-[40%] bg-[#fafafa] pl-8 pr-2 border-left-class overflow-y-scroll h-full pt-[125px]">
+    <div className="w-[35%] bg-[#fafafa] pl-8 pr-2 border-left-class overflow-y-scroll h-full pt-[125px]">
       {getType == "defaultStarting" || getType == undefined ? <DefaultStartingMenu /> : getType == "resultParent" ? <ResultMenu /> : getType == "textInputNode" || getType == "inputNode2" ? <InputMenu /> : getType == "listNode" ? <ListMenu /> : getType == "imageInputNode" ? <ImageMenu /> : getType == "audioInputNode" ? <AudioMenu /> : getType == "fileInputNode" ? <FileMenu /> : getType == "videoInputNode" ? <VideoMenu /> : getType == "replyButtonInputNode" ? <ReplyButtonMenu /> : getType == "urlButtonInputNode" ? <UrlButtonMenu /> : getType == "stickerInputNode" ? <StickerMenu /> : ""}
     </div>
   )

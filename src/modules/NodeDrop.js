@@ -1,5 +1,3 @@
-import { Handle } from "@xyflow/react";
-
 export const onDrop = (
   event,
   nodes,

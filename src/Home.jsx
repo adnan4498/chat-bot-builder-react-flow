@@ -16,7 +16,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import CustomNode from './CustomNode';
 import CustomStateNode from './CustomStateNode';
 import ResultNode from './ResultNodeFunctionality';
-import { onDrop } from './NodeDrop';
+import { onDrop } from './modules/NodeDrop';
 import { useDeletingNodeIdContext, useDragContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
 import DefaultStartingNode from './DefaultStartingNode';
 import CustomEdge from './DelayEdge';
@@ -42,8 +42,22 @@ const Home = () => {
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
 
+  const { setViewport, fitView } = useReactFlow();
+
+  // used to center node
+  const initialNodeWidth = 150;
+  const initialNodeHeight = 50;
+
   const initialNodes = [
-    { id: '0', position: { x: 450, y: 200 }, data: { label: "Default" }, type: "defaultStarting" },
+    {
+      id: '0',
+      position: {
+        x: (window.innerWidth / 3.5) - (initialNodeWidth / 3.5),
+        y: (window.innerHeight / 2.2) - (initialNodeHeight / 2.2)
+      },
+      data: { label: "Default" },
+      type: "defaultStarting"
+    },
   ];
 
   const initialEdges = [
@@ -62,13 +76,84 @@ const Home = () => {
 
   }, [deletingNodeId])
 
+
+  useEffect(() => {
+    fitView({ padding: 0.8 });
+  }, [fitView, nodes, setNodes]);
+  
+  const handleDrop = (e) => {
+    
+    // onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
+    console.log(nodes, "n")
+    
+    setNodes((prevNodes) => {
+      const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+      const newY = lastNode ? lastNode.position.y + initialNodeHeight + 20 : window.innerHeight / 3;
+      
+      return [
+        ...prevNodes,
+        {
+          id: (prevNodes.length + 1).toString(), // Increment ID
+          position: {
+            x: (window.innerWidth / 3.5) - (initialNodeWidth / 3.5),
+            y: newY, // Place below the last node
+          },
+          data: { label: "" },
+          type: "defaultStarting",
+          selected: true,
+        },
+      ];
+    });
+    
+
+    setTimeout(() => {
+      fitView({ padding: 0.8 }); // Adjusts viewport to fit all nodes
+    }, 1000);
+  }
+
+  // const [dummy, setDummy] = useState(
+  //   [
+  //     {
+  //       id: 0,
+  //       name: "adnan",
+  //     },
+  //     {
+  //       id: 1,
+  //       name: "adnan2",
+  //     },
+  //     {
+  //       id: 2,
+  //       name: "adnan3",
+  //     },
+  //   ]
+  // )
+
+
+
+
+
+  const handleDragOver = (t) => {
+    t.preventDefault()
+
+
+    setNodes((e) => e.map((ee) => {
+      return {...ee, style : {backgroundColor : "red"}}
+    }))
+
+
+    // setDummy((e) => e.map((ee) => {
+    //   return {...ee, style : {backgroundColor : "red"}}
+    // }))
+  }
+
+  // selectedNode != undefined && console.log(selectedNode[0], "selectedNode")
+
   // get/set selected node in setSelected contextHook
   useEffect(() => {
 
     let getSelectedNode = nodes.filter(items => items.selected)
 
     let checkAddConditionNode = getSelectedNode.filter(item => item.data.label == draggedItemData?.draggedItemLabel)
-
     if (checkAddConditionNode[0]?.data.label == "Add Condition") {
 
       setNodes((e) => {
@@ -123,8 +208,8 @@ const Home = () => {
     fileInputNode: FileInputNode,
     videoInputNode: VideoInputNode,
     replyButtonInputNode: ReplyButtonInputNode,
-    urlButtonInputNode : UrlButtonInputNode,
-    stickerInputNode : StickerInputNode,
+    urlButtonInputNode: UrlButtonInputNode,
+    stickerInputNode: StickerInputNode,
     result: ResultNode,
     listNode: ListInput,
     defaultStarting: DefaultStartingNode,
@@ -135,12 +220,6 @@ const Home = () => {
   const edgeTypes = {
     customEdge: CustomEdge,
   };
-
-  const { setViewport } = useReactFlow();
-
-  useEffect(() => {
-    setViewport({ x: 0, y: 0, zoom: 1 });
-  }, [])
 
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
 
@@ -226,7 +305,7 @@ const Home = () => {
             let lastXPos = getX + 30;
             let update_conditional_nodes_positions = nodes.filter(nds => nds.id?.includes("-condition")).map((item, index) => {
               let newXPos;
-          
+
               if (index === 0) {
                 newXPos = getX + 30;
               } else if (index === 1) {
@@ -234,9 +313,9 @@ const Home = () => {
               } else {
                 newXPos = lastXPos + 310;  // Use the dynamically updated last position
               }
-          
+
               lastXPos = newXPos;  // Update lastXPos for the next iteration
-          
+
               return { ...item, position: { x: newXPos, y: getY + 180 } };
             });
 
@@ -280,16 +359,12 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-  const handleDrop = (e) => {
-    onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
-  }
-
   return (
     <>
       <div className='flex w-full h-[100vh]'>
-        {/* <Dailogs /> */}
+        <Dailogs />
         <div className='react-flow-class'>
-          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [e.preventDefault()]} onDrop={(e) => handleDrop(e)}>
+          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => handleDragOver(e)} onDrop={(e) => handleDrop(e)}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -299,22 +374,14 @@ const Home = () => {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
+              nodesDraggable={false} // Disable dragging globally
+              fitView
             >
               <Background />
               <Controls />
-              {/* <MiniMap maskColor="#cfcfcf" /> */}
-              {/* <div className={border-dotted border-red-500 border-2 w-[250px] h-[30px] absolute gap-2 px-2 justify-center ${topBot.x == 0 ? "hidden" : "flex"}} style={{ left: ${topBot.x}px, top: ${topBot.y}px}}>
-                <div>
-                  Add an element here
-                </div>
-                <div>
-                  <WarningOutlined color='red' />
-                </div>
-              </div> */}
             </ ReactFlow>
           </div>
         </div>
-        {/* {isResultNodeSelected ? <ResultMenu /> : <NodesMenu />} */}
         <NodesMenu />
 
         {/* <RightSideBar /> */}
