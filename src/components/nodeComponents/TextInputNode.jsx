@@ -31,9 +31,9 @@ const TextInputNode = ({ id, data, selected }) => {
                 </div>
 
 
-                {selected &&
+                {/* {selected &&
                     <EditDeleteMove id={id} />
-                }
+                } */}
 
             </div>
         </div>

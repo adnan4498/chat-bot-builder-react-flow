@@ -44,7 +44,7 @@ const Home = () => {
 
   const { setViewport, fitView } = useReactFlow();
 
-  // used to center node
+  // used to center initial node
   const initialNodeWidth = 150;
   const initialNodeHeight = 50;
 
@@ -76,75 +76,95 @@ const Home = () => {
 
   }, [deletingNodeId])
 
+  // useEffect(() => {
+  //   setViewport({ zoom : 1});
+  // }, []);
 
   useEffect(() => {
-    fitView({ padding: 0.8 });
+    fitView({ duration: 0, padding: 1.5 });
   }, [fitView, nodes, setNodes]);
-  
+
+
   const handleDrop = (e) => {
-    
-    // onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode)
-    console.log(nodes, "n")
-    
-    setNodes((prevNodes) => {
-      const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
-      const newY = lastNode ? lastNode.position.y + initialNodeHeight + 20 : window.innerHeight / 3;
-      
-      return [
-        ...prevNodes,
-        {
-          id: (prevNodes.length + 1).toString(), // Increment ID
-          position: {
-            x: (window.innerWidth / 3.5) - (initialNodeWidth / 3.5),
-            y: newY, // Place below the last node
-          },
-          data: { label: "" },
-          type: "defaultStarting",
-          selected: true,
-        },
-      ];
-    });
-    
 
+    onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode, initialNodeWidth, initialNodeHeight)
+
+    // console.log(nodes, "n")
+
+    // setNodes((prevNodes) => {
+    //   const lastNode = prevNodes[prevNodes.length - 1]; // 
+    //   const newY = lastNode ? lastNode.position.y + initialNodeHeight + 20 : window.innerHeight / 3;
+
+    //   return [
+    //     ...prevNodes,
+    //     {
+    //       id: (prevNodes.length + 1).toString(), // Increment ID
+    //       position: {
+    //         x: (window.innerWidth / 3.5) - (initialNodeWidth / 3.5),
+    //         y: newY, // Place below the last node
+    //       },
+    //       data: { label: "" },
+    //       type: "defaultStarting",
+    //       selected: true,
+    //     },
+    //   ];
+    // });
+    setDragOverOnce(true)
+
+    setNodes((prevNodes) => prevNodes.filter(item => !item.id.includes("greenId")) )
+
+    
     setTimeout(() => {
-      fitView({ padding: 0.8 }); // Adjusts viewport to fit all nodes
-    }, 1000);
+      fitView({ duration: 0, padding: 1.5 }); // Adjusts viewport to fit all nodes
+    }, 0);
   }
+  
+  console.log(nodes, "nodes outside")
 
-  // const [dummy, setDummy] = useState(
-  //   [
-  //     {
-  //       id: 0,
-  //       name: "adnan",
-  //     },
-  //     {
-  //       id: 1,
-  //       name: "adnan2",
-  //     },
-  //     {
-  //       id: 2,
-  //       name: "adnan3",
-  //     },
-  //   ]
-  // )
-
-
-
-
+  const [dragOverOnce, setDragOverOnce] = useState(true)
 
   const handleDragOver = (t) => {
     t.preventDefault()
 
-
-    setNodes((e) => e.map((ee) => {
-      return {...ee, style : {backgroundColor : "red"}}
-    }))
-
-
-    // setDummy((e) => e.map((ee) => {
-    //   return {...ee, style : {backgroundColor : "red"}}
+    // setNodes((e) => e.map((ee) => {
+    //   return {...ee, style : {backgroundColor : "red", color: "red"}}
     // }))
+
+    if(dragOverOnce){
+      let bbb = []
+
+      let setGreenNode = nodes.map((prevNodes, index, arr) => {
+
+      const lastNode = prevNodes[prevNodes.length - 1]; // 
+      const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 70 : window.innerHeight / 3;
+
+      let greenNode
+      for (let i = 0; i < arr.length; i++) {
+        greenNode = {
+          id: prevNodes.id + "greenId", 
+          position: {
+            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+            y: newY,
+          }, 
+          data: { label: "hi" },
+          type: "defaultStarting",
+          selected: true,
+        }
+      }
+
+      bbb.push(prevNodes, greenNode)
+    })
+
+    setNodes(bbb)
+
+    setDragOverOnce(false)
+
+    console.log(bbb, "bbb")
   }
+
+  }
+
+   
 
   // selectedNode != undefined && console.log(selectedNode[0], "selectedNode")
 
@@ -359,12 +379,14 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
+  // console.log(nodes, "nodes")
+
   return (
     <>
       <div className='flex w-full h-[100vh]'>
         <Dailogs />
         <div className='react-flow-class'>
-          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => handleDragOver(e)} onDrop={(e) => handleDrop(e)}>
+          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [handleDragOver(e)]} onDrop={(e) => handleDrop(e)}>
             <ReactFlow
               nodes={nodes}
               edges={edges}

@@ -27,13 +27,13 @@ const ResultNode = () => {
                         },
                         selected : true
                     },
-                    {
-                        id: 'ur-input-1',
-                        type: 'inputNode',
-                        hidden : false,
-                        data: { label: "Type your condition"},
-                        // position: { x: 100, y: 20 },
-                    },
+                    // {
+                    //     id: 'ur-input-1',
+                    //     type: 'inputNode',
+                    //     hidden : false,
+                    //     data: { label: "Type your condition"},
+                    //     // position: { x: 100, y: 20 },
+                    // },
                     {
                         id: 'ur-child-1',
                         type: 'inputNode2',

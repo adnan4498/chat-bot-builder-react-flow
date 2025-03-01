@@ -5,7 +5,9 @@ export const onDrop = (
   edges,
   setEdges,
   draggedItemData,
-  selectedNode
+  selectedNode,
+  initialNodeWidth,
+  initialNodeHeight,
 ) => {
   event.preventDefault();
 
@@ -21,20 +23,33 @@ export const onDrop = (
 
   if (initialResultNodes != undefined) {
     initialResultNodes.forEach((item) => {
-      setNodes((e) => [
-        ...e,
-        {
-          id: item.id,
-          position: {
-            x:
-              item.id == "ur-input-1"
-                ? event.pageX + 220
-                : item?.position?.x || event.pageX - 100,
-            y:
-              item.id == "ur-input-1"
-                ? event.pageY - 200
-                : item?.position?.y || event.pageY - 100,
-          },
+      setNodes((prevNodes ) => {
+
+        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        console.log(lastNode, "lastNode")
+        // const newY = lastNode ? lastNode.position.y + lastNode?.style?.height + 20 : window.innerHeight / 3;
+
+        let newY
+        if(lastNode){
+          if(lastNode?.style?.height != undefined){
+            newY = lastNode.position.y + lastNode?.style?.height + 20
+          }
+          else if(lastNode?.measured?.height != undefined){
+            newY = lastNode.position.y + lastNode?.measured?.height + 20
+          }
+          else{
+            newY = window.innerHeight / 3;
+          }
+        } 
+
+        return [
+          ...prevNodes,
+          {
+            id: item.id,
+            position: {
+              x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+              y: newY,
+            },
           data: item.data,
           hidden: item.hidden,
           draggable: item.draggable,
@@ -44,7 +59,7 @@ export const onDrop = (
           parentId: item.parentId,
           selected: item.selected,
         },
-      ]);
+      ]});
     });
   } else if (draggedItemLabel == "Add Condition") {
     const getSelectedNodeX = selectedNode[0].position.x;
@@ -121,11 +136,19 @@ export const onDrop = (
     let backToString = String(incrementingId);
 
     if (draggedItemLabel == "List Node" || draggedItemLabel == "Reply Button") {
-      setNodes((e) => [
-        ...e,
+      setNodes((prevNodes ) => {
+
+        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+        
+        return [
+        ...prevNodes,
         {
           id: backToString,
-          position: { x: event.pageX, y: event.pageY },
+          position: {
+            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+            y: newY,
+          },
           data: {
             label: [
               {
@@ -152,13 +175,23 @@ export const onDrop = (
           type: draggedItemType,
           selected: true,
         },
-      ]);
+      ]});
     } else if (draggedItemLabel == "Url Button") {
-      setNodes((e) => [
-        ...e,
+      setNodes((prevNodes) => 
+        
+        {
+
+        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+        
+        return [
+        ...prevNodes,
         {
           id: backToString,
-          position: { x: event.pageX, y: event.pageY },
+          position: {
+            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+            y: newY,
+          },
           data: {
             label: [
               {
@@ -178,7 +211,7 @@ export const onDrop = (
           type: draggedItemType,
           selected: true,
         },
-      ]);
+      ]});
     }
     // else if(draggedItemLabel == "Reply Button"){
     //   setNodes((e) => [
@@ -219,16 +252,25 @@ export const onDrop = (
     //   ]);
     // }
     else {
-      setNodes((e) => [
-        ...e,
-        {
-          id: backToString,
-          position: { x: event.pageX, y: event.pageY },
-          data: { label: "" },
-          type: draggedItemType,
-          selected: true,
-        },
-      ]);
+      setNodes((prevNodes) => {
+
+        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+
+        return [
+          ...prevNodes,
+          {
+            id: backToString,
+            position: {
+              x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+              y: newY,
+            },
+            data: { label: "" },
+            type: draggedItemType,
+            selected: true,
+          },
+        ];
+      });
     }
   }
 };
