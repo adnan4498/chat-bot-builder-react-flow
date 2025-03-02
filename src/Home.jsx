@@ -18,7 +18,7 @@ import CustomStateNode from './CustomStateNode';
 import ResultNode from './ResultNodeFunctionality';
 import { onDrop } from './modules/NodeDrop';
 import { useDeletingNodeIdContext, useDragContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
-import DefaultStartingNode from './DefaultStartingNode';
+import DefaultStartingNode from './utilityNodes/DefaultStartingNode';
 import CustomEdge from './DelayEdge';
 import Dailogs from './layout/Dailogs';
 import NodesMenu from './layout/NodesMenu';
@@ -36,6 +36,7 @@ import VideoInputNode from './components/nodeComponents/VideoInputNode';
 import ReplyButtonInputNode from './components/nodeComponents/ReplyButtonInputNode';
 import UrlButtonInputNode from './components/nodeComponents/UrlButtonInputNode';
 import StickerInputNode from './components/nodeComponents/StickerInputNode';
+import DropHereNode from './utilityNodes/DropHereNode';
 
 const Home = () => {
   const { draggedItemData } = useDragContext();
@@ -86,6 +87,7 @@ const Home = () => {
 
 
   const handleDrop = (e) => {
+    setNodes((prevNodes) => prevNodes.filter(item => !item.id.includes("greenId")))
 
     onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode, initialNodeWidth, initialNodeHeight)
 
@@ -111,16 +113,14 @@ const Home = () => {
     // });
     setDragOverOnce(true)
 
-    setNodes((prevNodes) => prevNodes.filter(item => !item.id.includes("greenId")) )
 
-    
+
     setTimeout(() => {
       fitView({ duration: 0, padding: 1.5 }); // Adjusts viewport to fit all nodes
     }, 0);
   }
-  
-  console.log(nodes, "nodes outside")
 
+  // console.log(nodes, "nodes outside")
   const [dragOverOnce, setDragOverOnce] = useState(true)
 
   const handleDragOver = (t) => {
@@ -130,42 +130,46 @@ const Home = () => {
     //   return {...ee, style : {backgroundColor : "red", color: "red"}}
     // }))
 
-    if(dragOverOnce){
+    if (dragOverOnce) {
       let bbb = []
 
-      let setGreenNode = nodes.map((prevNodes, index, arr) => {
+      nodes.forEach((prevNodes, index, arr) => {
 
-      const lastNode = prevNodes[prevNodes.length - 1]; // 
-      const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 70 : window.innerHeight / 3;
+        const lastNode = arr[arr.length - 1];
+        const newY = lastNode ? prevNodes.measured.height + prevNodes.position.y + 20 : window.innerHeight / 3;
 
-      let greenNode
-      for (let i = 0; i < arr.length; i++) {
-        greenNode = {
-          id: prevNodes.id + "greenId", 
-          position: {
-            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
-            y: newY,
-          }, 
-          data: { label: "hi" },
-          type: "defaultStarting",
-          selected: true,
+        let greenNode
+        for (let i = 0; i < arr.length; i++) {  
+          greenNode = {
+            id: prevNodes.id + "greenId",
+            position: {
+              x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+              y: newY,
+            },
+            // style : {margin : "50px"},
+            data: { label: "hi" },
+            type: "dropHereNode",
+            selected: true,
+          }
         }
-      }
 
-      bbb.push(prevNodes, greenNode)
-    })
+        bbb.push(prevNodes, greenNode)
+      })
+      setNodes(bbb)
 
-    setNodes(bbb)
+      console.log(bbb, "bbb")
 
-    setDragOverOnce(false)
 
-    console.log(bbb, "bbb")
+      setDragOverOnce(false)
+
+              // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+        // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+
+    }
+
   }
 
-  }
-
-   
-
+  console.log(nodes, "nodes")
   // selectedNode != undefined && console.log(selectedNode[0], "selectedNode")
 
   // get/set selected node in setSelected contextHook
@@ -235,6 +239,7 @@ const Home = () => {
     defaultStarting: DefaultStartingNode,
     resultParent: ResultParent,
     addElement: AddElement,
+    dropHereNode : DropHereNode,
   };
 
   const edgeTypes = {

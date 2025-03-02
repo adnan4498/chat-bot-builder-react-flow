@@ -25,7 +25,7 @@ export const onDrop = (
     initialResultNodes.forEach((item) => {
       setNodes((prevNodes ) => {
 
-        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const lastNode = prevNodes[prevNodes.length - 1]; 
         console.log(lastNode, "lastNode")
         // const newY = lastNode ? lastNode.position.y + lastNode?.style?.height + 20 : window.innerHeight / 3;
 
@@ -138,7 +138,7 @@ export const onDrop = (
     if (draggedItemLabel == "List Node" || draggedItemLabel == "Reply Button") {
       setNodes((prevNodes ) => {
 
-        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const lastNode = prevNodes[prevNodes.length - 1]; 
         const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
         
         return [
@@ -181,8 +181,10 @@ export const onDrop = (
         
         {
 
-        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const lastNode = prevNodes[prevNodes.length - 1]; 
         const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+
+        console.log(lastNode, "lastNode")
         
         return [
         ...prevNodes,
@@ -254,7 +256,7 @@ export const onDrop = (
     else {
       setNodes((prevNodes) => {
 
-        const lastNode = prevNodes[prevNodes.length - 1]; // Get the last node
+        const lastNode = prevNodes[prevNodes.length - 1]; 
         const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
 
         return [
