@@ -255,6 +255,7 @@ export const onDrop = (
     // }
     else {
       setNodes((prevNodes) => {
+        console.log("hi 2")
 
         const lastNode = prevNodes[prevNodes.length - 1]; 
         const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;

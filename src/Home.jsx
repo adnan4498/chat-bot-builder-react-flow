@@ -85,13 +85,27 @@ const Home = () => {
     fitView({ duration: 0, padding: 1.5 });
   }, [fitView, nodes, setNodes]);
 
+  const [afterDrop, setAfterDrop] = useState(false)
 
   const handleDrop = (e) => {
-    setNodes((prevNodes) => prevNodes.filter(item => !item.id.includes("greenId")))
 
     onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode, initialNodeWidth, initialNodeHeight)
+    // setNodes((prevNodes) => {
+    //   console.log("hi"); // Logging before returning
 
-    // console.log(nodes, "n")
+    //   return prevNodes
+    //     .filter(item => !item.id.includes("greenId"))
+    //     // .map((item, index) => ({
+    //     //   ...item, 
+    //     //   position: {
+    //     //     ...item.position, 
+    //     //     y: index == "0" ? item?.position?.y + 120 : item.position.y // Adjust y safely
+    //     //   },
+    //     // }));
+    // });
+
+    // setNodes((prevNodes) => prevNodes.map(item => (item.position.y -20)))
+
 
     // setNodes((prevNodes) => {
     //   const lastNode = prevNodes[prevNodes.length - 1]; // 
@@ -112,13 +126,39 @@ const Home = () => {
     //   ];
     // });
     setDragOverOnce(true)
-
-
+    setAfterDrop(true)
 
     setTimeout(() => {
       fitView({ duration: 0, padding: 1.5 }); // Adjusts viewport to fit all nodes
     }, 0);
+
+
   }
+
+  let handleAfterDrop = () => {
+    // setNodes((nodeItem) => )
+
+    setNodes((prevNodes) => {
+      console.log("hi"); // Logging before returning
+
+      // const lastNode = prevNodes[prevNodes.length - 1]; 
+      // const newY = lastNode.position.y + 50
+
+      return prevNodes
+        .filter(item => !item.id.includes("greenId"))
+        .map((item, index, arr) => ({
+          ...item,
+          position: {
+            ...item.position,
+            y: index == "0" ? item?.position?.y : ((arr[index - 1].position.y) + (arr[index - 1].measured.height + 20)) // Adjust y safely
+          },
+        }));
+    });
+
+    setAfterDrop(false)
+  }
+
+  afterDrop && handleAfterDrop()
 
   // console.log(nodes, "nodes outside")
   const [dragOverOnce, setDragOverOnce] = useState(true)
@@ -133,43 +173,109 @@ const Home = () => {
     if (dragOverOnce) {
       let bbb = []
 
-      nodes.forEach((prevNodes, index, arr) => {
+      nodes.forEach((nodeItem, index, arr) => {
 
-        const lastNode = arr[arr.length - 1];
-        const newY = lastNode ? prevNodes.measured.height + prevNodes.position.y + 20 : window.innerHeight / 3;
+        const newY = nodeItem.position.y + (nodeItem?.measured?.height || 28) + 20
 
         let greenNode
-        for (let i = 0; i < arr.length; i++) {  
-          greenNode = {
-            id: prevNodes.id + "greenId",
+
+        greenNode = {
+          id: nodeItem.id + "greenId",
+          position: {
+            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+            y: newY,
+          },
+          // style : {margin : "50px"},
+          data: { label: "hi" },
+          type: "dropHereNode",
+          selected: true,
+        }
+
+        console.log(arr, "arrr")
+
+        if (nodeItem.id != "0" && arr[index - 1].id.includes('greenId')) {
+          console.log("hassan")
+          nodeItem = {
+            id: nodeItem.id,
             position: {
               x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
-              y: newY,
+              y: arr[index - 1]?.position?.y + 40
             },
             // style : {margin : "50px"},
-            data: { label: "hi" },
-            type: "dropHereNode",
+            // data: { label: nodeItem.data.label },
+            data: { label: "hiii" },
+            type: nodeItem.type,
             selected: true,
           }
         }
 
-        bbb.push(prevNodes, greenNode)
+        // const newY2 = greenNode.position.y + (greenNode?.measured?.height || 28) + 20
+
+        // nodeItem = {
+        //   id: nodeItem.id,
+        //   position: {
+        //     x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+        //     y: newY2,
+        //   },
+        //   // style : {margin : "50px"},
+        //   data: { label: "hi" },
+        //   type: "dropHereNode",
+        //   selected: true,
+        // }
+
+        // const lastNode = arr[arr.length - 1];
+        // // let newY2 = lastNode.data.label != "Default" ? nodeItem.measured.height || 50 + nodeItem.position.y + 40 : window.innerHeight / 3;
+        // // let newY2 =  greenNode?.measured?.height  + greenNode.position.y + 40 
+
+        // nodeItem = {
+        //   id: nodeItem.id,
+        //   position: {
+        //     x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+        //     y: greenNode.position.y + 40,
+        //   },
+        //   // style : {margin : "50px"},
+        //   data: { label: nodeItem.data.label },
+        //   type: nodeItem.type ,
+        //   selected: true,
+        // }
+
+        // console.log(greenNode, "gg")
+        // console.log(nodeItem, "nodeItem")
+
+        bbb.push(nodeItem, greenNode)
       })
       setNodes(bbb)
 
-      console.log(bbb, "bbb")
+      // console.log(bbb, "bbb")
 
 
       setDragOverOnce(false)
 
-              // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
-        // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+      // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
+      // const newY = lastNode ? lastNode.position.y + lastNode.measured.height + 20 : window.innerHeight / 3;
 
     }
 
   }
+  console.log(nodes, "nodeItem")
 
-  console.log(nodes, "nodes")
+
+  // const newY2 = lastNode?.data?.label != "Default" ? prevNodes.measured.height + prevNodes.position.y + 70 : window.innerHeight / 3;
+  //  const newY2 = lastNode ? prevNodes.measured.height + prevNodes.position.y + 50 : window.innerHeight / 3;
+
+  //  prevNodes = 
+  //  {
+  //    id: prevNodes.id,
+  //    position: {
+  //      x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
+  //      y: newY2,
+  //    },
+  //    data: { label: "" },
+  //    type: prevNodes.type,
+  //    selected: true,
+  //  },
+
+
   // selectedNode != undefined && console.log(selectedNode[0], "selectedNode")
 
   // get/set selected node in setSelected contextHook
@@ -239,7 +345,7 @@ const Home = () => {
     defaultStarting: DefaultStartingNode,
     resultParent: ResultParent,
     addElement: AddElement,
-    dropHereNode : DropHereNode,
+    dropHereNode: DropHereNode,
   };
 
   const edgeTypes = {
