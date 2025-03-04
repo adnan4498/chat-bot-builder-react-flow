@@ -23,9 +23,9 @@ const InputNode2 = ({ id, data, selected }) => {
             </div>
 
 
-            {/* {selected &&
+            {selected &&
                     <EditDeleteMove id={id} />
-                } */}
+                }
 
         </div>
 
