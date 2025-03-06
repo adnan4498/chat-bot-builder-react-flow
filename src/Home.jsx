@@ -77,127 +77,23 @@ const Home = () => {
 
   }, [deletingNodeId])
 
-  // useEffect(() => {
-  //   setViewport({ zoom : 1});
-  // }, []);
-
   useEffect(() => {
     fitView({ duration: 0, padding: 1.5 });
   }, [fitView, nodes, setNodes]);
 
 
   const handleDrop = (e) => {
-
-
-
-    // WHEN DROP
     onDrop(e, nodes, setNodes, edges, setEdges, draggedItemData, selectedNode, initialNodeWidth, initialNodeHeight)
 
-
-
-    // AFTER DROP
-    setNodes((prevNodes) => {
-      return prevNodes
-        .filter(item => !item.id.includes("greenId"))
-        .map((item, index, arr) => ({
-          ...item,
-          position: {
-            ...item.position,
-            y: index == "0" ? item?.position?.y : ((arr[index - 1].position.y + 20) + (arr[index - 1].measured.height))
-          },
-        }));
-    });
-
-
-    setDragOverOnce(true)
     setTimeout(() => {
       fitView({ duration: 0, padding: 1.5 });
     }, 0);
 
-
   }
-
-  const [dragOverOnce, setDragOverOnce] = useState(true)
-  const [afterDrag, setAfterDrag] = useState(false)
 
   const handleDragOver = (t) => {
     t.preventDefault()
-
-    if (dragOverOnce) {
-      let updatedNodes = []
-
-      nodes.forEach((nodeItem, index, arr) => {
-        // const newY = nodeItem.position.y + (nodeItem?.measured?.height || 8) + 20
-        const newY = (nodeItem.position.y + 5) + nodeItem?.measured?.height
-        console.log(nodeItem, "nodeItemnodeItem")
-        let greenNode
-
-        greenNode = {
-          id: nodeItem.id + "greenId",
-          position: {
-            x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
-            y: newY,
-          },
-          data: { label: "hi" },
-          type: "dropHereNode",
-          selected: true,
-        }
-
-        updatedNodes.push(nodeItem, greenNode)
-      })
-
-      setNodes(updatedNodes)
-      setDragOverOnce(false)
-      setAfterDrag(true)
-    }
   }
-
-  const handleAfterDrag = () => {
-
-    // setNodes((prevNodes) =>
-    //   prevNodes.map((nodeItem, index, arr) => {
-    //     const lastNode = prevNodes[prevNodes.length - 1]; 
-    //     if (nodeItem.id !== "0" && arr[index - 1].id.includes("greenId")) {
-    //       return {
-    //         ...nodeItem,
-    //         position: {
-    //           x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
-    //           y: arr[index - 1]?.position?.y + 40,
-    //         },
-    //         data: { label: "hiii" },
-    //         selected: true,
-    //       };
-    //     }
-    //       return nodeItem;
-    //   })
-    // );
-
-
-    // setNodes((nodeItem, index, arr) => )
-
-    setAfterDrag(false)
-  }
-
-  afterDrag && handleAfterDrag()
-  console.log(nodes, "nodes")
-
-  // const newY2 = lastNode?.data?.label != "Default" ? prevNodes.measured.height + prevNodes.position.y + 70 : window.innerHeight / 3;
-  //  const newY2 = lastNode ? prevNodes.measured.height + prevNodes.position.y + 50 : window.innerHeight / 3;
-
-  //  prevNodes = 
-  //  {
-  //    id: prevNodes.id,
-  //    position: {
-  //      x: window.innerWidth / 3.5 - initialNodeWidth / 3.5,
-  //      y: newY2,
-  //    },
-  //    data: { label: "" },
-  //    type: prevNodes.type,
-  //    selected: true,
-  //  },
-
-
-  // selectedNode != undefined && console.log(selectedNode[0], "selectedNode")
 
   // get/set selected node in setSelected contextHook
   useEffect(() => {
@@ -411,8 +307,6 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-  // console.log(nodes, "nodes")
-
   return (
     <>
       <div className='flex w-full h-[100vh]'>
@@ -428,7 +322,7 @@ const Home = () => {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
-              nodesDraggable={false} // Disable dragging globally
+              nodesDraggable={false}
               fitView
             >
               <Background />
