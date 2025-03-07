@@ -71,15 +71,44 @@ const Home = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
 
+  const [getNodeLen, setGetNodeLen] = useState(nodes.length)
+
   useEffect(() => {
     setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
     setDeletingNodeId("")
 
+    setGetNodeLen(nodes.length)
   }, [deletingNodeId])
 
   useEffect(() => {
+
+    getNodeLen != nodes.length &&
+      setNodes((prevNodes, index) => {
+
+        if (prevNodes.id != "0") {
+          const lastNode = prevNodes[prevNodes.length - 1];
+          const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20;
+
+          return [
+            ...prevNodes,
+            {
+              position: {
+                x: lastNode?.position?.x || 0,
+                y: newY,
+              },
+            },
+          ];
+        } else {
+          return prevNodes;
+        }
+      });
+
+  }, [deletingNodeId])
+
+
+  useEffect(() => {
     fitView({ duration: 0, padding: 1.5 });
-  }, [fitView, nodes, setNodes]);
+  }, []);
 
 
   const handleDrop = (e) => {
@@ -175,11 +204,13 @@ const Home = () => {
 
   let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
 
-  let getChildCNodes = nodes.filter((items) => items.id.includes("-condition"));
+  let getChildCNodes = nodes.filter((items) => items?.id?.includes("-condition"));
+
   let getChildXPos = getChildCNodes.map(item => item.position.x)
 
   let getLastChildPos = getChildXPos.slice(-1)[0]
 
+  // condition node code
   useEffect(() => {
     seTtopBot({ x: getResultNodeType?.position?.x, y: getResultNodeType?.position?.y })
 
@@ -281,7 +312,7 @@ const Home = () => {
     // adds width on ur-parent for new conditioned node
     if (selectedNode?.length > 0) {
 
-      let getParent = nodes.filter(item => item.id.includes("parent"))
+      let getParent = nodes.filter(item => item?.id?.includes("parent"))
 
       let getC = nodes.filter((item) => item?.parentId != undefined && item?.parentId == getParent[0]?.id)
       getC?.length != getLen && setGetLen(getC?.length)
@@ -290,7 +321,7 @@ const Home = () => {
         let hasChanged = false;
 
         const updatedNodes = e.map((item, index) => {
-          if (item.id.includes("parent") && getLen !== getC?.length) {
+          if (item?.id?.includes("parent") && getLen !== getC?.length) {
             hasChanged = true;
             return {
               ...item,
@@ -307,12 +338,14 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
+
   return (
     <>
       <div className='flex w-full h-[100vh]'>
         <Dailogs />
         <div className='react-flow-class'>
           <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [handleDragOver(e)]} onDrop={(e) => handleDrop(e)}>
+            {/* <div onClick={() => setGetDel(true)} className='bg-red-500 w-40 h-40'>asdadasd</div> */}
             <ReactFlow
               nodes={nodes}
               edges={edges}

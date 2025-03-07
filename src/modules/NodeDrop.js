@@ -258,6 +258,7 @@ export const onDrop = (
         const lastNode = prevNodes[prevNodes.length - 1]; 
         const newY = lastNode.position.y + (lastNode?.measured?.height || 28) + 20
      
+        // console.log(Array.isArray(prevNodes), "prev in drop")
         return [
           ...prevNodes,
           {
