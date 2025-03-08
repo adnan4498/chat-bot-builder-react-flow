@@ -17,7 +17,7 @@ import CustomNode from './CustomNode';
 import CustomStateNode from './CustomStateNode';
 import ResultNode from './ResultNodeFunctionality';
 import { onDrop } from './modules/NodeDrop';
-import { useDeletingNodeIdContext, useDragContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
+import { useDeletingNodeIdContext, useDragContext, useIsDraggableContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
 import DefaultStartingNode from './utilityNodes/DefaultStartingNode';
 import CustomEdge from './DelayEdge';
 import Dailogs from './layout/Dailogs';
@@ -42,6 +42,7 @@ const Home = () => {
   const { draggedItemData } = useDragContext();
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
+  const { isDraggable } = useIsDraggableContext()
 
   const { setViewport, fitView } = useReactFlow();
 
@@ -71,41 +72,44 @@ const Home = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
 
-  const [getNodeLen, setGetNodeLen] = useState(nodes.length)
+  const [nodesLen, setNodesLen] = useState(nodes.length)
 
   useEffect(() => {
     setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
     setDeletingNodeId("")
 
-    setGetNodeLen(nodes.length)
+    setNodesLen(nodes.length)
   }, [deletingNodeId])
 
   useEffect(() => {
 
-    getNodeLen != nodes.length &&
-      setNodes((prevNodes, index) => {
+    // if change in nodesLen detected
+    nodesLen != nodes.length &&
 
-        if (prevNodes.id != "0") {
-          const lastNode = prevNodes[prevNodes.length - 1];
-          const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20;
+      setNodes((nds,) => {
+        return nds.map((item, index, arr) => {
+          if (item.id == "0") {
+            return item
+          }
+          else {
+            let lastNode = arr[index - 1];
+            const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
 
-          return [
-            ...prevNodes,
-            {
-              position: {
+            return {
+              ...item, position: {
                 x: lastNode?.position?.x || 0,
                 y: newY,
               },
-            },
-          ];
-        } else {
-          return prevNodes;
-        }
-      });
+            }
+          }
+        })
+      })
 
   }, [deletingNodeId])
 
+  // console.log(nodes, "nn")
 
+  // centers everything by zomming in
   useEffect(() => {
     fitView({ duration: 0, padding: 1.5 });
   }, []);
@@ -338,6 +342,7 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
+  console.log(isDraggable, "isDraggable")
 
   return (
     <>
@@ -345,7 +350,6 @@ const Home = () => {
         <Dailogs />
         <div className='react-flow-class'>
           <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => [handleDragOver(e)]} onDrop={(e) => handleDrop(e)}>
-            {/* <div onClick={() => setGetDel(true)} className='bg-red-500 w-40 h-40'>asdadasd</div> */}
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -355,7 +359,7 @@ const Home = () => {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
-              nodesDraggable={false}
+              nodesDraggable={isDraggable}
               fitView
             >
               <Background />
@@ -365,8 +369,23 @@ const Home = () => {
         </div>
         <NodesMenu />
 
-        {/* <RightSideBar /> */}
       </div>
+
+      {/* <div
+
+        onMouseDown={() => {
+          console.log(true)
+        }}
+
+        onMouseUp={() => {
+          console.log(false);
+        }}
+
+        // onClick={() => console.log("clik")}
+        style={{ pointerEvents: "auto" }}
+        className='h-32 w-32 bg-red-500 '>
+        asd
+      </div> */}
     </>
   )
 }
