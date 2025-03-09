@@ -5,7 +5,6 @@ import EditDeleteMove from '../../shared/EditDeleteMove';
 const TextInputNode = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()
 
-
     let getAllNodes = getNodes().filter(item => item.id == "ur-input-1")
 
     return (
@@ -29,7 +28,6 @@ const TextInputNode = ({ id, data, selected }) => {
                     <Handle type="target" position={Position.Top} />
                     <Handle type="source" position={Position.Bottom} />
                 </div>
-
 
                 {selected &&
                     <EditDeleteMove id={id} />

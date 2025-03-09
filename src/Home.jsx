@@ -79,31 +79,26 @@ const Home = () => {
     setDeletingNodeId("")
 
     setNodesLen(nodes.length)
-  }, [deletingNodeId])
 
-  useEffect(() => {
 
-    // if change in nodesLen detected
-    nodesLen != nodes.length &&
+    setNodes((nds,) => {
+      return nds.map((item, index, arr) => {
+        if (item.id == "0") {
+          return item
+        }
+        else {
+          let lastNode = arr[index - 1];
+          const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
 
-      setNodes((nds,) => {
-        return nds.map((item, index, arr) => {
-          if (item.id == "0") {
-            return item
+          return {
+            ...item, position: {
+              x: lastNode?.position?.x || 0,
+              y: newY,
+            },
           }
-          else {
-            let lastNode = arr[index - 1];
-            const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
-
-            return {
-              ...item, position: {
-                x: lastNode?.position?.x || 0,
-                y: newY,
-              },
-            }
-          }
-        })
+        }
       })
+    })
 
   }, [deletingNodeId])
 
@@ -342,7 +337,94 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-  console.log(isDraggable, "isDraggable")
+  // console.log(nodes, "nodes")
+
+  const handleNodeDrag = (e, node) => {
+    setNodes((nds) => {
+      return nds.map(item => {
+        if (item.id === node.id) {
+          return {
+            ...item,
+            position: { x: 396, y: node.position.y }
+          };
+        }
+        return item;
+      });
+    });
+  };
+
+  const handleNodeDragStop = (e, node) => {
+
+
+    setNodes((nds) => {
+      return nds.map(item => {
+        if (item.id === node.id) {
+          return {
+            ...item,
+            position: { x: 396, y: node.position.y }
+          };
+        }
+        return item;
+      });
+    });
+
+    setNodesBack()
+  };
+
+
+
+  const [allNodesY, setAllNodesY] = useState()
+  
+  useEffect(() => {
+    let getAllInitialYAxis = nodes.map(item => item?.position?.y)
+    setAllNodesY(getAllInitialYAxis)
+  }, [nodes.length])
+
+  
+  console.log(allNodesY, "allNodesY")
+  
+  function setNodesBack() {
+
+
+    // setNodes((nds,) => {
+    //   return nds.map((item, index, arr) => {
+    //     if (item.id == "0") {
+    //       return item
+    //     }
+    //     else {
+    //       let lastNode = arr[index - 1];
+    //       const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
+
+    //       return {
+    //         ...item, position: {
+    //           x: lastNode?.position?.x || 0,
+    //           y: newY,
+    //         },
+    //       }
+    //     }
+    //   })
+    // })
+
+
+    setNodes((nds) => {
+      return nds.map((item, index) =>{
+        return {
+          ...item,
+          position : {x : 396, y : allNodesY != undefined ? allNodesY[index] : item.position.y }
+        }
+      }) 
+    })
+
+
+  }
+
+  // console.log(nodes, "n")
+
+  // useEffect(() => {
+
+
+  // }, [!isDraggable])
+
 
   return (
     <>
@@ -360,6 +442,10 @@ const Home = () => {
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
               nodesDraggable={isDraggable}
+
+              onNodeDrag={handleNodeDrag}
+              onNodeDragStop={handleNodeDragStop}
+
               fitView
             >
               <Background />
