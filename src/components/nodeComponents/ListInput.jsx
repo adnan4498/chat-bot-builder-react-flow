@@ -1,13 +1,18 @@
 import React from 'react'
 import EditDeleteMove from '../../shared/EditDeleteMove';
+import { useSelectedNodeContext } from '../../ContextApi/DragDropContext';
+import { useReactFlow } from '@xyflow/react';
 
 const ListInput = ({ id, data, selected }) => {
+    const { getNodes, updateNodeData, getEdges } = useReactFlow()
+
+    let nodes = getNodes()
 
     let headerText = data.label[0]?.headerTextLabel
-    let bodyText = data.label[0]?.bodyTextLabel 
+    let bodyText = data.label[0]?.bodyTextLabel
     let footerText = data.label[0]?.footerTextLabel
     let listBtnText = data.label[0]?.listBtnTextLabel
-    let listSectionTitle = data.label[0]?.listSection[0].listSectiontitle 
+    let listSectionTitle = data.label[0]?.listSection[0].listSectiontitle
 
     return (
         <div className='flex gap-[2px] '>

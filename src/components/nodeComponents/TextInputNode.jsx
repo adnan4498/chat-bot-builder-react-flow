@@ -1,11 +1,13 @@
 import React from 'react'
 import { Handle, Position, useReactFlow } from '@xyflow/react';
 import EditDeleteMove from '../../shared/EditDeleteMove';
+import { useSelectedNodeContext } from '../../ContextApi/DragDropContext';
 
 const TextInputNode = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()
-
     let getAllNodes = getNodes().filter(item => item.id == "ur-input-1")
+
+    let getOverLappedNode = []   
 
     return (
         <div>
