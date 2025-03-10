@@ -59,17 +59,12 @@ const AudioMenu = () => {
     };
 
     const handleFileUpload = (file) => {
-        console.log(file, "file")
         if (file && file.type.startsWith('image/')) {
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
-            console.log(reader, "reader")
-
             reader.onload = () => {
                 const imageData = { name: file.name, data: file, src: reader.result };
-
-                console.log(imageData, "data");
 
                 updateNodeData(selectedNode[0]?.id, { imageData });
                 message.success(`${file.name} uploaded to node.`);
@@ -82,8 +77,6 @@ const AudioMenu = () => {
             message.error("Please upload a valid image file.");
         }
     };
-
-    console.log(selectedNode[0], "selectedNode")
 
     let suppportedFileTypes = "aac, .mp3, .mp4"
 

@@ -72,15 +72,11 @@ const Home = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
 
-  const [nodesLen, setNodesLen] = useState(nodes.length)
-
   useEffect(() => {
     setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
     setDeletingNodeId("")
 
-    setNodesLen(nodes.length)
-
-
+    // all nodes gets back to proper position after any node is deleted
     setNodes((nds,) => {
       return nds.map((item, index, arr) => {
         if (item.id == "0") {
@@ -101,8 +97,6 @@ const Home = () => {
     })
 
   }, [deletingNodeId])
-
-  // console.log(nodes, "nn")
 
   // centers everything by zomming in
   useEffect(() => {
@@ -337,7 +331,7 @@ const Home = () => {
 
   }, [selectedNode, nodes]);
 
-  // console.log(nodes, "nodes")
+
 
   const handleNodeDrag = (e, node) => {
     setNodes((nds) => {
@@ -351,11 +345,11 @@ const Home = () => {
         return item;
       });
     });
+
+    console.log(nodes, "nn")
   };
 
   const handleNodeDragStop = (e, node) => {
-
-
     setNodes((nds) => {
       return nds.map(item => {
         if (item.id === node.id) {
@@ -368,63 +362,123 @@ const Home = () => {
       });
     });
 
-    setNodesBack()
+    handleSortingNodes()
   };
 
+  function handleSortingNodes() {
+    let getYForSort = []
 
+    nodes.forEach(item => getYForSort.push(item.position.y))
 
-  const [allNodesY, setAllNodesY] = useState()
-  
-  useEffect(() => {
-    let getAllInitialYAxis = nodes.map(item => item?.position?.y)
-    setAllNodesY(getAllInitialYAxis)
-  }, [nodes.length])
+    let allSorted = getYForSort.sort()
 
-  
-  console.log(allNodesY, "allNodesY")
-  
-  function setNodesBack() {
+    console.log(allSorted, "allSorted")
 
+    let getNewPosNodes = []
 
-    // setNodes((nds,) => {
-    //   return nds.map((item, index, arr) => {
-    //     if (item.id == "0") {
-    //       return item
-    //     }
-    //     else {
-    //       let lastNode = arr[index - 1];
-    //       const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
+    for (let i = 0; i < allSorted.length; i++) {
+      for (let j = 0; j < nodes.length; j++) {
+        allSorted[i] == nodes[j]?.position?.y && getNewPosNodes.push(nodes[j])
+      }
+    }
 
-    //       return {
-    //         ...item, position: {
-    //           x: lastNode?.position?.x || 0,
-    //           y: newY,
-    //         },
-    //       }
-    //     }
-    //   })
-    // })
-
+    console.log(getNewPosNodes, "getNewPosNodes")
+    setNodes(getNewPosNodes)
 
     setNodes((nds) => {
-      return nds.map((item, index) =>{
-        return {
-          ...item,
-          position : {x : 396, y : allNodesY != undefined ? allNodesY[index] : item.position.y }
+      return nds.map((item, index, arr) => {
+        if (item.id == "0") {
+          return item
         }
-      }) 
+        else {
+          let lastNode = arr[index - 1];
+          const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
+
+          return {
+            ...item, position: {
+              x: lastNode?.position?.x || 0,
+              y: newY,
+            },
+          }
+        }
+      })
     })
+
+    setNodesBack()
+
 
 
   }
 
-  // console.log(nodes, "n")
+  function setNodesBack() {
+    
+  }
+
+
+
+
+
+
+
+
+  // const [liveYNodes, setLiveYNodes] = useState()
 
   // useEffect(() => {
+  //   let liveYAxisWithNode = () =>{
+  //     let getN = nodes.map((item, index) => ({node : item, nodesLiveY : Math.floor(item?.position?.y)}))
+  //     setLiveYNodes(getN)
 
+  //   }
 
-  // }, [!isDraggable])
+  //   liveYAxisWithNode()
 
+  // }, [isDraggable])
+
+  // function setNodesBack() {
+
+  //   let getYForSort = []
+
+  //   // liveYNodes.forEach(item => getYForSort.push(item.nodesLiveY))
+  //   nodes.forEach(item => getYForSort.push(item.position.y))
+
+  //   let allSorted = getYForSort.sort()
+
+  //   // console.log(allSorted, "all sorted")
+  //   console.log(liveYNodes, "liveYNodes")
+  //   console.log(nodes, "nodes")
+
+  //   setNodes((nds) => {
+  //     return nds.map((item, index) =>{
+  //       return {
+  //         ...item,
+  //         // position : {x : 396, y : allNodesY != undefined ? allSorted[index] : item.position.y }
+  //         position : {x : 396, y : allSorted[index]}
+  //       }
+  //     }) 
+  //   })
+
+  //   // setNodes((nds,) => {
+  //   //   return nds.map((item, index, arr) => {
+  //   //     if (item.id == "0") {
+  //   //       return item
+  //   //     }
+  //   //     else {
+  //   //       let lastNode = arr[index - 1];
+  //   //       const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
+
+  //   //       return {
+  //   //         ...item, position: {
+  //   //           x: lastNode?.position?.x || 0,
+  //   //           y: newY,
+  //   //         },
+  //   //       }
+  //   //     }
+  //   //   })
+  //   // })
+
+  // }
+
+  // console.log(allNodesY, "allNodesY")
 
   return (
     <>
@@ -454,26 +508,38 @@ const Home = () => {
           </div>
         </div>
         <NodesMenu />
-
       </div>
-
-      {/* <div
-
-        onMouseDown={() => {
-          console.log(true)
-        }}
-
-        onMouseUp={() => {
-          console.log(false);
-        }}
-
-        // onClick={() => console.log("clik")}
-        style={{ pointerEvents: "auto" }}
-        className='h-32 w-32 bg-red-500 '>
-        asd
-      </div> */}
     </>
   )
 }
 
 export default Home
+
+
+
+
+
+
+
+
+
+
+
+// setNodes((nds,) => {
+//   return nds.map((item, index, arr) => {
+//     if (item.id == "0") {
+//       return item
+//     }
+//     else {
+//       let lastNode = arr[index - 1];
+//       const newY = lastNode?.position?.y + (lastNode?.measured?.height || 28) + 20
+
+//       return {
+//         ...item, position: {
+//           x: lastNode?.position?.x || 0,
+//           y: newY,
+//         },
+//       }
+//     }
+//   })
+// })
