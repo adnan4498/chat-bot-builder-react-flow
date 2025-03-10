@@ -199,7 +199,7 @@ const Home = () => {
 
   }
 
-  const handleNodeDrag = (e, node) => {
+  const handleNodeDragStart = (e, node) => {
     setNodes((nds) => {
       return nds.map(item => {
         if (item.id === node.id) {
@@ -250,7 +250,7 @@ const Home = () => {
               style={{ backgroundColor: "#e6e4e4" }}
               nodesDraggable={isDraggable}
 
-              onNodeDrag={handleNodeDrag}
+              onNodeDrag={handleNodeDragStart}
               onNodeDragStop={handleNodeDragStop}
 
               fitView
