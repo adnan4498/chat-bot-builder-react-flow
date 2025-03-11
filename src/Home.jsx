@@ -12,12 +12,12 @@ import {
 
 import '@xyflow/react/dist/style.css';
 
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState, useRef } from 'react'
 import CustomNode from './CustomNode';
 import CustomStateNode from './CustomStateNode';
 import ResultNode from './ResultNodeFunctionality';
 import { onDrop } from './modules/NodeDrop';
-import { useDeletingNodeIdContext, useDragContext, useIsDraggableContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
+import { useCopyNodeContext, useDeletingNodeIdContext, useDragContext, useIsDraggableContext, useSelectedNodeContext } from './ContextApi/DragDropContext';
 import DefaultStartingNode from './utilityNodes/DefaultStartingNode';
 import CustomEdge from './DelayEdge';
 import Dailogs from './layout/Dailogs';
@@ -42,8 +42,32 @@ const Home = () => {
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
   const { isDraggable } = useIsDraggableContext()
+  const { copyNode } = useCopyNodeContext()
+
+  // console.log(copyNode, "copyNode")
 
   const { setViewport, fitView } = useReactFlow();
+
+  const [customRightClickMenu, setCustomRightClickMenu] = useState(null);
+  const canvasRef = useRef(null);
+
+  const handleRightClickMenu = (event) => {
+    event.preventDefault()
+
+    setCustomRightClickMenu({
+      x: event.clientX - 290,
+      y: event.clientY - 10,
+    });
+  };
+
+  const handleClickOutside = () => {
+    setCustomRightClickMenu(null);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   // used to center initial node
   const initialNodeWidth = 150;
@@ -70,6 +94,7 @@ const Home = () => {
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges] = useEdgesState(initialEdges);
+
 
   useEffect(() => {
     setNodes((nds) => nds.filter(item => item.id != deletingNodeId))
@@ -180,6 +205,7 @@ const Home = () => {
   // this code centers conditions in ur-parent code
   const [topBot, seTtopBot] = useState({ x: 0, y: 0 });
   const [getLen, setGetLen] = useState(2)
+  const [dragNodeStart, setDragNodeStart] = useState('')
 
   let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
   let getChildCNodes = nodes.filter((items) => items?.id?.includes("-condition"));
@@ -199,46 +225,148 @@ const Home = () => {
 
   }
 
-  const handleNodeDragStart = (e, node) => {
-    setNodes((nds) => {
-      return nds.map(item => {
-        if (item.id === node.id) {
-          return {
-            ...item,
-            position: { x: 396, y: node.position.y }
-          };
-        }
-        return item;
-      });
-    });
-  };
+  // const [isDragStart,setIsDragStart] = useState(true)
+  // const handleNodeDragStart = (e, node) => {
+  //   setNodes((nds) => {
+  //     return nds.map(item => {
+  //       if (item.id === node.id) {
+  //         return {
+  //           ...item,
+  //           position: { x: 396, y: node.position.y }
+  //         };
+  //       }
+  //       return item;
+  //     });
+  //   });
+  //   if(isDragStart) {
+  //     setDragNodeStart(node)
 
-  const handleNodeDragStop = (e, node) => {
-    setNodes((nds) => {
-      return nds.map(item => {
-        if (item.id === node.id) {
-          return {
-            ...item,
-            position: { x: 396, y: node.position.y }
-          };
-        }
-        return item;
-      });
-    });
+  //   }
+  //   setIsDragStart(false)
 
-    handleSortingNodes()
-  };
+  //   console.log(dragNodeStart, 'dragNodeStart')
+  // };
+
+  // // Find the closest node in Y-axis
+  // const findClosestNode = (draggingNode) => {
+  //   return nodes
+  //     .filter((n) => n.id !== draggingNode.id) // Exclude the dragged node
+  //     .reduce((closest, n) => {
+  //       const distance = Math.abs(n.position.y - draggingNode.position.y);
+  //       return distance < (closest?.distance || Infinity) ? { node: n, distance } : closest;
+  //     }, null)?.node;
+  // };
+
+  // const handleNodeDragStop = (e, node) => {
+  //   setNodes((nds) => {
+  //     return nds.map(item => {
+  //       if (item.id === node.id) {
+  //         return {
+  //           ...item,
+  //           position: { x: 396, y: node.position.y }
+  //         };
+  //       }
+  //       return item;
+  //     });
+  //   });
+
+  //   // handleSortingNodes()
+
+  //   const closest = findClosestNode(node);
+
+
+  //   console.log('closet', closest)
+  //   if (closest) {
+  //     setNodes((nds) =>
+  //       nds.map((n) => {
+  //         if (n.id === node.id) return { ...n, position: { ...n.position, y: closest.position.y } };
+  //         if (n.id === closest.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
+  //         return n;
+  //       })
+  //     );
+  //   }
+  //   setIsDragStart(true)
+  // };
+
+
+  // NEW TEMP HANDLER COPY FROM GPT
+  // const [dragNodeStart, setDragNodeStart] = useState(null);
+  const [isDragStart, setIsDragStart] = useState(true);
+ // **Ensure nodes have width & height defined**
+
+
+// **Detect if two nodes are overlapping**
+const isOverlapping = (nodeA, nodeB) => {
+  const nodeASize = nodeA?.measured;
+  const nodeBSize = nodeB?.measured;
+
+  return (
+    nodeA.position.y < nodeB.position.y + nodeBSize.height &&
+    nodeA.position.y + nodeASize.height > nodeB.position.y
+  );
+};
+
+// **Find the overlapping node**
+const findOverlappingNode = (draggingNode) => {
+  return nodes.find((n) => n.id !== draggingNode.id && isOverlapping(draggingNode, n));
+};
+
+// **Handle node drag start**
+const handleNodeDragStart = (e, node) => {
+  setNodes((nds) =>
+    nds.map((item) =>
+      item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+    )
+  );
+
+  if (isDragStart) {
+    setDragNodeStart(node);
+  }
+  setIsDragStart(false);
+};
+
+// **Handle node drag stop (swap only if overlapping)**
+const handleNodeDragStop = (e, node) => {
+  setNodes((nds) =>
+    nds.map((item) =>
+      item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+    )
+  );
+
+  const overlappingNode = findOverlappingNode(node);
+  console.log(overlappingNode,'overlapingNode')
+
+  if (overlappingNode) {
+    setNodes((nds) =>
+      nds.map((n) => {
+        if (n.id === node.id) return { ...n, position: { ...n.position, y: overlappingNode.position.y  } };
+        if (n.id === overlappingNode.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
+        return n;
+      })
+    );
+  }
+
+  setIsDragStart(true);
+};
 
   function handleSortingNodes() {
   }
 
+  const handlePastingNode = () => {
+    console.log("hi")
+    setNodes((nds) => {
+      return { ...nds, copyNode }
+    })
+  }
+
+  console.log(nodes, "nnnd")
 
   return (
     <>
       <div className='flex w-full h-[100vh]'>
         <Dailogs />
         <div className='react-flow-class'>
-          <div style={{ width: '100%', height: "100vh" }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDrop(e)}>
+          <div ref={canvasRef} style={{ width: '100%', height: "100vh" }} onDragOver={(e) => e.preventDefault()} onDrop={(e) => handleDrop(e)}>
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -249,12 +377,25 @@ const Home = () => {
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
               nodesDraggable={isDraggable}
-
+              onContextMenu={handleRightClickMenu} /* enables custom right click menu */
               onNodeDrag={handleNodeDragStart}
               onNodeDragStop={handleNodeDragStop}
 
               fitView
             >
+              {/* right click menu options */}
+              {customRightClickMenu && (
+                <ul
+                  className="fixed bg-white shadow-md p-2 list-none py-3 px-3 w-48 text-center cursor-pointer"
+                  style={{
+                    top: customRightClickMenu.y,
+                    left: customRightClickMenu.x,
+                  }}
+                  onClick={() => handlePastingNode()}
+                >
+                  <li className=' cursor-pointer'>Paste element</li>
+                </ul>
+              )}
               <Background />
               <Controls />
             </ ReactFlow>
