@@ -1,4 +1,10 @@
-export const HandleURNodeCode = function (topBot, seTtopBot, getLen, setGetLen, getResultNodeType, getLastChildPos, selectedNode, nodes, setNodes) {
+export const HandleURNodeCode = function (topBot, seTtopBot, getLen, setGetLen,  selectedNode, nodes, setNodes) {
+
+  let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
+  let getChildCNodes = nodes.filter((items) => items?.id?.includes("-condition"));
+  let getChildXPos = getChildCNodes.map(item => item.position.x)
+  let getLastChildPos = getChildXPos.slice(-1)[0]
+
   seTtopBot({
     x: getResultNodeType?.position?.x,
     y: getResultNodeType?.position?.y,

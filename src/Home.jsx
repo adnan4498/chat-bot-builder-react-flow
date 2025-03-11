@@ -55,8 +55,8 @@ const Home = () => {
     event.preventDefault()
 
     setCustomRightClickMenu({
-      x: event.clientX - 290,
-      y: event.clientY - 10,
+      x: event.clientX,
+      y: event.clientY,
     });
   };
 
@@ -207,13 +207,8 @@ const Home = () => {
   const [getLen, setGetLen] = useState(2)
   const [dragNodeStart, setDragNodeStart] = useState('')
 
-  let getResultNodeType = nodes.filter(item => item.id == "ur-parent-1")[0]
-  let getChildCNodes = nodes.filter((items) => items?.id?.includes("-condition"));
-  let getChildXPos = getChildCNodes.map(item => item.position.x)
-  let getLastChildPos = getChildXPos.slice(-1)[0]
-
   useEffect(() => {
-    HandleURNodeCode(topBot, seTtopBot, getLen, setGetLen, getResultNodeType, getLastChildPos, selectedNode, nodes, setNodes)
+    HandleURNodeCode(topBot, seTtopBot, getLen, setGetLen, selectedNode, nodes, setNodes)
   }, [selectedNode, nodes.length])
 
   const handleDrop = (e) => {
@@ -292,74 +287,71 @@ const Home = () => {
   // NEW TEMP HANDLER COPY FROM GPT
   // const [dragNodeStart, setDragNodeStart] = useState(null);
   const [isDragStart, setIsDragStart] = useState(true);
- // **Ensure nodes have width & height defined**
+  // **Ensure nodes have width & height defined**
 
 
-// **Detect if two nodes are overlapping**
-const isOverlapping = (nodeA, nodeB) => {
-  const nodeASize = nodeA?.measured;
-  const nodeBSize = nodeB?.measured;
+  // **Detect if two nodes are overlapping**
+  const isOverlapping = (nodeA, nodeB) => {
+    const nodeASize = nodeA?.measured;
+    const nodeBSize = nodeB?.measured;
 
-  return (
-    nodeA.position.y < nodeB.position.y + nodeBSize.height &&
-    nodeA.position.y + nodeASize.height > nodeB.position.y
-  );
-};
-
-// **Find the overlapping node**
-const findOverlappingNode = (draggingNode) => {
-  return nodes.find((n) => n.id !== draggingNode.id && isOverlapping(draggingNode, n));
-};
-
-// **Handle node drag start**
-const handleNodeDragStart = (e, node) => {
-  setNodes((nds) =>
-    nds.map((item) =>
-      item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
-    )
-  );
-
-  if (isDragStart) {
-    setDragNodeStart(node);
-  }
-  setIsDragStart(false);
-};
-
-// **Handle node drag stop (swap only if overlapping)**
-const handleNodeDragStop = (e, node) => {
-  setNodes((nds) =>
-    nds.map((item) =>
-      item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
-    )
-  );
-
-  const overlappingNode = findOverlappingNode(node);
-  console.log(overlappingNode,'overlapingNode')
-
-  if (overlappingNode) {
-    setNodes((nds) =>
-      nds.map((n) => {
-        if (n.id === node.id) return { ...n, position: { ...n.position, y: overlappingNode.position.y  } };
-        if (n.id === overlappingNode.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
-        return n;
-      })
+    return (
+      nodeA.position.y < nodeB.position.y + nodeBSize.height &&
+      nodeA.position.y + nodeASize.height > nodeB.position.y
     );
-  }
+  };
 
-  setIsDragStart(true);
-};
+  // **Find the overlapping node**
+  const findOverlappingNode = (draggingNode) => {
+    return nodes.find((n) => n.id !== draggingNode.id && isOverlapping(draggingNode, n));
+  };
+
+  // **Handle node drag start**
+  const handleNodeDragStart = (e, node) => {
+    setNodes((nds) =>
+      nds.map((item) =>
+        item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+      )
+    );
+
+    if (isDragStart) {
+      setDragNodeStart(node);
+    }
+    setIsDragStart(false);
+  };
+
+  // **Handle node drag stop (swap only if overlapping)**
+  const handleNodeDragStop = (e, node) => {
+    setNodes((nds) =>
+      nds.map((item) =>
+        item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+      )
+    );
+
+    const overlappingNode = findOverlappingNode(node);
+    console.log(overlappingNode, 'overlapingNode')
+
+    if (overlappingNode) {
+      setNodes((nds) =>
+        nds.map((n) => {
+          if (n.id === node.id) return { ...n, position: { ...n.position, y: overlappingNode.position.y } };
+          if (n.id === overlappingNode.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
+          return n;
+        })
+      );
+    }
+
+    
+    setIsDragStart(true);
+  };
 
   function handleSortingNodes() {
   }
 
   const handlePastingNode = () => {
-    console.log("hi")
-    setNodes((nds) => {
-      return { ...nds, copyNode }
-    })
+    setNodes((nds) => [...nds, { ...copyNode, id: `${Date.now()}` }])
   }
 
-  console.log(nodes, "nnnd")
 
   return (
     <>
@@ -384,21 +376,21 @@ const handleNodeDragStop = (e, node) => {
               fitView
             >
               {/* right click menu options */}
-              {customRightClickMenu && (
-                <ul
-                  className="fixed bg-white shadow-md p-2 list-none py-3 px-3 w-48 text-center cursor-pointer"
-                  style={{
-                    top: customRightClickMenu.y,
-                    left: customRightClickMenu.x,
-                  }}
-                  onClick={() => handlePastingNode()}
-                >
-                  <li className=' cursor-pointer'>Paste element</li>
-                </ul>
-              )}
               <Background />
               <Controls />
             </ ReactFlow>
+            {customRightClickMenu && (
+              <ul
+                className="fixed bg-white shadow-md p-2 list-none py-3 px-3 w-48 text-center cursor-pointer"
+                style={{
+                  top: customRightClickMenu.y,
+                  left: customRightClickMenu.x,
+                }}
+                onClick={() => handlePastingNode()}
+              >
+                <li className=' cursor-pointer'>Paste element</li>
+              </ul>
+            )}
           </div>
         </div>
         <NodesMenu />
