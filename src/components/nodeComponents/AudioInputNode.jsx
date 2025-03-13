@@ -5,7 +5,6 @@ import EditDeleteMove from '../../shared/EditDeleteMove';
 const AudioInputNode = ({ id, data, selected }) => {
     const { getNodes, updateNodeData, getEdges } = useReactFlow()
 
-
     let getAllNodes = getNodes().filter(item => item.id == "ur-input-1")
 
     return (

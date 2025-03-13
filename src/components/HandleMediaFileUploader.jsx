@@ -3,7 +3,7 @@ import { message, Upload } from 'antd';
 import { useReactFlow } from '@xyflow/react';
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext';
 
-const HandleMediaFileUploader = ({ suppportedFileTypes }) => {
+const HandleMediaFileUploader = ({ suppportedFileTypes, fileAccepted }) => {
 
     const { selectedNode } = useSelectedNodeContext();
     const { updateNodeData } = useReactFlow();
@@ -12,19 +12,22 @@ const HandleMediaFileUploader = ({ suppportedFileTypes }) => {
     const [uploadOrLink, setUploadOrLink] = useState()
 
     const uploadingFileData = {
-        name: 'imagefile',
+        name: '',
         multiple: false,
         beforeUpload: () => false, // Prevent auto-upload
         onDrop(e) {
+            console.log("hiii 1")
             e.preventDefault();
             handleFileUpload(e.dataTransfer.files[0]);
         },
         onChange(e) {
+            console.log("hiii 2")
             handleFileUpload(e.file); // browse and add image
         },
         onRemove() {
-            let imageData = {}
-            updateNodeData(selectedNode[0]?.id, { imageData });
+            console.log("hiii 3")
+            let fileData = {}
+            updateNodeData(selectedNode[0]?.id, { fileData });
         },
     };
 
@@ -33,10 +36,16 @@ const HandleMediaFileUploader = ({ suppportedFileTypes }) => {
 
         const checkFileType = (fileType) => {
             let validFileTypes = ["image/", "audio/", "video/", "mp4/" ,"/pdf", "/msword", ".webp/"]
-            return validFileTypes.some(types => fileType.includes(types))
+            // return validFileTypes.some(types => fileType.includes(types))
+            return fileType.includes(fileAccepted)
         }
         
         if (file && checkFileType(file.type)) {
+
+            const checkFileSubType = () => {
+                
+            }
+
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
@@ -53,7 +62,9 @@ const HandleMediaFileUploader = ({ suppportedFileTypes }) => {
                 message.error(`${file.name} failed to load.`);
             };
         } else {
-            message.error("Please upload a valid image file.");
+            console.log("hiii")
+            alert("Please upload a valid file.")
+            message.error("Please upload a valid file.");
         }
     };
 

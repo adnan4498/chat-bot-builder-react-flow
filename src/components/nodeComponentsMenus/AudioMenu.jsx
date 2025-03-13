@@ -1,84 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { CheckOutlined, CloseOutlined, DoubleRightOutlined } from '@ant-design/icons'
-import { useReactFlow } from '@xyflow/react'
+import React from 'react'
+import { DoubleRightOutlined } from '@ant-design/icons'
 import { useSelectedNodeContext } from '../../ContextApi/DragDropContext'
-import TextArea from 'antd/es/input/TextArea'
-import { Space, Switch } from 'antd'
-
-import { InboxOutlined } from '@ant-design/icons';
-import { message, Upload } from 'antd';
 import HandleMediaFileUploader from '../HandleMediaFileUploader'
 
 const AudioMenu = () => {
 
-    const [uploadOrLink, setUploadOrLink] = useState()
-    const [multiImgData, setMultiImgData] = useState()
-
-    const { selectedNode } = useSelectedNodeContext();
-    const { Dragger } = Upload;
-
-    let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
-
-    const [inputVal, setInputVal] = useState(startingInputText)
-    const [maximumWords, setMaximumWords] = useState(0)
-
-    const { updateNodeData } = useReactFlow();
-
-    // show node text/label in input
-    useEffect(() => {
-
-        let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
-
-
-        setInputVal(startingInputText)
-    }, [selectedNode])
-
-    const handleChange = (e) => {
-        setInputVal(e.target.value);
-        updateNodeData(selectedNode[0]?.id, { label: e.target.value })
-        let inputWordsLen = e.target.value.length
-
-        setMaximumWords(inputWordsLen)
-    };
-
-    const props = {
-        name: 'imagefile',
-        multiple: false,
-        beforeUpload: () => false, // Prevent auto-upload
-        onDrop(e) {
-            e.preventDefault();
-            handleFileUpload(e.dataTransfer.files[0]);
-        },
-        onChange(e) {
-            handleFileUpload(e.file); // browse and add image
-        },
-        onRemove() {
-            let imageData = {}
-            updateNodeData(selectedNode[0]?.id, { imageData });
-        },
-    };
-
-    const handleFileUpload = (file) => {
-        if (file && file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            reader.onload = () => {
-                const imageData = { name: file.name, data: file, src: reader.result };
-
-                updateNodeData(selectedNode[0]?.id, { imageData });
-                message.success(`${file.name} uploaded to node.`);
-            };
-
-            reader.onerror = () => {
-                message.error(`${file.name} failed to load.`);
-            };
-        } else {
-            message.error("Please upload a valid image file.");
-        }
-    };
-
-    let suppportedFileTypes = "aac, .mp3, .mp4"
+    let suppportedFileTypes = "aac, .mp3, .mp4, mpeg"
+    let fileAccepted = "audio"
 
     return (
         <>
@@ -106,7 +34,7 @@ const AudioMenu = () => {
                     Chatbot sends audio to the user. You can upload an audio file (max 16MB) or provide an existing URL. Supported formats: .aac, .mp3, .mp4                </p>
             </div>
 
-          <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} />
+          <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
 
         </>
     )

@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { CheckOutlined, CloseOutlined, DoubleRightOutlined } from '@ant-design/icons'
+import { DoubleRightOutlined } from '@ant-design/icons'
 import { useReactFlow } from '@xyflow/react'
 import { useSelectedNodeContext } from '../../ContextApi/DragDropContext'
 import TextArea from 'antd/es/input/TextArea'
-import { Space, Switch } from 'antd'
 
-import { InboxOutlined } from '@ant-design/icons';
-import { message, Upload } from 'antd';
 import HandleMediaFileUploader from '../HandleMediaFileUploader'
 
 const ImageMenu = () => {
 
-    const [uploadOrLink, setUploadOrLink] = useState()
-    const [multiImgData, setMultiImgData] = useState()
-
     const { selectedNode } = useSelectedNodeContext();
-    const { Dragger } = Upload;
 
     let startingInputText = selectedNode[0]?.data.label == "Text send to user..." ? "" : selectedNode[0]?.data.label
 
@@ -41,7 +34,8 @@ const ImageMenu = () => {
         setMaximumWords(inputWordsLen)
     };
 
-    let suppportedFileTypes = ".jpg, .png"
+    let suppportedFileTypes = ".jpg, .png, .jpeg"
+    let fileAccepted = "image"
 
     return (
         <>
@@ -69,7 +63,7 @@ const ImageMenu = () => {
                     Chatbot sends an image to the user. You can upload an image (max 5MB) or provide an existing URL. Supported formats: .jpg, .png                </p>
             </div>
 
-            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} />
+            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
 
             <div className='nodes-section mt-6 '>
                 <div className='text-xs my-[3px] flex justify-between'>
