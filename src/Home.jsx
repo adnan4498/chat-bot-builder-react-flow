@@ -41,7 +41,7 @@ const Home = () => {
   const { draggedItemData } = useDragContext();
   const { selectedNode, setSelectedNode } = useSelectedNodeContext();
   const { deletingNodeId, setDeletingNodeId } = useDeletingNodeIdContext();
-  const { isDraggable } = useIsDraggableContext()
+  const { isDraggable, setIsDraggable } = useIsDraggableContext()
   const { copyNode } = useCopyNodeContext()
 
   // console.log(copyNode, "copyNode")
@@ -287,10 +287,10 @@ const Home = () => {
   // NEW TEMP HANDLER COPY FROM GPT
   // const [dragNodeStart, setDragNodeStart] = useState(null);
   const [isDragStart, setIsDragStart] = useState(true);
-  // **Ensure nodes have width & height defined**
+  // *Ensure nodes have width & height defined*
 
 
-  // **Detect if two nodes are overlapping**
+  // *Detect if two nodes are overlapping*
   const isOverlapping = (nodeA, nodeB) => {
     const nodeASize = nodeA?.measured;
     const nodeBSize = nodeB?.measured;
@@ -301,48 +301,147 @@ const Home = () => {
     );
   };
 
-  // **Find the overlapping node**
+  // *Find the overlapping node*
   const findOverlappingNode = (draggingNode) => {
     return nodes.find((n) => n.id !== draggingNode.id && isOverlapping(draggingNode, n));
   };
 
-  // **Handle node drag start**
-  const handleNodeDragStart = (e, node) => {
+  // *Handle node drag start*
+  const handleNodeDragStart = (event, node) => {
+    // Save the starting position of the node being dragged
+    setDragNodeStart(node);
+    setIsDragStart(false);
+    
+    // Get the x position from the first node (usually node with id "0")
+    const firstNode = nodes.find(n => n.id === "0");
+    const fixedXPosition = firstNode ? firstNode.position.x : 396;
+    
+    // Keep nodes aligned at the same x position as the first node
     setNodes((nds) =>
       nds.map((item) =>
-        item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+        item.id === node.id ? { ...item, position: { x: fixedXPosition, y: node.position.y } } : item
       )
     );
-
-    if (isDragStart) {
-      setDragNodeStart(node);
-    }
-    setIsDragStart(false);
   };
 
-  // **Handle node drag stop (swap only if overlapping)**
-  const handleNodeDragStop = (e, node) => {
+  // *Handle node drag stop (swap only if overlapping)*
+  const handleNodeDragStop = (event, draggedNode) => {
+    setIsDragStart(true);
+    
+    // Get the x position from the first node
+    const firstNode = nodes.find(n => n.id === "0");
+    const fixedXPosition = firstNode ? firstNode.position.x : 396;
+    
+    // Keep nodes aligned at the same x position as the first node
     setNodes((nds) =>
       nds.map((item) =>
-        item.id === node.id ? { ...item, position: { x: 396, y: node.position.y } } : item
+        item.id === draggedNode.id ? { ...item, position: { x: fixedXPosition, y: draggedNode.position.y } } : item
       )
     );
 
-    const overlappingNode = findOverlappingNode(node);
-    console.log(overlappingNode, 'overlapingNode')
-
-    if (overlappingNode) {
-      setNodes((nds) =>
-        nds.map((n) => {
-          if (n.id === node.id) return { ...n, position: { ...n.position, y: overlappingNode.position.y } };
-          if (n.id === overlappingNode.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
-          return n;
-        })
-      );
-    }
-
+    // Find the node that should be swapped (closest node to where the dragged node was dropped)
+    const targetNode = findNodeToSwap(draggedNode, nodes);
     
-    setIsDragStart(true);
+    if (targetNode && dragNodeStart) {
+      // Swap the positions of the dragged node and the target node
+      swapNodePositions(draggedNode.id, targetNode.id);
+    } else {
+      // If no swap occurred, still reorder to ensure proper spacing
+      reorderAllNodes();
+    }
+    
+    setDragNodeStart(null);
+  };
+
+  // Helper function to find the node to swap with
+  const findNodeToSwap = (draggedNode, allNodes) => {
+    // Filter out the dragged node and any special nodes (like the default starting node)
+    const swappableNodes = allNodes.filter(n => 
+      n.id !== draggedNode.id && 
+      n.id !== "0" && 
+      !n.id.includes("-condition") &&
+      !n.id.includes("parent")
+    );
+    
+    if (swappableNodes.length === 0) return null;
+    
+    // Find the node closest to the dragged node's current position
+    return swappableNodes.reduce((closest, node) => {
+      const distance = Math.abs(node.position.y - draggedNode.position.y);
+      if (!closest || distance < closest.distance) {
+        return { node, distance };
+      }
+      return closest;
+    }, null)?.node;
+  };
+
+  // Helper function to swap node positions
+  const swapNodePositions = (draggedId, targetId) => {
+    // First, swap the nodes in the array to change their order
+    setNodes(nds => {
+      const draggedIndex = nds.findIndex(n => n.id === draggedId);
+      const targetIndex = nds.findIndex(n => n.id === targetId);
+      
+      if (draggedIndex === -1 || targetIndex === -1) return nds;
+      
+      // Create a new array with the nodes in the swapped order
+      const newNodes = [...nds];
+      const temp = newNodes[draggedIndex];
+      newNodes[draggedIndex] = newNodes[targetIndex];
+      newNodes[targetIndex] = temp;
+      
+      return newNodes;
+    });
+    
+    // Then immediately reorder all nodes to ensure proper spacing
+    setTimeout(() => {
+      reorderAllNodes();
+    }, 10);
+  };
+
+  // Helper function to reorder all nodes with proper spacing
+  const reorderAllNodes = () => {
+    setNodes(nds => {
+      // Get the x position from the first node
+      const firstNode = nds.find(n => n.id === "0");
+      const fixedXPosition = firstNode ? firstNode.position.x : 396;
+      
+      // Sort nodes by their current vertical position
+      const sortedNodes = [...nds].sort((a, b) => {
+        if (a.id === "0") return -1;
+        if (b.id === "0") return 1;
+        return a.position.y - b.position.y;
+      });
+      
+      // Reposition nodes with proper spacing based on their heights
+      const updatedNodes = [];
+      let currentY = sortedNodes[0].position.y;
+      
+      sortedNodes.forEach((node, index) => {
+        if (index === 0) {
+          // Keep the first node position unchanged
+          updatedNodes.push(node);
+          currentY = node.position.y + (node.measured?.height || 28);
+        } else {
+          const spacing = 20; // Space between nodes
+          currentY += spacing; // Add spacing after the previous node
+          
+          // Create updated node with new position
+          updatedNodes.push({
+            ...node,
+            position: {
+              x: fixedXPosition,
+              y: currentY
+            }
+          });
+          
+          // Update currentY for the next node
+          currentY += (node.measured?.height || 28);
+        }
+      });
+      
+      return updatedNodes;
+    });
   };
 
   function handleSortingNodes() {
@@ -368,9 +467,9 @@ const Home = () => {
               onConnect={onConnect}
               nodeTypes={nodeTypes}
               style={{ backgroundColor: "#e6e4e4" }}
-              nodesDraggable={isDraggable}
+              nodesDraggable={true}
               onContextMenu={handleRightClickMenu} /* enables custom right click menu */
-              onNodeDrag={handleNodeDragStart}
+              onNodeDragStart={handleNodeDragStart}
               onNodeDragStop={handleNodeDragStop}
 
               fitView

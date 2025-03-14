@@ -23,8 +23,8 @@ const StickerInputNode = ({ id, data, selected }) => {
                         </div>
                     </div>
 
-                    {data?.imageData?.src ? <div className='my-1 min-w-[257px]'>
-                        <img src={data?.imageData?.src} />
+                    {data?.fileData?.src ? <div className='my-1 min-w-[257px]'>
+                        <img src={data?.fileData?.src} />
                     </div> : <div className='cursor-pointer text-xs text-[#b9b3a9] mt-4 pl-2 pb-2'>
                         <div class="bot-action-preview__header flex items-center w-full gap-2 h-5">
                             <div>

@@ -23,7 +23,7 @@ const FileInputNode = ({ id, data, selected }) => {
                         </div>
                     </div>
 
-                    {data?.imageData?.src
+                    {data?.fileData?.src
                         ?
                         <div className='my-1 w-[300px]'>
                             {/* <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" /> */}

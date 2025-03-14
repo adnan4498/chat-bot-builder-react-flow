@@ -22,8 +22,9 @@ const EditDeleteMove = (id) => {
     return (
         <div className='flex flex-col gap-[2px] mt-[1px] cursor-pointer'>
             <div
-                onMouseEnter={() => setIsDraggable(true)}
-                onMouseLeave={() => setIsDraggable(false)}
+                onMouseDown={() => {
+                    setIsDraggable(true);
+                }}
                 className='bg-white py-[5px] px-[5px] flex items-center justify-center border-[1px] border-gray-300 rounded-sm'>
                 <DragOutlined />
             </div>

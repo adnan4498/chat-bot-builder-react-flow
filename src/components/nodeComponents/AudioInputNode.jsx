@@ -22,10 +22,10 @@ const AudioInputNode = ({ id, data, selected }) => {
                         </div>
                     </div>
 
-                    {data?.imageData?.src
+                    {data?.fileData?.src
                         ?
                         <div className='my-1 w-[230px]'>
-                            <audio className='w-full' src={data?.imageData?.src} controls />
+                            <audio className='w-full' src={data?.fileData?.src} controls />
                         </div>
                         :
                         <div className='cursor-pointer text-xs text-[#b9b3a9] mt-4 pl-2 pb-2'>

@@ -2,59 +2,83 @@ import React, { useState } from 'react'
 import { message, Upload } from 'antd';
 import { useReactFlow } from '@xyflow/react';
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext';
+import { DeleteOutlined, StarOutlined } from '@ant-design/icons';
 
-const HandleMediaFileUploader = ({ suppportedFileTypes, fileAccepted }) => {
+const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
 
     const { selectedNode } = useSelectedNodeContext();
-    const { updateNodeData } = useReactFlow();
+    const { getNodes, getEdges, updateNodeData } = useReactFlow();
     const { Dragger } = Upload;
 
     const [uploadOrLink, setUploadOrLink] = useState()
+    const [fileName, setFileName] = useState("");
 
     const uploadingFileData = {
         name: '',
         multiple: false,
-        beforeUpload: () => false, // Prevent auto-upload
+        beforeUpload: (file) => {
+            setFileName(file.name); // Store filename in state
+            return false; // Prevent auto-upload
+        },
+        showUploadList: false, // Hide default Ant Design file list
+
         onDrop(e) {
-            console.log("hiii 1")
             e.preventDefault();
-            handleFileUpload(e.dataTransfer.files[0]);
+            const file = e.dataTransfer.files[0];
+            if (file) setFileName(file.name);
         },
         onChange(e) {
-            console.log("hiii 2")
-            handleFileUpload(e.file); // browse and add image
+            let checkFile = e.file.type.includes(fileAccepted)
+
+            console.log(checkFile, 'checkFile')
+            checkFile ? handleFileUpload(e.file) : alert("Please upload a valid file.");
+
         },
         onRemove() {
-            console.log("hiii 3")
             let fileData = {}
             updateNodeData(selectedNode[0]?.id, { fileData });
         },
     };
 
-    const handleFileUpload = (file) => {
-        console.log(file, "file")
+    let nodes = getNodes()
 
+    const handleFileUpload = (file) => {
         const checkFileType = (fileType) => {
-            let validFileTypes = ["image/", "audio/", "video/", "mp4/" ,"/pdf", "/msword", ".webp/"]
+            let validFileTypes = ["image/", "audio/", "video/", "mp4/", "/pdf", "/msword", ".webp/"]
             // return validFileTypes.some(types => fileType.includes(types))
             return fileType.includes(fileAccepted)
         }
-        
+
         if (file && checkFileType(file.type)) {
 
             const checkFileSubType = () => {
-                
+                if (fileAccepted == "audio") {
+                    let audioSubTypes = ["mp3", "mp4", "mpeg"]
+
+                    // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
+                    let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    return audioSubTypes.includes(replaceFileType)
+                }
+
+                if (fileAccepted == "image") {
+                    let audioSubTypes = ["png", "jpg", "jpeg"]
+
+                    // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
+                    let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    return audioSubTypes.includes(replaceFileType)
+                }
             }
+
+            checkFileSubType()
+
+            console.log(file, "file")
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
-            console.log(file, "file")
-            console.log(reader, "reader")
-
             reader.onload = () => {
-                const imageData = { name: file.name, data: file, src: reader.result };
-                updateNodeData(selectedNode[0]?.id, { imageData });
+                const fileData = { name: file.name, data: file, src: reader.result };
+                updateNodeData(selectedNode[0]?.id, { fileData });
                 message.success(`${file.name} uploaded to node.`);
             };
 
@@ -62,7 +86,6 @@ const HandleMediaFileUploader = ({ suppportedFileTypes, fileAccepted }) => {
                 message.error(`${file.name} failed to load.`);
             };
         } else {
-            console.log("hiii")
             alert("Please upload a valid file.")
             message.error("Please upload a valid file.");
         }
@@ -90,12 +113,25 @@ const HandleMediaFileUploader = ({ suppportedFileTypes, fileAccepted }) => {
                     </div>
                 </Dragger>
 
+                {fileName && (
+                    <div className='flex items-center justify-between px-2'>
+                        <div className='my-3 text-sm text-gray-400'>
+                            {fileName}
+                        </div>
+                        <div className='cursor-pointer opacity-0 hover:opacity-100 duration-200'>
+                            <DeleteOutlined style={{color: "lightgray"}}/>
+                        </div>
+                    </div>
+                )}
+
                 <div className='flex items-center gap-2 text-xs pt-[2px] mt-2'>
                     <div class="bepo-2-file-upload__helper-message _1x8n4wo_2271_n"><div class="bepo-2-form-helper__wrapper _1y3qbf7_2271_c"><svg width="16px" height="16px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="bepo-icon-svg _1ixx0vi0"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2ZM11.8077 8.92308C12.4449 8.92308 12.9615 8.40648 12.9615 7.76923C12.9615 7.13198 12.4449 6.61539 11.8077 6.61539C11.1704 6.61539 10.6538 7.13198 10.6538 7.76923C10.6538 8.40648 11.1704 8.92308 11.8077 8.92308ZM10.4615 11.2308C10.4615 10.8059 10.8059 10.4615 11.2308 10.4615H12C12.4248 10.4615 12.7692 10.8059 12.7692 11.2308V15.8462C13.1941 15.8462 13.5385 16.1906 13.5385 16.6154C13.5385 17.0402 13.1941 17.3846 12.7692 17.3846H12C11.5752 17.3846 11.2308 17.0402 11.2308 16.6154V12C10.8059 12 10.4615 11.6556 10.4615 11.2308Z" fill="var(--theme-color-icon-info, #3950ad)" data-darkreader-inline-fill=""></path></svg><span class="bepo-2-form-helper _1y3qbf7_2271_0 _1y3qbf7_2271_3 _1calqf5_2271_5"><span></span></span></div></div>
                     <div className='text-[#5f9ccf]'>
                         Supported file types : {suppportedFileTypes}
                     </div>
                 </div>
+
+
             </div>
         </div>
     )

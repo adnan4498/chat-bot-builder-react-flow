@@ -22,12 +22,12 @@ const VideoInputNode = ({ id, data, selected }) => {
                         </div>
                     </div>
 
-                    {data?.imageData?.src
+                    {data?.fileData?.src
                         ?
                         <div className='my-1 w-[230px]'>
                             {/* <input type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx" /> */}
                             <video controls width="230">
-                                <source src={data?.imageData?.src} type="video/mp4" />
+                                <source src={data?.fileData?.src} type="video/mp4" />
                             </video>
                         </div>
                         :

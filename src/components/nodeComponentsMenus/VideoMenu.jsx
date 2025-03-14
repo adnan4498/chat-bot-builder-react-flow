@@ -53,8 +53,8 @@ const VideoMenu = () => {
             handleFileUpload(e.file); // browse and add image
         },
         onRemove() {
-            let imageData = {}
-            updateNodeData(selectedNode[0]?.id, { imageData });
+            let fileData = {}
+            updateNodeData(selectedNode[0]?.id, { fileData });
         },
     };
 
@@ -67,11 +67,11 @@ const VideoMenu = () => {
             console.log(reader, "reader")
 
             reader.onload = () => {
-                const imageData = { name: file.name, data: file, src: reader.result };
+                const fileData = { name: file.name, data: file, src: reader.result };
 
-                console.log(imageData, "data");
+                console.log(fileData, "data");
 
-                updateNodeData(selectedNode[0]?.id, { imageData });
+                updateNodeData(selectedNode[0]?.id, { fileData });
                 message.success(`${file.name} uploaded to node.`);
             };
 
