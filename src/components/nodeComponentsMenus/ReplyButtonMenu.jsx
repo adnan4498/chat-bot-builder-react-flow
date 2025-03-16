@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { CheckOutlined, CloseOutlined, DoubleRightOutlined, FastBackwardFilled, MoreOutlined } from '@ant-design/icons'
 import { useReactFlow } from '@xyflow/react'
-import { useSelectedNodeContext } from '../../ContextApi/DragDropContext'
+import { useReplyBtnTypeContext, useSelectedNodeContext } from '../../ContextApi/DragDropContext'
 import TextArea from 'antd/es/input/TextArea'
 import { Input, Modal, Select } from 'antd'
 import HandleMediaFileUploader from '../HandleMediaFileUploader'
@@ -12,6 +12,7 @@ const ReplyButtonMenu = () => {
     const [isModalOpen2, setIsModalOpen2] = useState(false);
 
     const { selectedNode } = useSelectedNodeContext();
+    const { replyBtnType, setReplyBtnType } = useReplyBtnTypeContext();
 
     let startingHeaderText = selectedNode[0]?.data.label[0]?.headerTextLabel
     let startingBodyText = selectedNode[0]?.data.label[0]?.bodyTextLabel
@@ -42,7 +43,7 @@ const ReplyButtonMenu = () => {
     )
 
     const [openState, setOpenState] = useState(false)
-    const [headerType, setHeaderType] = useState()
+    const [headerType, setHeaderType] = useState(replyBtnType)
     const [classState, setClassState] = useState("opacity-0 left-[-55px] top-[30px] z-0")
 
     const getRef = useRef(null)
@@ -58,7 +59,7 @@ const ReplyButtonMenu = () => {
         setSectionItemPostback(getEditNodePostback)
     }, [editingItemId])
 
-    const { updateNodeData } = useReactFlow();
+    const { getNodes, updateNodeData } = useReactFlow();
 
     let label = selectedNode[0]?.data?.label
     let listSection = selectedNode[0]?.data?.label[0].listSection
@@ -218,7 +219,39 @@ const ReplyButtonMenu = () => {
 
         const selectedOption = options.find(option => option.value === value);
         setHeaderType(selectedOption?.label)
+        setReplyBtnType(selectedOption?.label)
     }
+
+    let suppportedFileTypesImage = ".jpg, .png, .jpeg"
+    let fileAcceptedImage = "image"
+
+    let suppportedFileTypesVideo = ".mp4"
+    let fileAcceptedVideo = "video"
+
+    let suppportedFileTypesDocument = "pdf, .msword, .doc"
+    let fileAcceptedDocument = "application"
+
+    let suppportedFileTypes
+    let fileAccepted
+
+    if(headerType == "Image"){
+        suppportedFileTypes = suppportedFileTypesImage
+    }
+    else if(headerType == "Video"){
+        suppportedFileTypes = suppportedFileTypesVideo
+    }
+    else if(headerType == "Document"){
+        suppportedFileTypes = suppportedFileTypesDocument
+    }
+
+    let nodes = getNodes()
+    // console.log(nodes, 'nodes')
+
+    let aa = "hello world"
+    let cc = aa.slice(1)
+    let bb = aa[0].toUpperCase()
+
+    console.log(bb + cc, "aa")
 
     return (
         <>
@@ -258,7 +291,7 @@ const ReplyButtonMenu = () => {
                                 style={{
                                     width: "100%",
                                 }}
-                                defaultValue="None"
+                                defaultValue={replyBtnType || "None"}
                                 placeholder="Search to Select"
                                 optionFilterProp="label"
                                 filterSort={(optionA, optionB) =>
@@ -303,10 +336,10 @@ const ReplyButtonMenu = () => {
                     {headerType == "Image" || headerType == "Video" || headerType == "Document" ?
                         <div>
                             <div className='text-[#b4ada3] text-sm my-4'>
-                               Header {headerType}
+                                Header {headerType}
                             </div>
                             <div>
-                                <HandleMediaFileUploader />
+                                <HandleMediaFileUploader  suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
                             </div>
                         </div>
                         : ""
@@ -338,7 +371,7 @@ const ReplyButtonMenu = () => {
 
                             <div>
                                 <div className='text-[#b4ada3] text-2xl  pb-1 my-4'>
-                                    Buttons 
+                                    Buttons
                                 </div>
 
                                 <div className='flex flex-col gap-3'>
