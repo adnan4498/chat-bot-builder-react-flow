@@ -220,72 +220,6 @@ const Home = () => {
 
   }
 
-  // const [isDragStart,setIsDragStart] = useState(true)
-  // const handleNodeDragStart = (e, node) => {
-  //   setNodes((nds) => {
-  //     return nds.map(item => {
-  //       if (item.id === node.id) {
-  //         return {
-  //           ...item,
-  //           position: { x: 396, y: node.position.y }
-  //         };
-  //       }
-  //       return item;
-  //     });
-  //   });
-  //   if(isDragStart) {
-  //     setDragNodeStart(node)
-
-  //   }
-  //   setIsDragStart(false)
-
-  //   console.log(dragNodeStart, 'dragNodeStart')
-  // };
-
-  // // Find the closest node in Y-axis
-  // const findClosestNode = (draggingNode) => {
-  //   return nodes
-  //     .filter((n) => n.id !== draggingNode.id) // Exclude the dragged node
-  //     .reduce((closest, n) => {
-  //       const distance = Math.abs(n.position.y - draggingNode.position.y);
-  //       return distance < (closest?.distance || Infinity) ? { node: n, distance } : closest;
-  //     }, null)?.node;
-  // };
-
-  // const handleNodeDragStop = (e, node) => {
-  //   setNodes((nds) => {
-  //     return nds.map(item => {
-  //       if (item.id === node.id) {
-  //         return {
-  //           ...item,
-  //           position: { x: 396, y: node.position.y }
-  //         };
-  //       }
-  //       return item;
-  //     });
-  //   });
-
-  //   // handleSortingNodes()
-
-  //   const closest = findClosestNode(node);
-
-
-  //   console.log('closet', closest)
-  //   if (closest) {
-  //     setNodes((nds) =>
-  //       nds.map((n) => {
-  //         if (n.id === node.id) return { ...n, position: { ...n.position, y: closest.position.y } };
-  //         if (n.id === closest.id) return { ...n, position: { ...n.position, y: dragNodeStart.position.y } };
-  //         return n;
-  //       })
-  //     );
-  //   }
-  //   setIsDragStart(true)
-  // };
-
-
-  // NEW TEMP HANDLER COPY FROM GPT
-  // const [dragNodeStart, setDragNodeStart] = useState(null);
   const [isDragStart, setIsDragStart] = useState(true);
   // *Ensure nodes have width & height defined*
 
@@ -444,13 +378,12 @@ const Home = () => {
     });
   };
 
-  function handleSortingNodes() {
-  }
-
   const handlePastingNode = () => {
     setNodes((nds) => [...nds, { ...copyNode, id: `${Date.now()}` }])
   }
 
+  // console.log(nodes,'Nodes')
+  // console.log(edges,'edges')
 
   return (
     <>

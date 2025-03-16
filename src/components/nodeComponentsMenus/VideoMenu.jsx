@@ -85,7 +85,8 @@ const VideoMenu = () => {
 
     console.log(selectedNode[0], "selectedNode")
 
-    let suppportedFileTypes = "aac, .mp3, .mp4"
+    let suppportedFileTypes = ".mp4"
+    let fileAccepted = "video"
 
     return (
         <>
@@ -112,7 +113,7 @@ const VideoMenu = () => {
                 <p>
                     Chatbot sends a video to the user. You can upload a video (max 16MB) or provide an existing URL. Supported formats: .mp4  </p>          </div>
 
-            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} />
+            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
 
             <div className='nodes-section mt-6 '>
                 <div className='text-xs my-[3px] flex justify-between'>

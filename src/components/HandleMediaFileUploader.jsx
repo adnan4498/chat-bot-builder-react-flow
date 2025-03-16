@@ -10,16 +10,17 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
     const { getNodes, getEdges, updateNodeData } = useReactFlow();
     const { Dragger } = Upload;
 
+    let nodes = getNodes()
+
+    let getNodeFileDataName = selectedNode[0].data?.fileData?.name
+
     const [uploadOrLink, setUploadOrLink] = useState()
-    const [fileName, setFileName] = useState("");
+    const [fileName, setFileName] = useState(getNodeFileDataName || "");
 
     const uploadingFileData = {
         name: '',
         multiple: false,
-        beforeUpload: (file) => {
-            setFileName(file.name); // Store filename in state
-            return false; // Prevent auto-upload
-        },
+        beforeUpload: () => false,
         showUploadList: false, // Hide default Ant Design file list
 
         onDrop(e) {
@@ -30,17 +31,13 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
         onChange(e) {
             let checkFile = e.file.type.includes(fileAccepted)
 
+            console.log(e.file, "file")
+
             console.log(checkFile, 'checkFile')
             checkFile ? handleFileUpload(e.file) : alert("Please upload a valid file.");
 
         },
-        onRemove() {
-            let fileData = {}
-            updateNodeData(selectedNode[0]?.id, { fileData });
-        },
     };
-
-    let nodes = getNodes()
 
     const handleFileUpload = (file) => {
         const checkFileType = (fileType) => {
@@ -57,6 +54,7 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
 
                     // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
                     let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    setFileName(file.name)
                     return audioSubTypes.includes(replaceFileType)
                 }
 
@@ -65,13 +63,39 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
 
                     // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
                     let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    setFileName(file.name)
+                    return audioSubTypes.includes(replaceFileType)
+                }
+
+                if (fileAccepted == "application") {
+                    let audioSubTypes = ["msword", "pdf", "doc"]
+
+                    // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
+                    let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    setFileName(file.name)
+                    return audioSubTypes.includes(replaceFileType)
+                }
+
+                if (fileAccepted == "video") {
+                    let audioSubTypes = ["mp4"]
+
+                    // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
+                    let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    setFileName(file.name)
+                    return audioSubTypes.includes(replaceFileType)
+                }
+
+                if (fileAccepted == "sticker") {
+                    let audioSubTypes = ["webp"]
+
+                    // file.type is eg: audio/mp3 or image/png so we remove audio/ or image/ and get it's subType 
+                    let replaceFileType = file.type.replace(fileAccepted + "/", "")
+                    setFileName(file.name)
                     return audioSubTypes.includes(replaceFileType)
                 }
             }
 
             checkFileSubType()
-
-            console.log(file, "file")
 
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -90,6 +114,13 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
             message.error("Please upload a valid file.");
         }
     };
+
+    console.log(nodes, "nnn")
+
+    let removeFileFromNode = () => {
+        let fileData = {}
+        updateNodeData(selectedNode[0]?.id, { fileData });
+    }
 
     return (
         <div>
@@ -118,8 +149,8 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
                         <div className='my-3 text-sm text-gray-400'>
                             {fileName}
                         </div>
-                        <div className='cursor-pointer opacity-0 hover:opacity-100 duration-200'>
-                            <DeleteOutlined style={{color: "lightgray"}}/>
+                        <div onClick={() => [setFileName(""), removeFileFromNode()]} className='cursor-pointer opacity-100'>
+                            <DeleteOutlined style={{ color: "lightgray" }} />
                         </div>
                     </div>
                 )}
@@ -130,7 +161,6 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
                         Supported file types : {suppportedFileTypes}
                     </div>
                 </div>
-
 
             </div>
         </div>

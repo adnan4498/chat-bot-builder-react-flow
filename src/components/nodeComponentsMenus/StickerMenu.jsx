@@ -41,6 +41,7 @@ const StickerMenu = () => {
         setMaximumWords(inputWordsLen)
     };
 
+    let fileAccepted = "sticker"
     let suppportedFileTypes = ".webp"
 
     return (
@@ -51,7 +52,7 @@ const StickerMenu = () => {
                 </div>
             </div>
 
-            <div className='nodes-section  mt-6'>
+            <div className='nodes-section mt-6'>
 
                 <div className='flex gap-2 items-center'>
                     <div>
@@ -70,7 +71,7 @@ const StickerMenu = () => {
                 </p>
             </div>
 
-            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} />
+            <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
         </>
     )
 }

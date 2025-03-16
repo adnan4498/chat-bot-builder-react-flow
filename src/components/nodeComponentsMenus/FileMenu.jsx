@@ -35,7 +35,8 @@ const FileMenu = () => {
 
     console.log(selectedNode[0], "selectedNode")
 
-    let suppportedFileTypes = "aac, .mp3, .mp4"
+    let suppportedFileTypes = "pdf, .msword, .doc"
+    let fileAccepted = "application"
 
     return (
         <>
@@ -64,7 +65,7 @@ const FileMenu = () => {
                 </p>
             </div>
 
-          <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} />
+          <HandleMediaFileUploader suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
 
           <div className='nodes-section mt-6 '>
                 <div className='text-xs my-[3px] flex justify-between'>
