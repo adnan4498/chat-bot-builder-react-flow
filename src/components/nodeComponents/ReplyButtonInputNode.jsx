@@ -45,7 +45,7 @@ const ReplyButtonInputNode = ({ id, data, selected }) => {
                 </div>}
 
                 <div>
-                    {bodyText}
+                    {bodyText} 
                 </div>
 
                 <div>
