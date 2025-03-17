@@ -208,6 +208,9 @@ const ReplyButtonMenu = () => {
         setOpenState(false)
     }
 
+    // if header type change, remove uploaded file
+    const [removeFile, setRemoveFile] = useState(1)
+
     let getHeaderType = (value) => {
         const options = [
             { value: '1', label: 'None' },
@@ -220,19 +223,15 @@ const ReplyButtonMenu = () => {
         const selectedOption = options.find(option => option.value === value);
         setHeaderType(selectedOption?.label)
         setReplyBtnType(selectedOption?.label)
+        setRemoveFile(value)
     }
 
     let suppportedFileTypesImage = ".jpg, .png, .jpeg"
-    let fileAcceptedImage = "image"
-
     let suppportedFileTypesVideo = ".mp4"
-    let fileAcceptedVideo = "video"
-
     let suppportedFileTypesDocument = "pdf, .msword, .doc"
-    let fileAcceptedDocument = "application"
 
     let suppportedFileTypes
-    let fileAccepted
+    let fileAccepted = headerType != undefined && headerType[0].toLowerCase() + headerType.slice(1)
 
     if(headerType == "Image"){
         suppportedFileTypes = suppportedFileTypesImage
@@ -242,16 +241,10 @@ const ReplyButtonMenu = () => {
     }
     else if(headerType == "Document"){
         suppportedFileTypes = suppportedFileTypesDocument
+        fileAccepted = "application"
     }
 
     let nodes = getNodes()
-    // console.log(nodes, 'nodes')
-
-    let aa = "hello world"
-    let cc = aa.slice(1)
-    let bb = aa[0].toUpperCase()
-
-    console.log(bb + cc, "aa")
 
     return (
         <>
@@ -339,7 +332,7 @@ const ReplyButtonMenu = () => {
                                 Header {headerType}
                             </div>
                             <div>
-                                <HandleMediaFileUploader  suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} />
+                                <HandleMediaFileUploader  suppportedFileTypes={suppportedFileTypes} fileAccepted={fileAccepted} removeFile={removeFile} />
                             </div>
                         </div>
                         : ""

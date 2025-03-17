@@ -1,19 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { message, Upload } from 'antd';
 import { useReactFlow } from '@xyflow/react';
 import { useSelectedNodeContext } from '../ContextApi/DragDropContext';
 import { DeleteOutlined } from '@ant-design/icons';
 
-const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
+const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes, changeHeader }) => {
 
     const { selectedNode } = useSelectedNodeContext();
-    const {  updateNodeData } = useReactFlow();
+    const { updateNodeData } = useReactFlow();
     const { Dragger } = Upload;
 
     let getNodeFileDataName = selectedNode[0].data?.fileData?.name
 
     const [uploadOrLink, setUploadOrLink] = useState()
     const [fileName, setFileName] = useState(getNodeFileDataName || "");
+        
+    // if header type change, remove uploaded file
+    useEffect(() => {
+        setFileName("")
+        removeFileFromNodeData()
+    }, [changeHeader])
 
     const uploadingFileData = {
         name: '',
@@ -50,8 +56,8 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
 
             // subTypes[fileAccepted]? = not just return arr from subTypes, but validates fileType as well
             let isSubType = subTypes[fileAccepted]?.includes(replaceFileType);
-            
-            if(isSubType){
+
+            if (isSubType) {
                 setFileName(file.name);
                 return true;
             }
@@ -78,10 +84,11 @@ const HandleMediaFileUploader = ({ fileAccepted, suppportedFileTypes }) => {
         }
     };
 
-    let removeFileFromNodeData = () => {
-        let fileData = {}
+    function removeFileFromNodeData() {
+        let fileData = {};
         updateNodeData(selectedNode[0]?.id, { fileData });
     }
+
 
     return (
         <div>

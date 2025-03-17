@@ -8,16 +8,18 @@ const ReplyButtonInputNode = ({ id, data, selected }) => {
     const bodyText = data.label[0]?.bodyTextLabel
     const footerText = data.label[0]?.footerTextLabel
     const listBtnText = data.label[0]?.listBtnTextLabel
-    const listSectionTitle = data.label[0]?.listSection[0].listSectiontitle
+    const replyBtnItems = data.label[0]?.listSection[0].listSectionItems
 
     const { replyBtnType } = useReplyBtnTypeContext();
 
-    console.log(data?.label[0], "data")
+    console.log(data, "data")
+    console.log(replyBtnType, "replyBtnType")
+    console.log(replyBtnItems, "replyBtnItems")
 
     return (
         <div className='flex gap-[2px] '>
             <div className='p-3 !border-[1px] bg-white w-full rounded-sm min-w-[257px]'
-                style={{ border: (!bodyText || !listBtnText || !listSectionTitle) && selected == false ? "1px solid red" : "1px solid #333" }}
+                style={{ border: (!bodyText || !listBtnText) && selected == false ? "1px solid red" : "1px solid #333" }}
             >
                 <div class="bot-action-preview__header flex items-center w-full gap-2 h-14">
                     <div>
@@ -31,6 +33,17 @@ const ReplyButtonInputNode = ({ id, data, selected }) => {
                 </div>
                     : ""}
 
+                {replyBtnType == "Video" && data?.fileData?.src ? <div className='my-1 w-[230px]'>
+                    <video controls width="230">
+                        <source src={data?.fileData?.src} type="video/mp4" />
+                    </video>
+                </div>
+                    : ""}
+
+                {replyBtnType == "Document" && <div className='my-1 w-[230px] text-xs'>
+                    {data?.fileData?.name}
+                </div>}
+
                 <div>
                     {bodyText}
                 </div>
@@ -38,6 +51,15 @@ const ReplyButtonInputNode = ({ id, data, selected }) => {
                 <div>
                     {footerText}
                 </div>
+
+                <div>
+                    {replyBtnItems?.map((item) => (
+                        <div className='cursor-pointer text-xs border-2 border-blue-800 text-blue-300 rounded-2xl mt-2 pl-3 py-2'>
+                            {item.title}
+                        </div>
+                    ))}
+                </div>
+
             </div>
 
             {selected &&
